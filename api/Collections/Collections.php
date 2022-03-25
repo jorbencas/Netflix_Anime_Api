@@ -17,7 +17,7 @@
   }
     
   function removecollection($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     if (isset($POST['profile']) && isset($POST['id'])) {
       $sql = "SELECT c.id FROM collections c 
@@ -41,7 +41,7 @@
   }
     
   function addelementcollection($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     if (isset($POST['profile']) && isset($POST['episode'])) {
       $sql = "SELECT c.id 
@@ -98,7 +98,7 @@
   };
 
   function removeonecollection($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     if (isset($POST['profile']) && isset($POST['episode'])) {
       $sql = "SELECT atr.episode AS episode_id
@@ -123,7 +123,7 @@
   };
 
   function getcollection($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $GET = $api->getGET();
     $sql = "SELECT c.id, c.name AS titulo, m.type, m.name, m.extension, a.siglas, a.titulo_es as anime_titulo_es, 
     a.titulo_en as anime_titulo_en, a.titulo_va as anime_titulo_va, a.titulo_ca as anime_titulo_ca, 
@@ -151,7 +151,7 @@
   };
 
   function getmycollection($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $GET = $api->getGET();
     $sql = "SELECT DISTINCT ON(c.id) c.id, c.name AS titulo, m.type, m.name, m.extension, a.siglas, e.titulo_es, e.titulo_en, e.titulo_va,
     e.titulo_ca
@@ -182,7 +182,7 @@
   };
 
     function getallcolections($api) {
-      $db = $api->instanceClases("database");
+      $db = $api->getDb();
       $sql = "SELECT c.id, c.name AS titulo
       FROM collections c";
       $collections = $db->listar($sql);
@@ -195,7 +195,7 @@
     }
 
    /*  function getcollectionsby($api) {
-      $db = $api->instanceClases("database");
+      $db = $api->getDb();
       $sql = "SELECT c.id, c.name AS titulo, m.type, m.name, m.extension, a.siglas, e.titulo_es, e.titulo_en, e.titulo_va,
       e.titulo_ca, e.num
       FROM collections c INNER JOIN atributtes AS atr ON(atr.collection = c.id) 
@@ -221,7 +221,7 @@
     }
  */
   function removecollectionbyanime($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT c.id FROM animes a 
     inner join attributes AS atr ON(atr.episode = e.id) 
@@ -242,7 +242,7 @@
   }
 
   function removecollectionbyepisode($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT c.id FROM episode e
     inner join attributes AS atr ON(atr.episode = e.id) 

@@ -13,7 +13,7 @@
     }
 
     function insertcomment($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $date = date("Y-m-d");
         $hour = date("H:i:s");
@@ -41,7 +41,7 @@
     };
 
     function deleteOnecomment($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "DELETE FROM comments WHERE id = '{$POST['id']}'";
         $comments = $db->ejecutar($sql);
@@ -66,7 +66,7 @@
     };
 
     function getcommentbyepisode($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $GET = $api->getGET();
         $sql = "SELECT * FROM comments WHERE episode = '{$GET['aa']}'";
         $comments = $db->listar($sql);
@@ -78,7 +78,7 @@
     };
 
     function getcommentbyuser($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $GET = $api->getGET();
         $sql = "SELECT * FROM comments WHERE username = '{$GET['ap']}'";
         $comments = $db->listar($sql);

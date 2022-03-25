@@ -29,9 +29,8 @@
 
     function deleteTables(){
         // include_once dirname(__FILE__) . "/../securize.php";
-        require_once __DIR__ . '/../classes/utils.php';
-        $utils = new Utils('script');
-        $db = $utils->instanceClases("database");
+        require_once __DIR__ . '/../classes/database.php';
+        $db = new Database();
         $sql = "SELECT tablename FROM pg_catalog.pg_tables
         WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'";
         $tables = $db->listar($sql);
@@ -52,9 +51,8 @@
 
     function dropTables(){
         include_once dirname(__FILE__) . "/../securize.php";
-        require_once __DIR__ . '/../classes/utils.php';
-        $utils = new Utils('script');
-        $db = $utils->instanceClases("database");
+        require_once __DIR__ . '/../classes/database.php';
+        $db = new Database();
         $sql = "SELECT tablename FROM pg_catalog.pg_tables
         WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'";
         $tables = $db->listar($sql);
@@ -74,9 +72,8 @@
 
     function getSizeDB(){
         include_once dirname(__FILE__) . "/../securize.php";
-        require_once __DIR__ . '/../classes/utils.php';
-        $utils = new Utils('script');
-        $db = $utils->instanceClases("database");
+        require_once __DIR__ . '/../classes/database.php';
+        $db = new Database();
         $database = $db->getBase_datos();
         $sql = "select pg_size_pretty(pg_database_size('$database')); ";
         $tables = $db->obtener_una_columna($sql);
@@ -87,9 +84,8 @@
         //download youtube-dl -f mp4 $url
         //convert
         $path = "/media/jorge/B0EE54B1EE547218/media/animes/NNT/episodes/*.avi";
-        $default = 'script';
-        $utils = new Utils($default);
-        $api = $utils->instanceClases("api", $default);
+        require_once __DIR__ . '/../classes/api.php';
+        $api = new Api();
         $scanedFiles = $api->scanFolders($path);
         if (sizeof($scanedFiles) > 0) {
             foreach ($scanedFiles as $file) {

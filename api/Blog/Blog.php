@@ -14,7 +14,7 @@
     }
 
     function lastposts($api) {
-        //$db = $api->instanceClases("database");
+        //$db = $api->getDb();
         $img = $api->handleMedia('img','no','jpg');
         $prueba = array();
         for ($i= 0; $i < 5; $i++) {

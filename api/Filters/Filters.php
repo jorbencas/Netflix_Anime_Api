@@ -16,7 +16,7 @@
     }
 
     function getFiltersAvaible($api){
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT DISTINCT ON(f.code) f.id, f.code 
         FROM filters AS f INNER JOIN animes AS a 
         ON a.generes LIKE ('%' || f.code::text || '%') 
@@ -44,7 +44,7 @@
     }
 
     function getFiltersByCode($api){
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         if (isset($POST['code'])) {
             $sql = "SELECT id, code FROM filters WHERE code = '{$POST['code']}'";
@@ -65,7 +65,7 @@
     }
 
     function getFilters($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $result = array();
         if($api->isAjax() && isset($POST['kind'])){
@@ -129,7 +129,7 @@
     }
 
     function handlesearch($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         if (!isset($POST['search']) || empty($POST['search'])) {
             return $api->response("api_Buscador_error_msg", 404);
@@ -316,7 +316,7 @@
     }
 
     function mysearches($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT DISTINCT ON(s.anime) a.id, a.sinopsis_es,
         a.sinopsis_en, a.sinopsis_va, a.sinopsis_ca, a.titulo_es, a.titulo_en, 
@@ -341,7 +341,7 @@
     }
 
     function updatesearchuser($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $date = getdate();
         $sql = "SELECT id FROM searches WHERE profile = '{$POST['profile']}' AND {$POST['kind']} = '{$POST[$POST['kind']]}' AND updated = '$date' ";
@@ -356,7 +356,7 @@
     }
 
     function deletesearch($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT id FROM searches WHERE kind = '{$POST['kind']}' AND id_external = '{$POST['id']}'";
         $id = $db->obtener_una_columna($sql);

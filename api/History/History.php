@@ -14,7 +14,7 @@
   }
 
   function gethistory($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT h.*, m.type, m.name, m.extension, a.siglas, a.titulo_es as anime_titulo_es, 
     a.titulo_en as anime_titulo_en, a.titulo_va as anime_titulo_va, a.titulo_ca as anime_titulo_ca,
@@ -41,7 +41,7 @@
   } 
 
   function sethistory($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "INSERT INTO history(episode_id, profile) VALUES('{$POST['episode_id']}', '{$POST['profile']}')";
     $user = $db->listar($sql);
@@ -53,7 +53,7 @@
   }
 
   function deletehistory($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "DELETE FROM history WHERE profile = '{$POST['profile']}'";
     $deleted = $db->ejecutar($sql);
@@ -65,7 +65,7 @@
   }
 
   function deletelement($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "DELETE FROM history WHERE id = '{$POST['id']}'";
     $deleted = $db->ejecutar($sql);
@@ -77,7 +77,7 @@
   }
 
   function deletetelementbyepisode($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "DELETE FROM history WHERE episode_id = '{$POST['id']}'";
     $deleted = $db->ejecutar($sql);

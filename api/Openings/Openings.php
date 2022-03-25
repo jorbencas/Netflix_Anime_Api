@@ -14,7 +14,7 @@
     }
     
     function getOpeningsbyAnimes($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $GET = $api->getGET();
         $sql = "SELECT o.id, o.nombre, o.descripcion, o.anime, a.siglas, o.num, a.kind
         FROM animes AS a
@@ -41,11 +41,11 @@
     }
 
     function getOneopening($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $GET = $api->getGET();
         $sql = "SELECT o.id, o.anime, o.nombre, o.descripcion, a.siglas, o.num,
-        (SELECT id FROM openings WHERE anime = a.id AND num = ( SELECT num FROM openings WHERE id = '{$GET['ap']}' + 1 ) ) AS next,
-        (SELECT id FROM openings WHERE anime = a.id AND num = ( SELECT num FROM openings WHERE id = '{$GET['ap']}' - 1 ) ) AS prev
+        (SELECT id FROM openings WHERE anime = o.anime AND num = ( SELECT num FROM openings WHERE id = '{$GET['ap']}' + 1 ) ) AS next,
+        (SELECT id FROM openings WHERE anime = o.anime AND num = ( SELECT num FROM openings WHERE id = '{$GET['ap']}' - 1 ) ) AS prev
         FROM openings AS o
         INNER JOIN animes AS a ON(a.id = o.anime)
         WHERE o.id = '{$GET['ap']}'";
@@ -79,13 +79,6 @@
             } else {
                 $opening->img = $api->handleMedia("img","no","jpg");
             }
-            
-            if (isset($GET['kind']) && $GET['kind'] == 'serie') {
-                $sql = "SELECT s.id
-                FROM seasons AS s
-                WHERE s.anime = $opening->anime LIMIT 1";
-                $opening->seasions = $db->listar($sql);
-            }
 
             return $api->response("api_Openings_One_msg", 200,$opening);
         } else {
@@ -94,7 +87,7 @@
     }
 
     function lastidopening($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT MAX(id) FROM openings";
         $valor = $db->obtener_una_columna($sql);
         if (isset($valor)) {
@@ -105,7 +98,7 @@
     }
 
     function inserteditOneopening($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT * FROM openings WHERE id = '{$POST['id']}'";
         $valor = $db->listar($sql);
@@ -136,7 +129,7 @@
     };
     
     function deleteOneopening($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $data = $api->apiReq("Openings&ap={$POST['id']}");
         if ($data['status']['code'] == 200) {
@@ -163,7 +156,7 @@
     };
 
     function deleteOpeningsbyanime($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $data = $api->apiReq("Openings&aa={$POST['id']}");
         if ($data['status']['code'] == 200) {

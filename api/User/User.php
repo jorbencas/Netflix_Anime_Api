@@ -13,7 +13,7 @@
   }
 
   function getOneUser($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $GET = $api->getGET();
     $sql = "SELECT u.* FROM users AS u WHERE u.username = '{$GET['ap']}'";
     $user = $db->obtener_uno($sql);
@@ -25,7 +25,7 @@
   };
 
   function getalluser($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $GET = $api->getGET();
     $sql = "SELECT u.* FROM users AS u WHERE u.username NOT LIKE '{$GET['aa']}'";
     $user = $db->listar($sql);
@@ -37,7 +37,7 @@
   };
 
   function updateUser($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "UPDATE users SET nombre = '{$POST['nombre']}', apellidos = '{$POST['apellidos']}', email = '{$POST['email']}',
     date_birthday = '{$POST['date_birthday']}', dni = '{$POST['dni']}', genere = '{$POST['genere']}'
@@ -58,7 +58,7 @@
     if (!isset($POST['username']) || !isset($POST['passwd'])) {
         return $api->response("api_Login_error_msg", 404);
     } else {
-      $db = $api->instanceClases("database");
+      $db = $api->getDb();
       $sql = "SELECT username, tipo FROM users WHERE username = '{$POST['username']}' AND password = '{$POST['passwd']}'";
       $user = $db->listar($sql);
       if (isset($user[0]->username)) {
@@ -78,7 +78,7 @@
     if (!isset($POST['username']) || !isset($POST['passwd'])) {
         return $api->response("api_signup_error_msg", 404);
     } else {
-      $db = $api->instanceClases("database");
+      $db = $api->getDb();
       $usuario = isset($POST['username']) ? $POST['username'] : "jorge";
       $nombre = isset($POST['nombre']) ? $POST['nombre'] : "jorge";
       $email = isset($POST['email']) ? $POST['email'] : "jorbencas@gmail.com";
@@ -127,7 +127,7 @@
     if (!isset($POST['username'])) {
         return $api->response("api_logout_error_msg", 404);
     } else {
-      $db = $api->instanceClases("database");
+      $db = $api->getDb();
       $sql = "SELECT username FROM users WHERE username = '{$POST['username']}'";
       $user = $db->listar($sql);
       if (isset($user[0]->username)) {

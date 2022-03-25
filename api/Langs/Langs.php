@@ -11,7 +11,7 @@
     }
 
     function getcodelangs($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT id, code FROM langs";
         $res = $db->listar($sql);
         if (isset($res)) {
@@ -26,20 +26,10 @@
     }
 
     function gettranslations($api) {
-        $db = $api->instanceClases("database");
         $POST = $api->getPOST();
         unset($POST['action']);
-        $translation = $api->apiReqNode("translation", $POST);
+        $translation = $api->gettranslations($POST['translations']);
         if ( count($translation) > 0 ) {
-            foreach ($translation as $key => $trans) {
-                if ($trans['kind'] == 'langs') {
-                    $sql = "SELECT code FROM langs WHERE id = '{$trans['id_external']}'";
-                    $trans['code'] = $db->obtener_una_columna($sql);
-                }
-                $trans[$trans['kind']] = $trans['translation'];
-                unset($trans['translation']);
-                $translation[$key] = $trans;
-            }
             $mensage = "Se ha podido obtener la traducion del idioma {$POST['code']}";
             $result = $api->response($mensage, 200, $translation);
         } else {
@@ -50,7 +40,7 @@
     }
 
     function insertedittranslation($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         if (isset($POST['id_external'])) {
             $idexternal = "AND t.id_external = {$POST['id_external']}";
@@ -79,7 +69,7 @@
     }
 
     function deletetranslation($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT t.id
         FROM langs AS l INNER JOIN translations AS t 

@@ -16,19 +16,19 @@ function Events($api) {
 }
 
 function getAllevents($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $sql = "SELECT e.* FROM events as e WHERE e.usuario is null";
     return $db->listar($sql);
 }
 
 function getMyevents($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $sql = "SELECT e.*,a.name, a.idbook, a.foto  FROM authors as a RIGHT JOIN events as e ON(e.idauthor = a.id) WHERE usuario = '$arrArgument'";
     return $db->listar($sql);
 }
 
 function createevents($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     var_dump($arrArgument);
 
     $name = $arrArgument['title'];
@@ -46,7 +46,7 @@ function createevents($api) {
 }
 
 function removeevents($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $id = $arrArgument['idevent'];
     $user = $arrArgument['username'];
     $sql = "DELETE FROM events WHERE id = $id";
@@ -54,7 +54,7 @@ function removeevents($api) {
 }
 
 function subcribeevent($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $usuario = $arrArgument['usuario'];
     $id = $arrArgument['id'];
 
@@ -68,7 +68,7 @@ function subcribeevent($api) {
 
 
 function unsubcribeevent($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $usuario = $arrArgument['usuario'];
     $id = $arrArgument['id'];
 

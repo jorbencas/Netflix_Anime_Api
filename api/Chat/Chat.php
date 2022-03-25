@@ -9,7 +9,7 @@
   }
 
   function insertmessage($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $date = date("Y-m-d");
     $hour = date("H:i:s");
@@ -29,7 +29,7 @@
   }
 
   function listmessages($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT * 
     FROM chat 

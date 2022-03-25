@@ -11,7 +11,7 @@
     }
 
     function setprofile($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         if (isset($POST['id_profile'])) {
             $sql = "SELECT id FROM profiles WHERE id = '{$POST['id_profile']}'";
@@ -23,7 +23,7 @@
     }
 
     function get_profile($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT p.id, p.nombre, p.username, m.type, m.name, m.extension   
         FROM profiles AS p LEFT JOIN media AS m ON(m.profile = p.id)
@@ -47,7 +47,7 @@
     }
 
     function getprofilesbyuser($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT p.id, p.nombre, p.username  
         FROM profiles AS p 
@@ -70,7 +70,7 @@
     }
 
     function inserteditprofile($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT id FROM profiles WHERE profile LIKE '{$POST['profile']}' AND username LIKE '{$POST['username']}'";
         $profile = $db->obtener_uno($sql);

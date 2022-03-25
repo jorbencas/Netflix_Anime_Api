@@ -53,7 +53,7 @@
         public function ejecutar($sql) {
             $link = $this->getLink();
             if (isset($link)) {
-                $statement = $this->link->prepare($sql);
+                $statement = $link->prepare($sql);
                 if ($statement->execute()) {
                     $dbError=$statement->errorInfo();
                     if (isset($statement->errorCode) && $statement->errorCode!='00000') {

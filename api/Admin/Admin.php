@@ -55,7 +55,7 @@
     }
 
     function gettables($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $array_data = array();
         // $sql = "SELECT tablename FROM pg_catalog.pg_tables
         // WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'";
@@ -81,7 +81,7 @@
     }
     
     function gettables($api){
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $array_data = array();
         $sql = "SELECT tablename FROM pg_catalog.pg_tables
         WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'";
@@ -97,7 +97,7 @@
     }
 
     function getdata($api){
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $table = $POST['table'];
         $sql = "SELECT * FROM $table";
@@ -134,7 +134,7 @@
     }
 
     function recover($api){
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $table = $POST['table'];
         if (isset($POST["src"]) && file_exists($POST["src"]) && strstr($POST["src"],".json")) {
@@ -184,7 +184,7 @@
     };
 
     function dobackup($api){
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $tabla = $POST['tabla'];
         $sql = "SELECT * FROM $tabla";
@@ -270,7 +270,7 @@
     }
 
     function geterrors($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $result_array = array();
         $file = "../../files/error_media.txt";
         if (file_exists($file)) unlink($file);

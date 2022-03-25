@@ -1,9 +1,7 @@
 <?php
     //include_once dirname(__FILE__) . "/../securize.php";
-    require_once __DIR__ . '/../classes/utils.php';
-    $default = 'script';
-    $utils = new Utils($default);
-    $api = $utils->instanceClases("api", $default);
+    require_once __DIR__ . '/../classes/api.php';
+    $api = new Api();
     // backupNoSql($api, "translations");
     // backupNoSql($api, "media");
   // $animes = array('ZNT','SAO','BDGIM', 'IEGOCH', 'MKNR','YN', 

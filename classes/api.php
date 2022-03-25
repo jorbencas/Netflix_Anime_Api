@@ -1,11 +1,13 @@
 <?php
+    require_once __DIR__ . '/utils.php';
     class Api extends Utils {
         private $am;
         private $action;
 
-        public function __construct($params = null) {
-            parent::__construct($params);
-            $this->am = isset($params['GET']['am']) ? $params['GET']['am'] : null;
+        public function __construct() {
+            parent::__construct();
+            $GET = $this->getGET();
+            $this->am = isset($GET['am']) ? $GET['am'] : null;
             $this->action = null;
         }
 
@@ -21,15 +23,11 @@
             $this->action = $action;
         }
 
-        public function translate($mod, $string) {
-            return $this->tt("api/$mod/$mod.json", $string);
-        }
-
         public function process() {
             $mod = $this->getAm();
             if (isset($mod)) {
                 header('Access-Control-Allow-Origin: *');
-                header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, acces_token, api_token, admin_token, current_lang");
+                header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, acces_token, api_token, admin_token");
                 header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
                 header("Allow: GET, POST, OPTIONS, PUT, DELETE");
                 //flaseo para poder realizar peticiones desde el navegador
@@ -52,7 +50,7 @@
                                 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     $POST = $this->getPOST();
                                     if (isset($POST['action']) && !empty($POST['action'])) $this->setAction($POST['action']);
-                                    error_log(json_encode($POST));
+                                    // error_log(json_encode($POST));
                                 } else {
                                     $GET = $this->getGET();
                                     if (isset($GET['aq']) && !empty($GET['aq'])) $this->setAction('query');
@@ -71,7 +69,7 @@
                         $process = $this->response("Modulo no existe $mod", 404);
                     }    
                 } else {
-                    $mensage = 'No estas autorizado para utilizar la api de '. $this->translate('Web','titulo');
+                    $mensage = 'No estas autorizado para utilizar la api de '. $this->tt('Web','titulo');
                     $process = $this->response($mensage, 401);
                 }
             } else {
@@ -127,7 +125,7 @@
                 'status' => array(
                     'code' => $code,
                     'text' => $text,
-                    'message' => $this->translate($this->getAm(),$message) 
+                    'message' => $this->tt($this->getAm(),$message) 
                 )
             );
 
@@ -136,7 +134,7 @@
                 if (isset($alert)) {
                     $resp['specials']['alert'] = array( 
                         'c' => $alert['code'],
-                        't' => $this->translate($this->getAm(),$alert['text'])
+                        't' => $this->tt($this->getAm(),$alert['text'])
                     );
                 }
                 if (isset($notifications)) {
@@ -196,7 +194,8 @@
 
         public function isValidAccesToken() {
             $headers = $this->getHeaders();
-            $db = $this->instanceClases("database");
+            require __DIR__ . '/database.php';
+            $db = new Database();
             $sql = "SELECT acess_token FROM users WHERE acess_token = '{$headers['acess_token']}'";
             $valor = $db->obtener_una_columna($sql);
             return isset($valor) ? true : false;
@@ -204,7 +203,8 @@
 
         public function isValidAdminToken() {
             $headers = $this->getHeaders();
-            $db = $this->instanceClases("database");
+            require __DIR__ . '/database.php';
+            $db = new Database();
             $sql = "SELECT admin_token FROM users WHERE admin_token = '{$headers['admin_token']}'";
             $valor = $db->obtener_una_columna($sql);
             return isset($valor) ? true : false;
@@ -233,9 +233,10 @@
         }
 
         public function gettranslations($params) {
-            $headers = $this->getHeaders();
+            $sql = "SELECT id FROM langs WHERE code = '{$this->getLang()}'";
+            $code = $this->getDb()->obtener_una_columna($sql);
             $translation = $this->apiReqNode("translation", array( 
-                "code" => $headers['current_lang'], 
+                "code" => $code, 
                 "translations" => $params
             ));
             if ( count($translation) > 0 ) {

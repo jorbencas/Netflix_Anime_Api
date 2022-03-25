@@ -11,7 +11,7 @@
   }
 
   function getconfig_user($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT * FROM config_user WHERE username = '{$POST['user']}'";
     $user = $db->listar($sql);
@@ -23,7 +23,7 @@
   }
 
   function getconfig_profile($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT n.*, cp.* 
     FROM notification AS n 
@@ -38,7 +38,7 @@
   }
 
   function setconfig_user($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT * FROM config_user WHERE username = '{$POST['user']}'";
     $user = $db->listar($sql);
@@ -62,7 +62,7 @@
 
 
   function setconfig_profile($api) {
-    $db = $api->instanceClases("database");
+    $db = $api->getDb();
     $POST = $api->getPOST();
     $sql = "SELECT * FROM config_profile WHERE profile = '{$POST['user']}'";
     $user = $db->listar($sql);

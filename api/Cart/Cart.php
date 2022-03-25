@@ -12,7 +12,7 @@
     }
 
     function getnumproducts($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT COUNT(cl.*) AS num
         FROM cralines AS cl INNER JOIN cart AS c ON(c.id = cl.cart) 
@@ -28,13 +28,13 @@
     }
 
     function get_cart($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT * FROM ";
         $sql = "SELECT * FROM ";
     }
 
     function insert_line($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT * FROM ";
         $peticion['cabecera']['coddir_envio'] = "";
         $peticion['cabecera']['codagente'] = "";
@@ -60,7 +60,7 @@
     }
 
     function remove_line($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT * FROM ";
     }
 ?>

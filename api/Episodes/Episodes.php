@@ -16,7 +16,7 @@
 
     function getOne($api) {
         $GET = $api->getGET();
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         if (isset($GET['kind'])) {
             $select = "s.id AS id_external, (SELECT ep.id FROM episodes AS ep INNER JOIN seasons AS sa ON(ep.id BETWEEN sa.epistart AND sa.epiend AND sa.id = s.id) WHERE ep.id = '{$GET['ap']}' + 1 ) AS next,
             (SELECT ep.id FROM episodes AS ep INNER JOIN seasons AS sa ON(ep.id BETWEEN sa.epistart AND sa.epiend AND sa.id = s.id) WHERE ep.id = '{$GET['ap']}' - 1 ) AS prev";
@@ -67,9 +67,6 @@
             } else {
                 $episode->img = $api->handleMedia("img","no","jpg");
             }
-            error_log(json_encode($episode));
-
-
             return $api->response("api_Episodes_One_msg", 200, $episode);
         } else {
             return $api->response("api_Episodes_One_error_msg", 404); 
@@ -78,7 +75,7 @@
 
     function getbyAnime($api) {
         $GET = $api->getGET();
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         if (isset($GET['kind'])) {
             if (isset($GET['seasion'])) {
                 $where = "AND s.id = {$GET['seasion']}";
@@ -123,7 +120,7 @@
 
     function getLastepisodes($api) {
         $GET = $api->getGET();
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $limit = explode("_",$GET['as']);
         $sql = "SELECT DISTINCT e.id, a.kind, e.created, a.siglas, e.anime
         FROM animes AS a 
@@ -162,7 +159,7 @@
     }
 
     function lastidepisode($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT MAX(id) FROM episodes";
         $valor = $db->obtener_una_columna($sql);
         if (isset($valor)) {
@@ -173,7 +170,7 @@
     }
 
     function getidrand($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT e.id, a.kind FROM episodes AS e INNER JOIN animes AS a ON(e.anime = a.id) ORDER BY random() LIMIT 1;";
         $valor = $db->obtener_uno($sql);
         if (isset($valor)) {
@@ -186,7 +183,7 @@
     
     function inserteditOneepisode($api) {
         $POST = $api->getPOST();
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT * FROM episodes WHERE id = '{$POST['id']}'";
         $valor = $db->listar($sql);
         if (!isset($valor[0]->id)) {
@@ -250,7 +247,7 @@
     
     function deleteOneepisode($api) {
         $POST = $api->getPOST();
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $data = $api->apiReq("Episodes&ap={$POST['id']}");
         if ($data['status']['code'] == 200) {
             $episodes = $data['data']; 
@@ -283,7 +280,7 @@
 
     function deleteEpisodesbyanime($api) {
         $POST = $api->getPOST();
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $data = $api->apiReq("Episodes&aa={$POST['id']}");
         if ($data['status']['code'] == 200) {
             $sql = "DELETE FROM episodes WHERE anime = '{$POST['id']}'";

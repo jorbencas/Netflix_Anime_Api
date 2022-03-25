@@ -15,7 +15,7 @@
     };
 
     function getlistanime($api, $GET) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $where = handlefilters($api, $GET);
         $sql = "SELECT a.id, a.valorations, a.siglas, a.state,
         a.date_publication, a.date_finalization, at.favorite
@@ -52,7 +52,7 @@
     }
 
     function getslides($api, $GET) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $where = handlefilters($api, $GET);
         $sql = "SELECT a.id, a.kind, a.generes, a.temporada, a.siglas, a.created
         FROM animes AS a WHERE a.created IS NOT NULL $where";
@@ -98,7 +98,7 @@
     };
 
     function getone($api, $GET) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         if (isset($GET['kind']) && $GET['kind'] == 'serie') {
             if (isset($GET['seasion'])) {
                 $whereSubSelect = "s.id = {$GET['seasion']}";
@@ -185,7 +185,7 @@
     };
 
     function lastidanime($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT MAX(id) FROM animes";
         $valor = $db->obtener_una_columna($sql);
         if (isset($valor)) {
@@ -260,7 +260,7 @@
     }
 
     function getnumanimes($api, $GET) { 
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $where = handlefilters($api, $GET);
         $sql = "SELECT count(a.id) FROM animes AS a WHERE a.created IS NOT NULL $where";
         $valor = $db->obtener_una_columna($sql);
@@ -273,7 +273,7 @@
     };
 
     function lastanimes($api, $GET) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $where = handlefilters($api, $GET);
         $sql = "SELECT a.id, a.kind 
         FROM animes AS a 
@@ -308,7 +308,7 @@
     };
     
     function inserteditOneanime($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $anime = $api->getPOST();
         $sql = "SELECT id FROM animes WHERE siglas = '{$anime['siglas']}'";
         $valor = $db->obtener_una_columna($sql);
@@ -388,7 +388,7 @@
     };
 
     function deleteOneanime($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $data = $api->apiReq("Anime&ap={$POST['id']}");
         $anime = $data['data'];
@@ -421,7 +421,7 @@
     };
     
     function getfav($api, $GET) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $idprofile = $POST['profile'];
         $sql = "SELECT a.id, a.kind, a.valorations, a.generes, a.temporada,
@@ -452,7 +452,7 @@
     };
 
     // function addFavorite($api) {
-    //     $db = $api->instanceClases("database");
+    //     $db = $api->getDb();
     //     $POST = $api->getPOST();
     //     $idanime = $POST['id'];
     //     $idprofile = $POST['profile'];
@@ -480,7 +480,7 @@
     // };
 
     // function removeFavorite($api) {
-    //     $db = $api->instanceClases("database");
+    //     $db = $api->getDb();
     //     $POST = $api->getPOST();
     //     $idanime = $POST['id'];
     //     $idprofile = $POST['profile'];

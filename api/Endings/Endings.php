@@ -15,7 +15,7 @@
 
     function getEndingsbyAnime($api) {
         $GET = $api->getGET();
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT e.id, e.anime, e.nombre, e.descripcion,  
         a.siglas, e.num, a.kind
         FROM endings as e
@@ -42,7 +42,7 @@
     }
 
     function getOnending($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $GET = $api->getGET();
         $sql = "SELECT e.id, e.anime, e.nombre, e.descripcion, a.siglas, e.num,
         (SELECT id FROM endings WHERE anime = e.anime AND num = ( SELECT num FROM endings WHERE id = '{$GET['ap']}' - 1) ) AS prev,
@@ -80,14 +80,6 @@
             } else {
                 $ending->img = $api->handleMedia("img","no","jpg");
             }
-
-            if (isset($GET['kind']) && $GET['kind'] == 'serie') {
-                $sql = "SELECT s.id
-                FROM seasons AS s 
-                WHERE s.anime = $ending->anime LIMIT 1";
-                $ending->seasions = $db->listar($sql);
-            }
-
             return $api->response("api_Endings_One_msg", 200, $ending);
         } else {
             return $api->response("api_Endings_One_error_msg", 404);
@@ -95,7 +87,7 @@
     }
 
     function lastidending($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT MAX(id) FROM endings";
         $valor = $db->obtener_una_columna($sql);
         if (isset($valor)) {
@@ -106,7 +98,7 @@
     }
     
     function inserteditOneending($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $sql = "SELECT * FROM endings WHERE id = '{$POST['id']}'";
         $valor = $db->listar($sql);
@@ -137,7 +129,7 @@
     };
 
     function deleteOneending($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $data = $api->apiReq("Endings&ap={$POST['id']}");
         if ($data['status']['code'] == 200) {
@@ -163,7 +155,7 @@
     };
 
     function deleteEndingsbyanime($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $POST = $api->getPOST();
         $data = $api->apiReq("Endings&aa={$POST['id']}");
         if ($data['status']['code'] == 200) {

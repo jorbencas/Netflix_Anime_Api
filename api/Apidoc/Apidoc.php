@@ -53,7 +53,7 @@
     }
 
     function Footerapi($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $result = array();
         array_push($result,(Object)array('method' => "GET", 
             'url' => "Footer&aq=getviews",

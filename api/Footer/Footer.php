@@ -9,7 +9,7 @@
     };
 
     function getviews($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT visiteds FROM metadata WHERE id = 1";
         $res = $db->obtener_una_columna($sql);
         if (isset($res) && is_numeric($res)) {
@@ -21,7 +21,7 @@
     }
 
     function setviews($api) {
-        $db = $api->instanceClases("database");
+        $db = $api->getDb();
         $sql = "SELECT visiteds FROM metadata WHERE id = 1";
         $res = $db->obtener_una_columna($sql);
         if (isset($res) && is_numeric($res)) {

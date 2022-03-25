@@ -1,40 +1,32 @@
 <?php    
     require_once __DIR__ . '/validators.php';
     require_once __DIR__ . '/config.php';
+    require_once __DIR__ . '/database.php';
     class Utils extends Config {
         use Validators;
-        private $currentPage;
         private $lang;
         private $GET;
         private $POST;
         private $headers;
-        private $construct;
+        private $db;
 
         public function __construct($params = null) {
-            parent::__construct($params);
-            if (is_array($params)) {
-                $this->GET = $params['GET'];
-                $this->lang = $params['lang'];
-                $this->currentPage = $params['currentPage'];
-                $this->headers = $params['headers'];
-                if (isset($params['POST'])) $this->POST = $params['POST'];
-            } elseif ($params != 'script') {
+            parent::__construct();
+            if ($params != 'script') {
                 $this->GET = $this->getrequest();
-                $req = $this->getGET();
-                $this->lang = $this->urlLang($req);
-                $this->currentPage = $this->getpage($req);
+                $this->db = new Database(); 
+                $this->lang = $this->urlLang();
                 $this->headers = apache_request_headers();
                 if ($_SERVER['REQUEST_METHOD'] == 'POST') $this->POST = $this->postrequest(); 
-                $this->construct = $this->cacheConstructor($req);
             }
-        }
-    
-        public function getcurrentPage() {
-            return $this->currentPage;
         }
 
         public function getLang() {
             return $this->lang;
+        }
+        
+        public function getDb(){
+            return $this->db;
         }
 
         public function getGET() {
@@ -51,14 +43,6 @@
 
         public function setHeaders($headers) {
             $this->headers = $headers;
-        }
-        
-        public function getConstruct(){
-            return $this->construct;
-        }
-
-        public function setConstruct($construct){
-            $this->construct = $construct;
         }
 
         public function falseHeaders($headerName) {
@@ -78,7 +62,7 @@
         }
         
         private function getrequest() {
-            if (isset($_GET) && isset($_GET['r']) /*&& !strstr($_GET['r'],"api")*/) {
+            if (isset($_GET) && isset($_GET['r'])) {
                 $nuevoGET = Array();
                 foreach($_GET as $k=>$valor) {
                     $valor = str_replace('SELECT','',$valor);
@@ -166,61 +150,18 @@
             return $POST;
         }
 
-        private function getpage($req) {
-            $page = $this->getDefaultPage();
-            if (isset($req['r']) && !empty($req['r'])) {
-                if (strpos($req['r'],"/api")) {
-                    $page = 'api';
-                } else {
-                    $getpath = explode('/', $req['r']);
-                    if (count($getpath) == 2) {
-                        $modules = $this->getValidModules();
-                        $urlpage = $getpath[1];
-                        if ($urlpage != $this->getLang() && in_array($urlpage,$modules)) {
-                            $page = $urlpage;
-                        } else {
-                            $urlpage = reset($getpath);
-                            if ($urlpage != $this->getLang() && in_array($urlpage,$modules)) {
-                                $page = $urlpage;
-                            } else {
-                                $page = 'Errors';
-                            }
-                        }
-                    }
-                } 
-            }
-            return $page;
-        }
-
-        private function urlLang($req) {
+        private function urlLang() {
+            $GET = $this->getGET();
             $lang = $this->getDefaultLang();
-            if (isset($req['r']) && !empty($req['r']) && !strstr($req['r'],"/api")) {
-                if ($this->isAjax()) {
-                    $this->setValidModules($this->getAjaxModules());
-                }
-                $getpath = explode('/', $req['r']);
+            if (isset($GET['r']) && !empty($GET['r'])) {
+                $getpath = explode('/', $GET['r']);
                 $urlang = reset($getpath);
                 if (in_array($urlang,$this->getValidModules()) && isset($getpath[1])) {
                     $urlang = $getpath[1];
                 }
-                $data = $this->apiReq("Langs", array("action" => 'getcodelangs'));
-                if ($data['status']['code'] == 200) {
-                    $valids = array();
-                    foreach($data['data'] as $l){
-                        if ($urlang == $l['code']) {
-                            $this->setIdLang($l['id']);
-                        }
-                        array_push($valids,$l['code']);
-                    }
-                } else {
-                    $valids = array("es","en","va","ca");
-                    foreach($valids as $key => $l){
-                        if ($urlang == ($key + 1)) {
-                            $this->setIdLang(($key + 1));
-                        }
-                    }
-                }
-                if (in_array($urlang,$valids)) {
+                $sql = "SELECT id FROM langs WHERE code = '{$urlang}'";
+                $code = $this->getDb()->obtener_una_columna($sql);
+                if (empty($code)) {
                     $lang = $urlang;
                 }
             }
@@ -228,8 +169,8 @@
         }
         
         public function handleMedia($tipo, $name, $ext, $id_anime = null, $id_element = null) {
-            $mediapath = null;
             $nomedia = $this->getNomediaImg();
+            $mediapath = $nomedia;
             switch ($tipo) {
                 case 'banner': 
                 case 'portada': 
@@ -254,22 +195,13 @@
             }
             if (file_exists($mediaSrc)) {
                 $mediapath = $mediaSrc;
-            } else if ($this->isImage($ext)) {
-                $mediapath = $nomedia;
-            } else if ($this->isMusic($ext)){
-                $mediapath = 'public/notifications/error.mp3';
-            } else {
-                var_dump($mediaSrc);
-            }
-
-            if ($this->isAjax()) {
-                $mediapath = "http://{$this->getDomain()}/$mediapath";
             }
             
-            return $mediapath;
+            return "http://{$this->getDomain()}/$mediapath";
         }
     
-        public function tt($file, $string) {
+        public function tt($mod, $string) {
+            $file = "api/$mod/$mod.json";
             if (file_exists($file)) {
                 $lang_json = json_decode(file_get_contents($file));
                 $trans = isset($lang_json->$string) ? $lang_json->$string : $string;
@@ -296,7 +228,6 @@
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params) );
             }
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $lang = isset($headers['current_lang']) ?  'current_lang:'. $headers['current_lang'] : "current_lang:". $this->getIdLang();
             $apiToken = isset($headers['api_token']) ? 'api_token:'.$headers['api_token'] : 'api_token:'.$this->getApiToken();
             $accesToken = isset($headers['acces_token']) ? 'acces_token:'.$headers['acces_token'] : null;
             $adminToken = isset($headers['admin_token']) ? 'admin_token:'.$headers['admin_token'] : null;            
@@ -306,7 +237,6 @@
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 'Content-Type: application/json', 
                 'charset: utf-8',
-                $lang,
                 $apiToken,
                 $accesToken,
                 $adminToken
@@ -406,76 +336,6 @@
             where table_name = '$tabla';";
             //echo $sql . "\n";
             return $db->listar($sql);
-        }
-        
-        //public function apiReq($peticion, $params = null) {
-            // $headers = $this->getHeaders();
-            // $date = new DateTime();
-            // $rand = $date->getTimestamp();
-            // $lang = isset($headers['current_lang']) ? 'current_lang:'.$headers['current_lang'] : "current_lang:".$this->getLang(); 
-            // $api_token = isset($headers['api_token']) ? 'api_token:'.$headers['api_token'] : 'api_token:'.$this->getApiToken();
-            // $acces_token = isset($headers['acces_token']) ? 'acces_token:'.$headers['acces_token'] : null;
-            // $admin_token = isset($headers['admin_token']) ? 'admin_token:'.$headers['admin_token'] : null;            
-            // $admin_token = str_pad('u'.$admin_token, 32);//añade hasta llegar a 32 caracteres
-            // $admin_token = str_replace(' ','X', $admin_token);//remplazar espacios por X
-            // $w = $this->instanceClases("webPage",$this->getDomain()."?r=es/api&am=$peticion&rand=$rand");
-            // $w->setHeader([
-            //     'Content-Type: application/json', 
-            //     'charset: utf-8',
-            //     'X-Requested-With: XMLHttpRequest',
-            //     $lang,
-            //     $api_token,
-            //     $acces_token,
-            //     $admin_token
-            // ]);
-            // if (isset($params)) {
-            //     $w->setData($this->handleParams($w, $params));
-            //     $result = $w->request(WebPage::POST);
-            // } else{
-            //     $result = $w->request(WebPage::GET);
-            // }
-            // return json_decode($result, true);
-        //}
-
-        // public function handleParams($w, $params){
-        //     foreach ($params as $key => $value) {
-        //         if (is_array($value)) {
-        //             error_log("$key ______ ".json_encode($value));
-        //             if (is_object($value)) {
-        //                 $value = get_object_vars($value);
-        //             }
-        //             $w->setData($this->handleParams($w, $value));
-        //         } else{
-        //             $w->addData($key, $value);
-        //         }
-        //     }
-        //     return $w->getData();
-        // }
-
-        public function instanceClases($className, $params = null) {
-            $path = __DIR__."/$className.php";
-            if (file_exists($path)) {
-                require_once $path;
-                $class = ucfirst($className);
-                if (isset($params)) {
-                    return new $class($params);
-                } else {
-                    return new $class();
-                }
-            } else {
-                return null;
-            }
-        }
-
-        private function cacheConstructor($req) {
-            return array(
-                'config' => $this->getConstructConf(),
-                'GET' => $req,
-                'headers' => $this->getHeaders(),
-                'POST' => $this->getPOST(),
-                'lang' => $this->getLang(),
-                'currentPage' => $this->getcurrentPage()
-            );
         }
     }
 ?>
