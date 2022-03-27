@@ -275,7 +275,7 @@
     function lastanimes($api, $GET) {
         $db = $api->getDb();
         $where = handlefilters($api, $GET);
-        $sql = "SELECT a.id, a.kind 
+        $sql = "SELECT a.id, a.kind, a.generes 
         FROM animes AS a 
         WHERE a.created IS NOT NULL $where";
         $animes = $db->listar($sql);
