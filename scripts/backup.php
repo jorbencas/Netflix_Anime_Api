@@ -67,17 +67,6 @@
     //         "endings", "episodes"
     //     );
 
-    //     $extfolders = array(
-    //         'AJIN', 'Blood+', 'DGM', 'LLDU', 'NNT', 'OP',
-    //         'INUYASHA', 'OYB', 'PP2', 'REVISIONS', 'BC', 'AC',
-    //         'SD', 'SG', 'SWKNU', 'SX', 'TRC', 'AKIRA', 'EYLB',
-    //         'FIREWORKS', 'BTB', 'AS', 'DC', 'BASILISK', 'BNV',
-    //         'BLOODC', 'AS2', 'AC2', 'BAKUGAN', 'ONS', 'BIDG',
-    //         'D01', 'DORAEMON', 'EHDC', 'PPLP', 'EVDC', 'DNRLVD',
-    //         'DBRF', 'DB', 'DBZ', 'SXLPEUS', 'SXOVAS', '_nana',
-    //         'nuevos'
-    //     );
-
     //     $basePath = __DIR__ . '/../backup/nosql/anie';
     //     $scaned = $api->scanFolders($basePath,false, true);
     //     if (sizeof($scaned) > 0) {

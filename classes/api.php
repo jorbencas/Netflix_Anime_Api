@@ -175,8 +175,7 @@
                 if (in_array($urlang,$this->getValidModules()) && isset($getpath[1])) {
                     $urlang = $getpath[1];
                 }
-                $sql = "SELECT id FROM langs WHERE code = '{$urlang}'";
-                $code = $this->getDb()->obtener_una_columna($sql);
+                $code = $this->getIdLang($urlang);
                 if (empty($code)) {
                     $lang = $urlang;
                 }
@@ -294,12 +293,12 @@
                     $this->falseHeaders("api_token");
                 }
                 $headers = $this->getHeaders();
-                if ($this->isAjax()) {
-                    error_log($this->getApiToken());
-                    error_log("/////////////////////");
-                    error_log($headers['api_token']);
-                }
-
+                // if ($this->isAjax()) {
+                //     error_log($this->getApiToken());
+                //     error_log("/////////////////////");
+                //     error_log($headers['api_token']);
+                // }
+                //error_log("/////////////////////");
                 if (isset($headers['api_token']) && substr_compare($this->getApiToken(), $headers['api_token'],0) == 0) {
                     $controller = "api/$mod/{$mod}.php";
                     if (is_dir("api") && file_exists($controller)) {
@@ -448,19 +447,15 @@
 
         public function isValidAccesToken() {
             $headers = $this->getHeaders();
-            require __DIR__ . '/database.php';
-            $db = new Database();
             $sql = "SELECT acess_token FROM users WHERE acess_token = '{$headers['acess_token']}'";
-            $valor = $db->obtener_una_columna($sql);
+            $valor = $this->getDb()->obtener_una_columna($sql);
             return isset($valor) ? true : false;
         }
 
         public function isValidAdminToken() {
             $headers = $this->getHeaders();
-            require __DIR__ . '/database.php';
-            $db = new Database();
             $sql = "SELECT admin_token FROM users WHERE admin_token = '{$headers['admin_token']}'";
-            $valor = $db->obtener_una_columna($sql);
+            $valor = $this->getDb()->obtener_una_columna($sql);
             return isset($valor) ? true : false;
         }
 
@@ -486,11 +481,19 @@
             return $scan; 
         }
 
+        private function getIdLang($code = null){
+            if(!$code && !$this->getLang()){
+                $code = $this->getDefaultLang();
+            } elseif (!$code) {
+                $code = $this->getLang();
+            }
+            $sql = "SELECT id FROM langs WHERE code = '$code'";
+            return $this->getDb()->obtener_una_columna($sql);
+        }
+
         public function gettranslations($params) {
-            $sql = "SELECT id FROM langs WHERE code = '{$this->getLang()}'";
-            $id = $this->getDb()->obtener_una_columna($sql);
             $translation = $this->apiReqNode("translation", array( 
-                "code" => $id, 
+                "code" => $this->getIdLang(), 
                 "translations" => $params
             ));
             if ( count($translation) > 0 ) {
