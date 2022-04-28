@@ -175,13 +175,13 @@ DROP TABLE searches;
   // upload_max_filesize=20000000000000000000000000000000000000000000000000000000000000000000000000000000M
   // post_max_size = 20000000000000000000000000000000000000000000000000000000000000000000000000000000M
 
-  require_once __DIR__ . '/../classes/utils.php';
-  $utils = new Utils('script');
+  require_once __DIR__ . '/../classes/api.php';
+  $utils = new Api('script');
   // $db = $utils->instanceClases("database","init");
   // $db->ejecutar("CREATE ROLE cosasdeanime WITH PASSWORD 'cosasdeanime' VALID UNTIL 'infinity' LOGIN;");
   // $db->ejecutar("CREATE DATABASE cosasdeanime WITH OWNER cosasdeanime ENCODING='UTF8' TEMPLATE=postgres LC_COLLATE='es_ES.UTF-8' LC_CTYPE='es_ES.UTF-8' CONNECTION LIMIT=-1 TABLESPACE=pg_default;");
   // $db->ejecutar("GRANT ALL PRIVILEGES ON DATABASE cosasdeanime TO cosasdeanime;");
-  $db = $utils->instanceClases("database");
+  $db = $api->getDb();
   // $sql = "CREATE TABLE comments (
   //     id SERIAL NOT NULL PRIMARY KEY,
   //     comment VARCHAR(250) NOT NULL,
@@ -287,17 +287,6 @@ DROP TABLE searches;
   //     created timestamp DEFAULT CURRENT_TIMESTAMP,
   //     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   //     num int4 DEFAULT 1
-  //   );";
-  // $db->ejecutar($sql);
-  // $sql = "CREATE TABLE personages (
-  //     id SERIAL NOT NULL PRIMARY KEY,
-  //     nombre VARCHAR(150) NOT NULL,
-  //     descripcion VARCHAR(255) NOT NULL,
-  //     fecha_nacimiento VARCHAR(150) NOT NULL,
-  //     fecha_muerte VARCHAR(150) NOT NULL,
-  //     anime int4 NOT NULL,
-  //     created timestamp DEFAULT CURRENT_TIMESTAMP,
-  //     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   //   );";
   // $db->ejecutar($sql);
   // $sql = "CREATE TABLE config_user (
@@ -429,7 +418,7 @@ DROP TABLE searches;
   // WHERE relname IN (SELECT relname FROM pg_class, pg_namespace WHERE pg_namespace.oid = pg_class.relnamespace 
   // AND pg_namespace.nspname = 'public');";
   // $db->ejecutar($sql);
-  $basePathsql =  __DIR__ ."/../backup";
+  $basePathsql =  __DIR__ ."/../media/.backup";
   //$db->executeFromFile("$basePathsql/sql/Filters.sql");
   // $data = json_decode(file_get_contents("$basePathsql/nosql/langs_translations.json"));
   // foreach ($data as $key => $d) {
@@ -440,20 +429,5 @@ DROP TABLE searches;
   // foreach ($data as $key => $d) {
   //     echo json_encode($utils->apiReqNode("translation/new", $d));
   // }
-
-  $animes = array('YN');
-  foreach ($animes as $key => $sufijo) {
-    $file = "$basePathsql/sql/animes/$sufijo.sql";
-    if (file_exists($file)) {
-      $db->executeFromFile($file);
-    }
-    // $data = json_decode(file_get_contents("$basePathsql/nosql/animes/$sufijo/$sufijo.json"));
-    // foreach ($data as $key => $d) {
-    //     error_log(json_encode($utils->apiReqNode("translation/new", $d)));
-    // }
-    // $data = json_decode(file_get_contents("$basePathsql/nosql/animes/$sufijo/{$sufijo}_media.json"));
-    // foreach ($data as $key => $d) {
-    //   error_log(json_encode($utils->apiReqNode("media/new", $d)));
-    // }
-  }
+  
 ?>

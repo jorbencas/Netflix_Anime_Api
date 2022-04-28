@@ -11,19 +11,43 @@
         private $db;
         private $am;
         private $action;
-
+        private $headersCurl;
+        
         public function __construct($params = null) {
             parent::__construct();
+            $this->db = new Database();
             if ($params != 'script') {
                 $this->GET = $this->getrequest();
-                $this->db = new Database();
                 $GET = $this->getGET();
-                $this->lang = $this->urlLang($GET);
                 $this->headers = apache_request_headers();
-                if ($_SERVER['REQUEST_METHOD'] == 'POST') $this->POST = $this->postrequest(); 
                 $this->am = isset($GET['am']) ? $GET['am'] : null;
-                $this->action = null;
+                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                    $this->POST = $this->postrequest(); 
+                    $POST = $this->getPOST();
+                    if (isset($POST['action']) && !empty($POST['action'])) $this->action = $POST['action'];
+                } else {
+                    if (isset($GET['aq']) && !empty($GET['aq'])) $this->action = 'query';
+                    elseif (isset($GET['ap']) && !empty($GET['ap'])) $this->action = 'apione';
+                    elseif (isset($GET['as']) && !empty($GET['as'])) $this->action = 'apislide';
+                    elseif (isset($GET['aa']) && !empty($GET['aa'])) $this->action = 'apiby';
+                    else $this->action = null;
+                }
+                $this->lang = $this->urlLang($GET);
             }
+            $headers = $this->getHeaders();
+            $apiToken = isset($headers['api_token']) ? 'api_token:'.$headers['api_token'] : 'api_token:'.$this->getApiToken();
+            $accesToken = isset($headers['acces_token']) ? 'acces_token:'.$headers['acces_token'] : null;
+            $adminToken = isset($headers['admin_token']) ? 'admin_token:'.$headers['admin_token'] : null;            
+            // if (isset($adminToken)) {
+            //     $adminToken = str_replace(' ','X', str_pad('u'.$adminToken, 32));//remplazar espacios por X
+            // }
+            $this->headersCurl = [
+                'Content-Type: application/json', 
+                'charset: utf-8',
+                $apiToken,
+                $accesToken,
+                $adminToken
+            ];
         }
 
         public function getAm() {
@@ -60,6 +84,10 @@
 
         public function setHeaders($headers) {
             $this->headers = $headers;
+        }
+
+        public function getHeadersCurl(){
+            return $this->headersCurl;
         }
 
         public function falseHeaders($name) {
@@ -229,7 +257,7 @@
         public function apiReq($peticion, $params = null) {
             $date = new DateTime();
             $peticion .= "&rand={$date->getTimestamp()}";
-            return $this->curl($this->getUrlApi() . $peticion, $params);
+            return $this->curl("{$this->getUrlApi()}{$this->getLang()}&am=$peticion", $params);
         }
 
         public function apiReqNode($peticion, $params = null) {
@@ -243,93 +271,24 @@
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params) );
             }
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $apiToken = isset($headers['api_token']) ? 'api_token:'.$headers['api_token'] : 'api_token:'.$this->getApiToken();
-            $accesToken = isset($headers['acces_token']) ? 'acces_token:'.$headers['acces_token'] : null;
-            $adminToken = isset($headers['admin_token']) ? 'admin_token:'.$headers['admin_token'] : null;            
-            // if (isset($adminToken)) {
-            //     $adminToken = str_replace(' ','X', str_pad('u'.$adminToken, 32));//remplazar espacios por X
-            // }
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json', 
-                'charset: utf-8',
-                $apiToken,
-                $accesToken,
-                $adminToken
-            ]);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $this->getHeadersCurl());
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
             $res = curl_exec($ch);
-            if ($curl_error = curl_error($ch)) {
-                $result = array(
-                    'data' => null,
-                    'status' => array(
-                        'code' => 500,
-                        'text' => 'Internal Server Error',
-                        'message' => 'error',
-                        'http' => array(
-                            'url_error' => $curl_error,
-                            'code' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
-                            'content_type' => curl_getinfo($ch, CURLINFO_CONTENT_TYPE)
-                        )
-                    )
+            $curl_error = curl_error($ch);
+            if ($curl_error) {
+                $result = $this->response('error', 500);
+                $result['status']['http'] = array(
+                    'url_error' => $curl_error,
+                    'code' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+                    'content_type' => curl_getinfo($ch, CURLINFO_CONTENT_TYPE)
                 );
             } else {
                 $result = json_decode($res, true);
             }
             curl_close($ch);
             return $result;
-        }
-
-        public function run() {
-            $mod = $this->getAm();
-            if (isset($mod)) {
-                header('Access-Control-Allow-Origin: *');
-                header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, acces_token, api_token, admin_token");
-                header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-                header("Allow: GET, POST, OPTIONS, PUT, DELETE");
-                //flaseo para poder realizar peticiones desde el navegador
-                if ($this->isLocalHost() && !$this->isAjax()){
-                    $this->falseHeaders("api_token");
-                }
-                $headers = $this->getHeaders();
-                // if ($this->isAjax()) {
-                //     error_log($this->getApiToken());
-                //     error_log("/////////////////////");
-                //     error_log($headers['api_token']);
-                // }
-                //error_log("/////////////////////");
-                if (isset($headers['api_token']) && substr_compare($this->getApiToken(), $headers['api_token'],0) == 0) {
-                    $controller = "api/$mod/{$mod}.php";
-                    if (is_dir("api") && file_exists($controller)) {
-                        include_once $controller;
-                        if (function_exists($mod) && $_SERVER['REQUEST_METHOD'] !== "OPTIONS"){
-                            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                                $POST = $this->getPOST();
-                                if (isset($POST['action']) && !empty($POST['action'])) $this->setAction($POST['action']);
-                            } else {
-                                $GET = $this->getGET();
-                                if (isset($GET['aq']) && !empty($GET['aq'])) $this->setAction('query');
-                                elseif (isset($GET['ap']) && !empty($GET['ap'])) $this->setAction('apione');
-                                elseif (isset($GET['as']) && !empty($GET['as'])) $this->setAction('apislide');
-                                elseif (isset($GET['aa']) && !empty($GET['aa'])) $this->setAction('apiby');
-                            }
-                            $process = call_user_func_array($mod, array( 'api' => $this));
-                        } else {
-                            $process = $this->response("Modulo no existe $mod o no permitido", 404);
-                        }
-                    } else {
-                        $process = $this->response("Modulo no existe $mod", 404);
-                    }    
-                } else {
-                    $mensage = 'No estas autorizado para utilizar la api de '. $this->tt('Web','titulo');
-                    $process = $this->response($mensage, 401);
-                }
-            } else {
-                $mensage = 'Ha habido un error, comprueba la petición realizada a la api.';
-                $process = $this->response($mensage, 404);
-            }
-            return $process;
         }
 
         public function response($message, $code, $data = null, $alert = null, $notifications = null) {
@@ -399,18 +358,22 @@
 
         public function writeFile($content, $kind = '', $path = null) {
             $permission = 0755;
-            $flag = ($kind == 'error' || $kind == 'log') ? FILE_APPEND : 0;
+            $flag = (in_array($kind,array('backup', 'error', 'log'))) ? FILE_APPEND : 0;
             if ($kind == 'log') {
                 $content = "User SO: ".get_current_user()." - ".date("d-m-Y H:i:s");
                 $content .= " acción: {$content['kind']} - {$content['message']} PHP_EOL";
-                $path = "logs/{$this->getDomain()}.log";
+                $path = "logs/api.log";
             }
-            $this->mkFolders($path);
-            file_put_contents($path, $content, $flag);
-            //$permissionFile = substr(sprintf('%o', fileperms($path)), -4);
-            //if($permissionFile == $permission) chmod($path,$permission);
-            chown($path, get_current_user());
-            chmod($path,$permission);
+            if ( !file_exists($path) || 
+            ( file_exists($path) && 
+            substr_compare($content, file_get_contents($path),0) !== 0 ) ) {
+                //$this->mkFolders($path); TODO reparar  para que cree la carpeta, no una carpeta con el nombre del fichero
+                file_put_contents($path, $content, $flag);
+                //$permissionFile = substr(sprintf('%o', fileperms($path)), -4);
+                //if($permissionFile == $permission) chmod($path,$permission);
+                chown($path, get_current_user());
+                chmod($path,$permission);
+            }
         }
 
         public function mkFolders($path) {
@@ -423,24 +386,6 @@
                         mkdir($new, 0755, true);
                         chown($new, get_current_user());
                     }
-                }
-            }
-        }
-
-        public function removeFolders($dir) {
-            if (file_exists($dir)) {
-                $folders = array_diff(scandir($dir),array("..","."));
-                if (sizeof($folders) > 0) {
-                    foreach ($folders as $file) {
-                        if(is_dir("$dir/$file")){
-                            $this->removeFolders("$dir/$file");
-                        } else{
-                            unlink("$dir/$file");
-                        } 
-                    }
-                    return rmdir($dir);
-                } else{
-                    //return rmdir($dir);
                 }
             }
         }
@@ -486,6 +431,11 @@
                 $code = $this->getDefaultLang();
             } elseif (!$code) {
                 $code = $this->getLang();
+            } elseif(isset($code)) {
+                error_log("////");
+                error_log($code);
+                error_log($_SERVER['REQUEST_URI']);
+                error_log(json_encode($this->getPOST()));
             }
             $sql = "SELECT id FROM langs WHERE code = '$code'";
             return $this->getDb()->obtener_una_columna($sql);
@@ -496,17 +446,17 @@
                 "code" => $this->getIdLang(), 
                 "translations" => $params
             ));
-            if ( count($translation) > 0 ) {
-                foreach ($translation as $key => $trans) {
-                    $trans[$trans['kind']] = $trans['translation'];
-                    unset($trans['translation']);
-                    $translation[$key] = $trans;
-                }
-                if (count($translation) == 1 && !isset(current($params)['keyword'])) {
-                    $translation = current($translation);
-                }
+            if (count($translation) == 1) {
+                $translation = current($translation);
             }
             return $translation;
         }
+
+        public function getMedias($params) {
+            return $this->apiReqNode("media", array( 
+                "media" => $params
+            ));
+        }
+
     }
 ?>

@@ -18,7 +18,7 @@
             if (isset($init) && $init == 'init') $this->config_file = "$basePath/dbinit.ini";
             else $this->config_file = "$basePath/db.ini";
             
-            if (file_exists( $this->config_file)) {
+            if (file_exists($this->config_file)) {
                 $cnfg = parse_ini_file( $this->config_file);
                 $this->servidor = $cnfg['HOST'];
                 $this->puerto = $cnfg['PORT'];

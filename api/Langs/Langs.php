@@ -2,7 +2,7 @@
     function Langs($api) {
         switch ($api->getAction()) {
             case 'insertedittranslation': $result = insertedittranslation($api); break;
-            case 'gettranslations': $result = gettranslations($api); break;
+            case 'getTittleLangs': $result = getTittleLangs($api); break;
             case 'getcodelangs': $result = getcodelangs($api); break;
             case 'deletetranslation':$result = deletetranslation($api); break;
             default: $result = $api->response("api_history_resp_error_msg", 404);  break;
@@ -22,15 +22,18 @@
             $result = $api->response($mensage, 500);
         }
         return $result;
-
     }
 
-    function gettranslations($api) {
+    function getTittleLangs($api) {
         $POST = $api->getPOST();
-        unset($POST['action']);
         $translation = $api->gettranslations($POST['translations']);
         if ( count($translation) > 0 ) {
-            $mensage = "Se ha podido obtener la traducion del idioma {$POST['code']}";
+            foreach ($translation as $key => $trans) {
+                $sql = "SELECT code FROM langs WHERE id = '{$trans['id_external']}'";
+                $trans["code"] = $api->getDb()->obtener_una_columna($sql);
+                $translation[$key] = $trans;
+            }
+            $mensage = "Se ha podido obtener la traducion del idioma {$api->getLang()}";
             $result = $api->response($mensage, 200, $translation);
         } else {
             $mensage = "No se han podido obtener la traducion del idioma {$api->getLang()}";

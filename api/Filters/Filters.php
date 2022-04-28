@@ -7,7 +7,6 @@
             case 'mysearches': $result = $api->isValidAccesToken() ? mysearches($api) : $api->response("api_Buscador_resp_error_msg", 404); break;
             case 'deletesearch': $result = $api->isValidAccesToken() ? deletesearch($api) : $api->response("api_Buscador_resp_error_msg", 404); break;
             case 'getFiltersAvaible': $result = getFiltersAvaible($api); break;
-            case 'getFiltersByCode': $result = getFiltersByCode($api); break;
             case 'getFilters': $result = getFilters($api); break;
             case 'query': $result = function_exists($GET['aq']) ? $GET['aq']($api): $api->response("api_Filters_resp_error_msg", 400); break;
             default: $result = $api->response("api_Filters_resp_error_msg", 404); break;
@@ -16,46 +15,21 @@
     }
 
     function getFiltersAvaible($api){
-        $db = $api->getDb();
         $sql = "SELECT DISTINCT ON(f.code) f.id, f.code 
         FROM filters AS f INNER JOIN animes AS a 
         ON a.generes LIKE ('%' || f.code::text || '%') 
         WHERE f.kind = 'generes';";
-        $filters = $db->listar($sql);
+        $filters = $api->getDb()->listar($sql);
         $result = array();
-        $translations = $api->gettranslations([
-            array("kind" => "filters")
-        ]);
+        
         foreach ($filters as $filter) {
-            if ( count($translations) > 0 ) {
-                foreach ($translations as $lang) {
-                    if ($filter->id == $lang['id_external']) {
-                        array_push($result,array('filter' => $filter->code,'avable' => false, "title" => $lang[$lang['kind']]));
-                    }
-                }
-            }
-        }
-        if (isset($result)) {
-            $res = $api->response("api_Filters_msg", 200, $result);
-        } else {
-            $res = $api->response("api_Filters_error_msg", 404); 
-        }
-        return $res;
-    }
-
-    function getFiltersByCode($api){
-        $db = $api->getDb();
-        $POST = $api->getPOST();
-        if (isset($POST['code'])) {
-            $sql = "SELECT id, code FROM filters WHERE code = '{$POST['code']}'";
-            $filter = $db->obtener_uno($sql);
             $translations = $api->gettranslations([
                 array("kind" => "filters", "id_external" => $filter->id)
             ]);
-            if (count($translations) > 0) {
-                $result = array('filter' => $filter->code, "title" => $translations[$translations['kind']]);
+            if ( count($translations) > 0 ) {
+                array_push($result,array('filter' => $filter->code,'avable' => false, "title" => $translations['translation']));
             }
-        } 
+        }
         if (isset($result)) {
             $res = $api->response("api_Filters_msg", 200, $result);
         } else {
@@ -87,7 +61,7 @@
                     ]);
 
                     if (count($translations) > 0) {
-                        array_push($result,array('filter' => $filter['code'], "title" => $translations[$translations['kind']]));
+                        array_push($result,array('filter' => $filter['code'], "title" => $translations['translation']));
                     }
                 }
             }
@@ -104,7 +78,7 @@
                     }
                     foreach ($translations as $lang) {
                         if ($filter['id'] == $lang['id_external']) {
-                            array_push($result[$filter['kind']],array('filter' => $filter['code'], "title" => $lang[$lang['kind']]));
+                            array_push($result[$filter['kind']],array('filter' => $filter['code'], "title" => $lang['translation']));
                         }
                     }
                 }
@@ -173,7 +147,7 @@
                     if (count($translations) > 0 ) {
                         $id_externals = array();
                         foreach ($translations as $lang) {
-                            $titulo = $lang[$lang['kind']];
+                            $titulo = $lang['translation'];
                             if ($filter == '0-9') {
                                 for ($i=0; $i <= 9; $i++) { 
                                     if (strchr($titulo,$i)) {
@@ -200,7 +174,7 @@
                         ]);
                         if ( count($translations) > 0 ) {
                             $kind = $translations['kind'];
-                            $value[$kind] = $translations[$kind];
+                            $value[$kind] = $translations['translation'];
                         }
 
                         $media = $api->apiReqNode("media", array(
@@ -328,7 +302,7 @@
         ORDER BY s.anime, s.created DESC";  
         $result = $db->listar($sql);
         if (isset($result[0]->id)) {
-            foreach ($result as $key => $value) {
+            foreach ($result as $value) {
                 $value->src = $api->handleMedia($value->type, $value->name, $value->extension, $value->siglas);
                 unset($value->name);
                 unset($value->extension);

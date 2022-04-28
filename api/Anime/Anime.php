@@ -30,20 +30,10 @@
             if (count($translations) > 0) {
                 foreach ($translations as $lang) {
                     $kind = $lang['kind'];
-                    $res[0]->$kind = $lang[$kind];
+                    $res[0]->$kind = $lang['translation'];
                 }
             }
-
-            $gen = array();
-            $generes = explode(",",$res[0]->generes);
-            unset($res[0]->generes);
-            foreach ($generes as $code) {
-                $data = $api->apiReq("Filters", array("action" => "getFiltersByCode", "code" => $code));
-                array_push($gen,$data['data']);
-            }
-            $res[0]->generes = $gen;
-            unset($gen);
-
+            $res[0]->generes = getFiltersByCode($api, $res[0]->generes);
             $res = $api->response("api_Anime_msg", 200, $res);
         } else {
             $res = $api->response("api_Anime_error_msg", 404);
@@ -66,20 +56,11 @@
                 if (count($translations) > 0 ) {
                     foreach ($translations as $lang) {
                         $kind = $lang['kind'];
-                        $value->$kind = $lang[$kind];
+                        $value->$kind = $lang['translation'];
                     }
                 }
-
-                $gen = array();
-                $generes = explode(",",$value->generes);
-                unset($value->generes);
-                foreach ($generes as $code) {
-                    $data = $api->apiReq("Filters", array("action" => "getFiltersByCode", "code" => $code));
-                    array_push($gen,$data['data']);
-                }
-                $value->generes = $gen;
-                unset($gen);
-
+                
+                $value->generes = getFiltersByCode($api, $value->generes);
                 $media = $api->apiReqNode("media", array(
                     'type' => 'portada',
                     'id_external' => $value->id
@@ -114,7 +95,6 @@
         }
         $sql = "SELECT a.id, a.kind, a.valorations, a.generes, a.temporada, a.siglas,
         a.state, a.idiomas, a.date_publication, a.date_finalization, a.created,
-        (SELECT count(*) FROM personages WHERE anime = '{$GET['ap']}') AS num_pers,
         (SELECT count(*) FROM openings WHERE anime = '{$GET['ap']}') AS num_opes,
         (SELECT count(*) FROM endings WHERE anime = '{$GET['ap']}') AS num_ends,
         $select
@@ -128,37 +108,21 @@
             if ( count($translations) > 0 ) {
                 foreach ($translations as $lang) {
                     $kind = $lang['kind'];
-                    $res->$kind = $lang[$kind];
+                    $res->$kind = $lang['translation'];
                 }
             }
-
-            $gen = array();
-            $generes = explode(",",$res->generes);
-            unset($res->generes);
-            foreach ($generes as $code) {
-                $data = $api->apiReq("Filters", array("action" => "getFiltersByCode", "code" => $code));
-                array_push($gen,$data['data']);
-            }
-            $res->generes = $gen;
-            unset($gen);
-
-            $media = $api->apiReqNode("media", array(
-                'type' => 'banner',
-                'id_external' => $res->id
-            ));
+            $res->generes = getFiltersByCode($api, $res->generes);
+            $media = $api->getMedias([
+                array( 'type' => 'banner', 'id_external' => $res->id),
+                array( 'type' => 'portada', 'id_external' => $res->id)
+            ]); 
             if (count($media) > 0) {
-                $res->banner = $api->handleMedia($media['type'], $media['name'], $media['extension'], $res->siglas);
+                foreach ($media as $media) {
+                    $k = $media['type'] == 'portada' ? 'src' : $media['type'];
+                    $res->$k = $api->handleMedia($media['type'], $media['name'], $media['extension'], $res->siglas);
+                }
             } else {
                 $res->banner = $api->handleMedia("img","no","jpg");
-            }
-
-            $media = $api->apiReqNode("media", array(
-                'type' => 'portada',
-                'id_external' => $res->id
-            ));
-            if (count($media) > 0) {
-                $res->src = $api->handleMedia($media['type'], $media['name'], $media['extension'], $res->siglas);
-            } else {
                 $res->src = $api->handleMedia("img","no","jpg");
             }
 
@@ -172,8 +136,8 @@
                         array("kind" => "seasions", "id_external" => $value->id),
                     ]);
                     if ( count($translations) > 0 ) {
-                        $kind = $translations['kind'];
-                        $value->title = $translations[$kind];
+                        // $kind = $translations['kind'];
+                        $value->title = $translations['translation'];
                     }
                 }
             }
@@ -184,17 +148,32 @@
         return $res;
     };
 
-    function lastidanime($api) {
-        $db = $api->getDb();
-        $sql = "SELECT MAX(id) FROM animes";
-        $valor = $db->obtener_una_columna($sql);
-        if (isset($valor)) {
-            $res = $api->response("api_Anime_last_msg", 200, $valor);
-        } else {
-            $res = $api->response("api_Anime_last_error_msg", 404);
+    function getFiltersByCode($api, $g){
+        if (isset($g)) {
+            $generes = explode(",",$g);
+            if (sizeof($generes) > 0) {
+                $gen = array();
+                foreach ($generes as $code) {
+                    $sql = "SELECT id, code FROM filters WHERE code = '{$code}'";
+                    $filter = $api->getDb()->obtener_uno($sql);
+                    $trans = $api->gettranslations([
+                        array("kind" => "filters", "id_external" => $filter->id)
+                    ]);
+                    if (count($trans) > 0) {
+                        array_push($gen,array(
+                            'filter' => $filter->code, 
+                            "title" => $trans['translation']
+                        ));
+                    }
+                }
+                if (sizeof($gen) > 0 ) {
+                    $g = $gen;
+                }
+                unset($gen);
+            }
         }
-        return $res;
-    };
+        return $g;
+    }
 
     function handlefilters($api, $GET) {
         $where = "";
@@ -209,8 +188,7 @@
                     ]);
                     if ( count($translations) > 0 ) {
                         foreach ($translations as $lang) {
-                            $kind = $lang['kind'];
-                            $titulo = $lang[$kind];
+                            $titulo = $lang['translation'];
                             if ($filter == '0-9') {
                                 for ($i=0; $i <= 9; $i++) { 
                                     if (strchr($titulo,$i)) {
@@ -286,19 +264,9 @@
                 ]);
                 if ( count($translations) > 0 ) {
                     $kind = $translations['kind'];
-                    $value->$kind = $translations[$kind];
+                    $value->$kind = $translations['translation'];
                 }
-
-                $gen = array();
-                $generes = explode(",",$value->generes);
-                unset($value->generes);
-                foreach ($generes as $code) {
-                    $data = $api->apiReq("Filters", array("action" => "getFiltersByCode", "code" => $code));
-                    array_push($gen,$data['data']);
-                }
-                $value->generes = $gen;
-                unset($gen);
-
+                $value->generes = getFiltersByCode($api, $value->generes);
             }
             $res = $api->response("api_Anime_lastanime_msg", 200, $animes);
         } else {
@@ -396,8 +364,6 @@
         $anime['type'] = 'anime';
         $anime['kind'] = 'anime';
         $data = $api->apiReq("Upload" ,$anime);
-        $params["action"] = "deletePersonagebyanime";
-        $data = $api->apiReq("Personage", $params);
         $params["action"] = "deleteEpisodesbyanime";
         $data = $api->apiReq("Episodes", $params);
         $params["action"] = "deleteOpeningsbyanime";
@@ -439,7 +405,7 @@
                 if ( count($translations) > 0 ) {
                     foreach ($translations as $lang) {
                         $kind = $lang['kind'];
-                        $value->$kind = $lang[$kind];
+                        $value->$kind = $lang['translation'];
                     }
                 }
                 $value->src = $api->handleMedia($value->type, $value->name, $value->extension, $value->siglas);

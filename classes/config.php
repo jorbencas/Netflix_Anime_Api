@@ -17,7 +17,7 @@
             );
             $cnfg = parse_ini_file(__DIR__.'/../conf/config.ini');
             $this->domain = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $cnfg['domain'];
-            $this->urlApi = "http://{$this->getDomain()}?r=es/api&am=";
+            $this->urlApi = "http://{$this->getDomain()}?r=";
             $this->urlNode = $cnfg['urlNode'];
             $this->apiToken = $cnfg['apiToken'];
             $this->nomediaImg = $cnfg['nomediaImg'];

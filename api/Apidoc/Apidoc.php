@@ -37,10 +37,10 @@
 
     function scan($api){
         $apis = array();
-        $scanedFiles = $api->scanFolders("mod",true,true);
+        $scanedFiles = $api->scanFolders("api",true,true);
         if (sizeof($scanedFiles) > 0) {
             foreach ($scanedFiles as $key => $value) {
-                if (strstr($value,"_api.php")) {
+                if (strstr($value,".php")) {
                     $value = str_replace("_api.php","",$value);
                     array_push($apis,$value);
                 }

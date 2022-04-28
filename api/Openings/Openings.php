@@ -57,43 +57,25 @@
             if (count($translations) > 0 ) {
                 $kind = $translations['kind'];
                 $k = $kind == "titulo" ? 'anime_titulo' : $kind;
-                $opening->$k = $translations[$kind];
+                $opening->$k = $translations['translation'];
             }
 
-            $media = $api->apiReqNode("media", array(
-                'type' => 'openings',
-                'id_external' => $opening->id
-            ));
+            $media = $api->getMedias([
+                array( 'type' => 'openings', 'id_external' => $opening->id),
+                array( 'type' => 'portada', 'id_external' => $opening->anime)
+            ]); 
             if (count($media) > 0) {
-                $opening->src = $api->handleMedia($media['type'], $media['name'], $media['extension'], $opening->siglas);
-            } else {
-                $opening->src = $api->handleMedia("img","no","jpg");
-            }
-            
-            $media = $api->apiReqNode("media", array(
-                'type' => 'portada',
-                'id_external' => $opening->anime
-            ));
-            if (count($media) > 0) {
-                $opening->img = $api->handleMedia($media['type'], $media['name'], $media['extension'], $opening->siglas);
+                foreach ($media as $media) {
+                    $k = $media['type'] == 'portada' ? 'img' : 'src';
+                    $opening->$k = $api->handleMedia($media['type'], $media['name'], $media['extension'], $opening->siglas);
+                }
             } else {
                 $opening->img = $api->handleMedia("img","no","jpg");
+                $opening->src = $api->handleMedia("img","no","jpg");
             }
-
             return $api->response("api_Openings_One_msg", 200,$opening);
         } else {
             return $api->response("api_Openings_One_error_msg", 404); 
-        }
-    }
-
-    function lastidopening($api) {
-        $db = $api->getDb();
-        $sql = "SELECT MAX(id) FROM openings";
-        $valor = $db->obtener_una_columna($sql);
-        if (isset($valor)) {
-            return $api->response("api_Openings_last_msg", 200, $valor);
-        } else {
-            return $api->response("api_Openings_last_error_msg", 404); 
         }
     }
 

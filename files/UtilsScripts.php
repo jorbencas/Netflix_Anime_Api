@@ -1,6 +1,24 @@
 <?php 
     class UtilsScripts {
         
+        public function removeFolders($dir) {
+            if (file_exists($dir)) {
+                $folders = array_diff(scandir($dir),array("..","."));
+                if (sizeof($folders) > 0) {
+                    foreach ($folders as $file) {
+                        if(is_dir("$dir/$file")){
+                            $this->removeFolders("$dir/$file");
+                        } else{
+                            unlink("$dir/$file");
+                        } 
+                    }
+                    return rmdir($dir);
+                } else{
+                    //return rmdir($dir);
+                }
+            }
+        }
+        
         public function object_sorter($clave, $orden=null) {
             return function ($a, $b) use ($clave,$orden) {
                 $ac = is_object($a) ? $a->$clave : $a[$clave];

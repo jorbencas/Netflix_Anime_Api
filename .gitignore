@@ -5,6 +5,7 @@
 /out-tsc
 
 #PHP
+securize.php
 media
 logs
 cache
@@ -12,7 +13,14 @@ cache
 node/node_modules
 node/.env
 node/package-lock.json
-
+files/db
+files/animes.json
+files/config2.php
+files/docker.txt
+files/core_class.php
+files/mail.php
+files/webPage.php
+scripts/trigger.sql
 
 *.zip
 *.rar

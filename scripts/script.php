@@ -1,6 +1,6 @@
 // ALTER TABLE metadata DROP COLUMN default_lang;
 // ALTER TABLE metadata DROP COLUMN default_current_page;
-
+// https://github.com/safak/youtube/tree/chat-app
 <?php
     function changeTextEpisodes(){
         // $frase = readline("Introduce una frase (en minisculas): ");
@@ -83,7 +83,8 @@
     function ManageFiles(){
         //download youtube-dl -f mp4 $url
         //convert
-        $path = "/media/jorge/B0EE54B1EE547218/media/animes/NNT/episodes/*.avi";
+        $basePath = __DIR__ . "/../media/animes";
+        $path = "$basePath/NNT/episodes/*.avi";
         require_once __DIR__ . '/../classes/api.php';
         $api = new Api();
         $scanedFiles = $api->scanFolders($path);
@@ -91,7 +92,17 @@
             foreach ($scanedFiles as $file) {
                 if (is_file($file) && strstr($file,'Arc the Lad ')) {
                     $exploes = explode("/",$file);
-                    $name = end($exploes);
+                    $fileName = end($exploes);
+                    $arrFile = explode('.',$fileName);
+                    $name = $arrFile[0];
+                    $extension = $arrFile[1];
+                    if (!preg_match("/\.(mp4)/i", $fileName) ) {
+                        shell_exec("ffmpeg -i uploads/".$name . $extension." uploads/".$name.".mp4");
+                         // This condition is only if you wish to allow uploading of specific file types    
+                        //unlink($fileTmpLoc); // Remove the uploaded file from the PHP temp folder
+                         //exit();
+                    } 
+                    
                     if (strstr($name,".mp4")) {
                         //system("ffmpeg -i $file '${$file%.*}'.mp4 && rm '$file'");
                         //$str = "ffmpeg -i ".$video_path." ".$p_path."frames_%05d.png";

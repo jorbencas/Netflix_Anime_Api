@@ -58,27 +58,20 @@
             if ( count($translations) > 0 ) {
                 $kind = $translations['kind'];
                 $k = $kind == "titulo" ? 'anime_titulo' : $kind;
-                $ending->$k = $translations[$kind];
+                $ending->$k = $translations['translation'];
             }
-            
-            $media = $api->apiReqNode("media", array(
-                'type' => 'endings',
-                'id_external' => $ending->id
-            ));
+            $media = $api->getMedias([
+                array( 'type' => 'endings', 'id_external' => $$ending->id),
+                array( 'type' => 'portada', 'id_external' => $ending->anime)
+            ]); 
             if (count($media) > 0) {
-                $ending->src = $api->handleMedia($media['type'], $media['name'], $media['extension'], $ending->siglas);
-            } else {
-                $ending->src = $api->handleMedia("img","no","jpg");
-            }
-
-            $media = $api->apiReqNode("media", array(
-                'type' => 'portada',
-                'id_external' => $ending->anime
-            ));
-            if (count($media) > 0) {
-                $ending->img = $api->handleMedia($media['type'], $media['name'], $media['extension'], $ending->siglas);
+                foreach ($media as $media) {
+                    $k = $media['type'] == 'portada' ? 'img' : 'src';
+                    $ending->$k = $api->handleMedia($media['type'], $media['name'], $media['extension'], $ending->siglas);
+                }
             } else {
                 $ending->img = $api->handleMedia("img","no","jpg");
+                $ending->src = $api->handleMedia("img","no","jpg");
             }
             return $api->response("api_Endings_One_msg", 200, $ending);
         } else {
@@ -86,17 +79,6 @@
         }
     }
 
-    function lastidending($api) {
-        $db = $api->getDb();
-        $sql = "SELECT MAX(id) FROM endings";
-        $valor = $db->obtener_una_columna($sql);
-        if (isset($valor)) {
-            return $api->response("api_Endings_last_msg", 200, $valor);
-        } else {
-            return $api->response("api_Endings_last_error_msg", 404); 
-        }
-    }
-    
     function inserteditOneending($api) {
         $db = $api->getDb();
         $POST = $api->getPOST();

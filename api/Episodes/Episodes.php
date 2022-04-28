@@ -44,28 +44,21 @@
                 foreach ($translations as $lang) {
                     $kind = $lang['kind'];
                     $k = $kind == "titulo" ? 'anime_titulo' : $kind;
-                    $episode->$k = $lang[$kind];
+                    $episode->$k = $lang['translation'];
                 }
             }
-
-            $media = $api->apiReqNode("media", array(
-                'type' => 'episodes',
-                'id_external' => $episode->id
-            ));
+            $media = $api->getMedias([
+                array( 'type' => 'episodes', 'id_external' => $episode->id),
+                array( 'type' => 'portada', 'id_external' => $episode->anime)
+            ]); 
             if (count($media) > 0) {
-                $episode->src = $api->handleMedia($media['type'], $media['name'], $media['extension'], $episode->siglas);
-            } else {
-                $episode->src = $api->handleMedia("img","no","jpg");
-            }
-
-            $media = $api->apiReqNode("media", array(
-                'type' => 'portada',
-                'id_external' => $episode->anime
-            ));
-            if (count($media) > 0) {
-                $episode->img = $api->handleMedia($media['type'], $media['name'], $media['extension'], $episode->siglas);
+                foreach ($media as $media) {
+                    $k = $media['type'] == 'portada' ? 'img' : 'src';
+                    $episode->$k = $api->handleMedia($media['type'], $media['name'], $media['extension'], $episode->siglas);
+                }
             } else {
                 $episode->img = $api->handleMedia("img","no","jpg");
+                $episode->src = $api->handleMedia("img","no","jpg");
             }
             return $api->response("api_Episodes_One_msg", 200, $episode);
         } else {
@@ -104,7 +97,7 @@
                 ]);
                 if (count($translations) > 0 ) {
                     $kind = $translations['kind'];
-                    $value->$kind = $translations[$kind];
+                    $value->$kind = $translations['translation'];
                 }
                 if (count($media) > 0) {
                     $value->src = $api->handleMedia($media['type'], $media['name'], $media['extension'], $value->siglas);
@@ -137,7 +130,7 @@
                     foreach ($translations as $lang) {
                         $kind = $lang['kind'];
                         $k = $kind == "titulo" ? 'anime_titulo' : $kind;
-                        $value->$k = $lang[$kind];
+                        $value->$k = $lang['translation'];
                     }
                 }
 
@@ -155,17 +148,6 @@
             return $api->response("api_Episodes_slides_msg", 200, $res);
         } else {
             return $api->response("api_Episodes_slides_error_msg", 404); 
-        }
-    }
-
-    function lastidepisode($api) {
-        $db = $api->getDb();
-        $sql = "SELECT MAX(id) FROM episodes";
-        $valor = $db->obtener_una_columna($sql);
-        if (isset($valor)) {
-            return $api->response("api_Episodes_last_msg", 200, $valor);
-        } else {
-            return $api->response("api_Episodes_last_error_msg", 404); 
         }
     }
 
