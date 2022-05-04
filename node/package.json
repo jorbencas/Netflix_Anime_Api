@@ -1,24 +1,26 @@
 {
-  "name": "node",
+  "name": "netflix_anime_api",
   "version": "1.0.0",
   "description": "server",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
+    "stop": "node src/stop.js",
     "dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "jorge beneyto castelló",
   "license": "ISC",
   "dependencies": {
-    "child_process": "^1.0.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
     "express-promise-router": "^4.1.0",
     "http": "0.0.1-security",
     "mongoose": "^5.13.5",
     "morgan": "^1.10.0",
+    "path": "^0.12.7",
     "socket.io": "^4.2.0"
   },
   "devDependencies": {
