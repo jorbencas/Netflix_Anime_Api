@@ -1,30 +1,37 @@
-const Media = require('../models/Media');
+const Media = require("../models/Media");
+/**
+ * const path = require("path");
+// static files
+// app.use("/static", express.static(path.join(__dirname, "/static")));
+app.use(
+  "/media",
+  express.static(path.join(__dirname, process.env.MEDIA_PATH + "/CY/openings"))
+);
 
+ */
 module.exports = {
-  index: async (req, res) => {
-    if(typeof req.body.media != 'undefined'){
-      let result = [];
-      let media = req.body.media;
-      for (let index = 0; index < media.length; index++) {
-        const t = await Media.findOne({
-          type : `${media[index].type}`,
-          id_external : media[index].id_external
-        });
-        result.push(t);
-      };
-      res.status(200).json(result);
-    } else {
-      const t = await Media.findOne({
-        type : `${req.body.type}`,
-        id_external : req.body.id_external
+  index: (req, res, next) => {
+    if (typeof req.body.media != "undefined") {
+      Media.find({ $or: req.body.media }).then((t) => {
+        if (t) return res.json(t);
+        return res.status(404).end();
       });
-      res.status(200).json(t);
+    } else {
+      Media.findOne({
+        type: `${req.body.type}`,
+        id_external: req.body.id_external,
+      })
+        .then((t) => {
+          if (t) return res.json(t);
+          return res.status(404).end();
+        })
+        .catch((err) => next(err));
     }
   },
 
-  newMedia: async (req, res) => {
+  newMedia: (req, res) => {
     const newMedia = new Media(req.body);
-    const t = await newMedia.save();
+    const t = newMedia.save();
     res.status(201).json(t);
-  }
+  },
 };

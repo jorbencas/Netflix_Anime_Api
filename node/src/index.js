@@ -1,91 +1,41 @@
-const morgan = require("morgan");
-var mongoose = require("mongoose");
 require("dotenv").config();
+require("./db/mongo");
+const postgres = require("./db/postgres");
 const express = require("express");
+const app = express();
+const server = require("http").createServer(app);
+const sockets = require("./socketIo");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const errorhandler = require("errorhandler");
-//initialicing package
-const app = express();
-const path = require("path");
-const http = require("http").createServer(app);
-let io = require("socket.io")(http, {
-  cors: {
-    origins: ["http://localhost:" + process.env.PORT],
-  },
-});
-app.use(express.json());
-
+const middlewares = require("./middlewares");
+const routes = require("./routes");
 // Middlewares
+app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
+app.use(bodyParser.text({ type: "text/html" }));
+app.use(bodyParser.json({ type: "application/*+json" }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(errorhandler());
-
-// static files
-app.use("/static", express.static(path.join(__dirname, "static")));
-
-// sockets
-const sockets = require("./socketIo");
-sockets(io);
-app.get("/onlineusers", (req, res) => {
-  res.send(io.sockets.adapter.rooms);
-});
-
-app.get("*", (req, res, next) => {
-  console.debug(req.hostname);
-  if (typeof req.headers.api_token === "undefined") {
-    res.status(404).json({
-      error: {
-        message: `No estas autorizado para utilizar la api de node`,
-      },
-    });
-  } else {
-    next();
-  }
-});
-
+app.use(middlewares.apitoken);
 //routes
-app.use(require("./routes"));
-// Catch 404 Errors
-const err = new Error("not Found");
-app.use((req, res, next) => {
-  err.status = 404;
-  next(err);
+app.get("/pg", (req, res, next) => {
+  postgres
+    .query("SELECT * FROM animes")
+    .then((result) => res.json({ data: result.rows }))
+    .catch((e) => console.error(e.stack))
+    .then(() => postgres.end());
 });
-
-// Error hanlder function
-app.use((err, req, res, next) => {
-  const error = app.get("env") === "development" ? err : {};
-  const status = err.status || 500;
-
-  res.status(status).json({
-    error: {
-      message: error.message,
-    },
-  });
-});
-
-//config server
-app.set("port", process.env.PORT);
-let port = app.get("port");
-http.listen(port, () => {
+app.use(routes);
+app.use(middlewares.notfound);
+//sockats
+sockets(server);
+//error handler middleware
+app.use(middlewares.errorHandler);
+//server
+let port = process.env.PORT || 3001;
+server.listen(port, () => {
   console.log(`El servidor esta corriendo ${port}`);
-  // conexión a mongodb
-  mongoose
-    .connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
-    })
-    .then(() => {
-      console.log("Connection to DB successful");
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-
-  process.on("uncaughtException", (error) => {
-    console.error(error);
-    mongoose.disconnect();
-  });
 });
