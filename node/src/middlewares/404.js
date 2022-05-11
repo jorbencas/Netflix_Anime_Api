@@ -1,5 +1,5 @@
-const err = new Error("not Found");
+const { responseCustome } = require("../utils/index");
 module.exports = (req, res, next) => {
-  err.status = 404;
-  next(err);
+  let status = 404;
+  res.status(status).json(responseCustome("Endpoint Not found", status)).end();
 };

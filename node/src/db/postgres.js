@@ -1,7 +1,8 @@
 const optionsDB = require("../configs/postgres");
 const { Client } = require("pg");
 const client = new Client(optionsDB);
-client.connect()
+client
+  .connect()
   .then(() => console.log("Connection to PostgresDB successful"))
   .catch((err) => console.error("connection error", err.stack));
 

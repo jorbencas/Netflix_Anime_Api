@@ -1,31 +1,13 @@
 const Media = require("../models/Media");
-/**
- * const path = require("path");
-// static files
-// app.use("/static", express.static(path.join(__dirname, "/static")));
-app.use(
-  "/media",
-  express.static(path.join(__dirname, process.env.MEDIA_PATH + "/CY/openings"))
-);
-
- */
 module.exports = {
-  index: (req, res, next) => {
-    if (typeof req.body.media != "undefined") {
-      Media.find({ $or: req.body.media }).then((t) => {
-        if (t) return res.json(t);
-        return res.status(404).end();
-      });
+  index: (media = null, type = null, id_external = null) => {
+    if (typeof media != "undefined") {
+      return Media.find({ $or: media });
     } else {
-      Media.findOne({
-        type: `${req.body.type}`,
-        id_external: req.body.id_external,
-      })
-        .then((t) => {
-          if (t) return res.json(t);
-          return res.status(404).end();
-        })
-        .catch((err) => next(err));
+      return Media.findOne({
+        type: `${type}`,
+        id_external: id_external,
+      });
     }
   },
 

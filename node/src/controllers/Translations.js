@@ -1,25 +1,8 @@
 const Translation = require("../models/Translation");
 
 module.exports = {
-  index: (req, res, next) => {
-    let translations = req.body.translations.map((element) => {
-      element.lang = parseInt(req.body.code);
-      if (typeof element.keyword != "undefined") {
-        element.translation = {
-          $regex: "^" + element.keyword + "*",
-          $options: "i",
-        };
-        delete element.keyword;
-      }
-      return element;
-    });
-
-    Translation.find({ $or: translations })
-      .then((result) => {
-        if (result) return res.json(result);
-        return res.status(404).end();
-      })
-      .catch((err) => next(err));
+  index: (translations) => {
+    return Translation.find({ $or: translations });
   },
 
   newTranslation: (req, res) => {

@@ -1,14 +1,33 @@
+const { responseCustome } = require("../utils");
+
+const isLocalHost = (req) => {
+  return req.headers.host.includes("localhost") ? true : false;
+};
+
+const isAjax = (req) => {
+  let valid = false;
+  let xRequestHeader = req.headers["HTTP_X_REQUESTED_WITH"];
+  if (
+    typeof xRequestHeader != "undefined" &&
+    xRequestHeader.length > 0 &&
+    xRequestHeader == "xmlhttprequest"
+  ) {
+    valid = true;
+  }
+  return valid;
+};
+
 module.exports = (req, res, next) => {
   if (
-    typeof req.headers.api_token === "undefined" &&
-    req.headers.api_token == process.env.API_TOKEN
+    !isLocalHost(req) &&
+    (typeof req.headers.api_token == "undefined" ||
+      req.headers.api_token == process.env.API_TOKEN)
   ) {
-    res.status(404).json({
-      error: {
-        message: `No estas autorizado para utilizar la api de node`,
-      },
-    });
+    let message = `No estas autorizado para utilizar la api de cosas de anime`;
+    let status = 404;
+    res.status(status).json(responseCustome(message, status)).end();
   } else {
+    console.log(req.headers.api_token);
     next();
   }
 };

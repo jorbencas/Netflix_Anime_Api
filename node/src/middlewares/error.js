@@ -1,10 +1,17 @@
+const { responseCustome } = require("../utils");
 module.exports = (err, req, res) => {
-  const error = app.get("env") === "dev" ? err : {};
+  const error = app.get("env") === "dev" ? err.message : "";
   const status = err.status || 500;
-
-  res.status(status).json({
-    error: {
-      message: error.message,
-    },
-  });
+  if (err.name === "ValidationError") {
+    status = 422;
+    let json = {
+      errors: Object.keys(err.errors).reduce(function (errors, key) {
+        errors[key] = err.errors[key].message;
+        return errors;
+      }, {}),
+    };
+    res.status(status).json(responseCustome(error, status, json));
+  } else {
+    res.status(status).json(responseCustome(error, status));
+  }
 };

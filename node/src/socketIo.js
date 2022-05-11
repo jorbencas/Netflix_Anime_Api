@@ -8,17 +8,15 @@ module.exports = (http) => {
   io.on("connection", (socket) => {
     // Log a new user connected
     console.log(`A new Used Connected ${socket.id}`);
-
-    // tell all clients that someone connected
-    io.emit("user joined", socket.id);
-
-    //the client sends 'chat:message event'
-    socket.on("chat:message", function (message) {
-      // Emit this Event to all clients connected
-      io.emit("chat:message", message);
+    console.log(socket);
+    socket.on("chat message", (msg) => {
+      io.emit("chat message", msg);
     });
 
-    //client sends "user typing" event to server
+    // // tell all clients that someone connected
+    io.emit("user joined", socket.id);
+
+    // //client sends "user typing" event to server
     socket.on("user typing", function (username) {
       io.emit("user typing", username);
     });
@@ -33,7 +31,7 @@ module.exports = (http) => {
       console.log(`User left ${socket.id}`);
 
       //tell all clients that someone disconnected
-      socket.broadcast.emit("user left", socket.id);
+      socket.broadcast.emit("adios", socket.id);
     });
   });
 };

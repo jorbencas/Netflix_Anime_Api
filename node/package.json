@@ -17,6 +17,7 @@
     "dotenv": "^16.0.0",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "mongoose": "^5.13.5",
     "morgan": "^1.10.0",

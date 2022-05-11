@@ -1,0 +1,8 @@
+GET http://localhost:3001/api/chat
+###
+POST http://localhost:3001/api/chat
+Content-Type: application/json
+
+{
+    "message":"hola mundo"
+}
