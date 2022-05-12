@@ -1,5 +1,5 @@
 var router = require("express").Router();
-const { index, newTranslation } = require("../../controllers/Translations");
+const { index, newTranslation } = require("../../controllers/Translations.js");
 router.route("/").post((req, res, next) => {
   let translations = req.body.translations.map((element) => {
     element.lang = parseInt(req.body.code);

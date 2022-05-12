@@ -24,26 +24,6 @@
     </form>
     <script src="/socket.io/socket.io.js"></script>
 <script>
-
-  async function peticion (value) {
-    await fetch("http://localhost:3001/notify",{
-        method: 'POST',
-      }).then( (response) => {
-        let data = response.json();
-        console.log(data);
-        if(data.status == 200) {
-            var audio = new Audio();
-            audio.src = data.data.audio;
-            audio.play();
-            console.log("sound");
-        } else {
-          console.log("////");
-          console.log(data);
-        }
-      }).catch((err) => {
-        console.log(err.message);
-      });
-  }
   var socket = io();
   var user = document.getElementById('user');
   var messages = document.getElementById('messages');
@@ -55,7 +35,9 @@
     if (input.value) {
       socket.emit('chat message', input.value);
       input.value = '';
-      peticion(input.value);
+      var audio = new Audio();
+      audio.src = 'http://localhost:3001/notify';
+      audio.play();
     }
   });
 
@@ -77,9 +59,12 @@
 
   socket.on('chat message', function(msg) {
     var item = document.createElement('li');
-    item.textContent = msg;
+    item.textContent = msg.message;
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
+     var audio = new Audio();
+      audio.src = msg.audio;
+      audio.play();
   });
 </script>
   </body>

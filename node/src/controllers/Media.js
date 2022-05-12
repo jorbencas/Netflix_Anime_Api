@@ -1,4 +1,4 @@
-const Media = require("../models/Media");
+const Media = require("../models/Media.js");
 module.exports = {
   index: (media = null, type = null, id_external = null) => {
     if (typeof media != "undefined") {

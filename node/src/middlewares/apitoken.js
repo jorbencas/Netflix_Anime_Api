@@ -1,22 +1,5 @@
-const { responseCustome } = require("../utils");
-
-const isLocalHost = (req) => {
-  return req.headers.host.includes("localhost") ? true : false;
-};
-
-const isAjax = (req) => {
-  let valid = false;
-  let xRequestHeader = req.headers["HTTP_X_REQUESTED_WITH"];
-  if (
-    typeof xRequestHeader != "undefined" &&
-    xRequestHeader.length > 0 &&
-    xRequestHeader == "xmlhttprequest"
-  ) {
-    valid = true;
-  }
-  return valid;
-};
-
+const { responseCustome } = require("../utils/index.js");
+const isLocalHost = require("./isLocalHost.js");
 module.exports = (req, res, next) => {
   if (
     !isLocalHost(req) &&
@@ -27,7 +10,6 @@ module.exports = (req, res, next) => {
     let status = 404;
     res.status(status).json(responseCustome(message, status)).end();
   } else {
-    console.log(req.headers.api_token);
     next();
   }
 };

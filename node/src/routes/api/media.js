@@ -1,5 +1,5 @@
 var router = require("express").Router();
-const { index, newMedia } = require("../../controllers/Media");
+const { index, newMedia } = require("../../controllers/Media.js");
 router.route("/").post((req, res, next) => {
   if (typeof req.body.media != "undefined") {
     index(req.body.media).then((t) => {

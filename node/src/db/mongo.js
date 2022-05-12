@@ -1,15 +1,23 @@
-const optionsDB = require("../configs/mongo");
 var mongoose = require("mongoose");
-mongoose
-  .connect(process.env.MONGODB_URI, optionsDB)
-  .then(() => {
-    console.log(`Connection to MongoDB successful`);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+const connectMongo = async () => {
+  await mongoose
+    .connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: false,
+    })
+    .then(() => {
+      console.log(`Connected to Mongo`);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
 
 process.on("uncaughtException", (error) => {
   console.error(error);
   mongoose.disconnect();
 });
+
+module.exports = { connectMongo };

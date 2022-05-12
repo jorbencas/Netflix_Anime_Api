@@ -1,4 +1,4 @@
-const Translation = require("../models/Translation");
+const Translation = require("../models/Translation.js");
 
 module.exports = {
   index: (translations) => {

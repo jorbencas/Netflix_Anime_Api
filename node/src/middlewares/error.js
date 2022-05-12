@@ -1,4 +1,4 @@
-const { responseCustome } = require("../utils");
+const { responseCustome } = require("../utils/index.js");
 module.exports = (err, req, res) => {
   const error = app.get("env") === "dev" ? err.message : "";
   const status = err.status || 500;
