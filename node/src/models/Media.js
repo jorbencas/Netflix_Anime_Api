@@ -15,7 +15,7 @@ var MediaSchema = new mongoose.Schema(
 MediaSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     //returnedObject.id = returnedObject._id;
-    delete returnedObject.id_external;
+    // delete returnedObject.id_external;
     delete returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject.createdAt;

@@ -9,6 +9,12 @@ module.exports = (http) => {
   io.on("connection", (socket) => {
     // Log a new user connected
     console.log(`A new Used Connected ${socket.id}`);
+    // tell all clients that someone connected
+    io.emit("user joined", {
+      id: socket.id,
+      audio: "/chat-leat",
+    });
+
     socket.on("chat message", (msg) => {
       // responseCustome("mensage recibido", 200, data);
       io.emit("chat message", {
@@ -17,17 +23,14 @@ module.exports = (http) => {
       });
     });
 
-    // tell all clients that someone connected
-    io.emit("user joined", socket.id);
-
     //client sends "user typing" event to server
-    socket.on("user typing", function (username) {
-      io.emit("user typing", username);
+    socket.on("user typing", function (id) {
+      io.emit("user typing", id);
     });
 
     //client sends "stopped typing" event to server
-    socket.on("stopped typing", function (username) {
-      io.emit("stopped typing", username);
+    socket.on("stopped typing", function (id) {
+      io.emit("stopped typing", id);
     });
 
     // when a new user is disconnected
@@ -35,7 +38,10 @@ module.exports = (http) => {
       console.log(`User left ${socket.id}`);
 
       //tell all clients that someone disconnected
-      socket.broadcast.emit("adios", socket.id);
+      socket.broadcast.emit("adios", {
+        id: socket.id,
+        audio: "/chat-leat",
+      });
     });
   });
 };

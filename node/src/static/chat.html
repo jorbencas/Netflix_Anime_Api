@@ -19,50 +19,79 @@
   <body>
     <div id="user"></div>
     <ul id="messages"></ul>
-    <form id="form" action="/api/chat">
+    <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io();
-  var user = document.getElementById('user');
-  var messages = document.getElementById('messages');
-  var form = document.getElementById('form');
-  var input = document.getElementById('input');
+  let socket = io();
+  let id = 0;
+
+  let user = document.getElementById('user');
+  let messages = document.getElementById('messages');
+  let form = document.getElementById('form');
+  let input = document.getElementById('input');
+
+  input.addEventListener('keypress', () =>   {
+    socket.emit('user typing', id);
+  });
+
+  socket.on('user typing', function(msg) {
+    let item = document.getElementById(id);
+    item.textContent = id +" escribiendo... ";
+  });
+
+  input.addEventListener('keyup', () =>   {
+    socket.emit('stopped typing', id);
+  });
+
+  socket.on('stopped typing', function(id) {
+    let item = document.getElementById(id);
+    item.textContent = "usuario conectado: "+ id;
+  });
+
 
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     if (input.value) {
       socket.emit('chat message', input.value);
       input.value = '';
-      var audio = new Audio();
-      audio.src = 'http://localhost:3001/notify';
+      let audio = new Audio();
+      audio.src = 'http://localhost:3001/notify-send';
       audio.play();
     }
   });
 
   socket.on('user joined', function(msg) {
-    var item = document.getElementById(msg);
-    //if( typeof item == 'undefined'){
-      var item = document.createElement('p');
-      item.textContent = "usuario conectado: "+ msg;
-      item.append("id",msg);
+    let item = document.getElementById(msg.id);
+    if(!item && id != msg.id){ 
+      id = msg.id;
+      let item = document.createElement('p');
+      item.textContent = "usuario conectado: "+ id;
+      item.setAttribute("id",id);
       user.appendChild(item);
-    //}
+      let audio = new Audio();
+      audio.src = msg.audio;
+      audio.play();
+    }
   });
 
     socket.on('adios', function(msg) {
-    var item = document.getElementById(msg);
-    item.textContent = "usuario conectado: "+ msg;
-    user.removeChild(item);
+    let item = document.getElementById(id);
+    if(item){ 
+      user.removeChild(item);
+      let audio = new Audio();
+      audio.src = msg.audio;
+      audio.play();
+    }
   });
 
   socket.on('chat message', function(msg) {
-    var item = document.createElement('li');
+    let item = document.createElement('li');
     item.textContent = msg.message;
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
-     var audio = new Audio();
+     let audio = new Audio();
       audio.src = msg.audio;
       audio.play();
   });

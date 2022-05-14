@@ -36,6 +36,18 @@ app.use(notfound);
 app.use(errors);
 // server
 let port = process.env.PORT || 3001;
-server.listen(port, () => {
-  console.log(`El servidor esta corriendo ${port}`);
+const runServer = (port, server) => {
+  server.listen(port, () => {
+    console.log(`El servidor esta corriendo ${port}`);
+  });
+};
+runServer(port, server);
+server.on("error", (e) => {
+  if (e.code === "EADDRINUSE") {
+    console.log("Address in use, retrying...");
+    setTimeout(() => {
+      server.close();
+      runServer(port, server);
+    }, 1000);
+  }
 });

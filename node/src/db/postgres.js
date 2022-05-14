@@ -6,8 +6,8 @@ const postgress = new Client({
   password: process.env.POSTGRES_PASSWORD,
 });
 
-const connectPostgress = async () => {
-  await postgress
+const connectPostgress = () => {
+  postgress
     .connect()
     .then(() => console.log("Connected to Postgres"))
     .catch((err) => console.error("connection Postgress error", err.stack));

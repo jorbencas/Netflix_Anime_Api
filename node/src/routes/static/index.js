@@ -72,12 +72,31 @@ router.use(
   "/chat",
   express.static(path.join(__dirname, "../../static/chat.html"))
 );
-router.get("/notify", (req, res, next) => {
+
+router.get("/chat-leat", (req, res, next) => {
   res.writeHead(200, { "content-type": "video/mp4" });
   let fileName = path.join(
     __dirname,
     "../../static/notifications/notification.mp3"
   );
+  fs.access(fileName, "r", (err) => {
+    if (!err) fs.createReadStream(fileName).pipe(res);
+    else next(err);
+  });
+});
+
+router.get("/notify-send", (req, res, next) => {
+  res.writeHead(200, { "content-type": "video/mp4" });
+  let fileName = path.join(__dirname, "../../static/notifications/send.mp3");
+  fs.access(fileName, "r", (err) => {
+    if (!err) fs.createReadStream(fileName).pipe(res);
+    else next(err);
+  });
+});
+
+router.get("/notify", (req, res, next) => {
+  res.writeHead(200, { "content-type": "video/mp4" });
+  let fileName = path.join(__dirname, "../../static/notifications/recibe.mp3");
   fs.access(fileName, "r", (err) => {
     if (!err) fs.createReadStream(fileName).pipe(res);
     else next(err);

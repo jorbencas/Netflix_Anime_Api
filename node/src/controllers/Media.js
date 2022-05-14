@@ -1,7 +1,7 @@
 const Media = require("../models/Media.js");
 module.exports = {
-  index: (media = null, type = null, id_external = null) => {
-    if (typeof media != "undefined") {
+  index: (media, type, id_external) => {
+    if (typeof media !== "undefined") {
       return Media.find({ $or: media });
     } else {
       return Media.findOne({
