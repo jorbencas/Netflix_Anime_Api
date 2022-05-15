@@ -131,6 +131,12 @@ const responseCustome = (message = "", code = 200, data = null) => {
   }
   return response;
 };
+
+const requestLangsCustome = (code, translations) => {
+  return [{ code }, { translations }];
+};
+
 module.exports = {
   responseCustome,
+  requestLangsCustome,
 };

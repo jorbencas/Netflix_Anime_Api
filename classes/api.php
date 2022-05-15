@@ -177,47 +177,11 @@ class Api extends Config
 
     private function postrequest()
     {
-        $POST = isset($_POST) && count($_POST) > 0 ? $_POST : json_decode(file_get_contents('php://input'), true);
-        // if (count($_POST) > 0) {
-        //     $nuevoPOST = Array();
-        //     foreach($POST as $key=>$valor) {
-        //         $valor = preg_replace('([^A-Za-z0-9])', '', $valor); // faltaria agregar - _ /
-        //         // Para todo el mundo, no se permite:
-        //             if (!isset($this->getHeaders()['admin_token'])) {
-        //                 $valor = str_replace("^","",       $valor);
-        //                 $valor = str_replace("\\","",      $valor);
-        //                 $valor = str_replace("%","",       $valor);
-        //                 $valor = str_replace("[","",       $valor);
-        //                 $valor = str_replace("]","",       $valor);
-        //                 $valor = str_replace("!","",       $valor);
-        //                 $valor = str_replace("¡","",       $valor);
-        //                 $valor = str_replace("?","",       $valor);
-        //                 $valor = str_replace("=","",       $valor);
-        //                 $valor = str_replace("\""," ",     $valor);
-        //                 $valor = str_replace("'"," ",      $valor);
-        //                 $valor = str_replace('\''," ",      $valor);
-        //                 $valor = str_replace("&","",       $valor);
-        //             } else {
-        //                 $valor = str_replace("SLEEP","",   $valor);
-        //                 $valor = str_replace("SELECT","",  $valor);
-        //                 $valor = str_replace("COPY","",    $valor);
-        //                 $valor = str_replace("DELETE","",  $valor);
-        //                 $valor = str_replace("DROP","",    $valor);
-        //                 $valor = str_replace("DUMP","",    $valor);
-        //                 $valor = str_replace(" OR ","",    $valor);
-        //                 $valor = str_replace("LIKE","",    $valor);
-        //                 $valor = str_replace("--"," ",     $valor);
-        //                 $valor = str_replace('%27'," ",     $valor); // '
-        //             }
-        //         // filtrar también el key?
-        //         $key = preg_replace('([^A-Za-z0-9]\-\_\/\??)', '', $key); // faltaria agregar -   
-        //         $nuevoPOST[$key] = $valor;
-        //     }
-        //     return $nuevoPOST;
-        // } else {
-        //     return $POST;
-        // }
-        return $POST;
+        if (isset($_POST) && count($_POST) > 0) {
+            return $_POST;
+        } else {
+            return json_decode(file_get_contents('php://input'), true);
+        }
     }
 
     /**
