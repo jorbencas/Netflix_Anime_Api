@@ -1,7 +1,7 @@
 {
   "name": "netflix_anime_api",
   "version": "1.0.0",
-  "description": "server",
+  "description": "this is a api rest using typescript, using shocketio and graphql",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",

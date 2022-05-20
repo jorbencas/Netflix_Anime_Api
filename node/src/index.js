@@ -14,7 +14,7 @@ const notfound = require("./middlewares/404.js");
 const errors = require("./middlewares/error.js");
 const routes = require("./routes/api/index.js");
 const satics = require("./routes/static/index.js");
-const { apollo } = require("./graphql/index.js");
+// const { apollo } = require("./graphql/index.js");
 connectMongo();
 connectPostgress();
 app.use(express.json());
@@ -28,7 +28,7 @@ app.use(apitoken);
 sockets(server);
 app.use("/api", routes);
 app.use(satics);
-app.use("/graphql", apollo);
+// app.use("/graphql", apollo);
 app.use(notfound);
 app.use(errors);
 let port = process.env.PORT || 3001;
@@ -37,7 +37,7 @@ const runServer = (port, server) => {
     console.log(`El servidor esta corriendo ${port}`);
   });
 };
-runServer(port, http);
+runServer(port, server);
 server.on("error", (e) => {
   if (e.code === "EADDRINUSE") {
     console.log("Address in use, retrying...");
