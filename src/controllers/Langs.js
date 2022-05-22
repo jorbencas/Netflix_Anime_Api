@@ -1,29 +1,22 @@
-const { responseCustome, requestLangsCustome } = require("../utils/index.js");
+const { responseCustome } = require("../utils/index.js");
 const { postgress } = require("../db/postgres.js");
-const { index } = require("./Translations.js");
 
 const getTittleLangs = (req, res, next) => {
   let lang = req.params.lang;
-  let translations = { kind: "langs" };
-  let trans = [];
-  let params = requestLangsCustome(lang, translations);
-  index(params)
+  postgress
+    .query(
+      `SELECT l.code, tf.translation, tf.id_external 
+      FROM langs l inner join translation_filter tf
+      ON(l.id = tf.id_external) 
+      WHERE l.code = ${lang} AND tf.kind = 'langs'`
+    )
     .then((result) => {
-      result.forEach((t) => {
-        let id = t.id_external;
-        postgress
-          .query(`SELECT code FROM langs WHERE id = ${id}`)
-          .then((result) => {
-            t.code = result.rows.code;
-            trans.push(t);
-          })
-          .catch((e) => console.error(e.stack));
-      });
       console.log(trans);
       let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
-      res.json(responseCustome(msg, 200, trans));
+      res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((err) => {
+    .catch((e) => {
+      console.error(e.stack);
       console.error(err);
       let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
       res.status(500).json(responseCustome(msg, 500));

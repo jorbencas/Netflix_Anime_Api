@@ -1,22 +1,9 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-#PHP
-securize.php
-media
-logs
-cache
-# backup
-node/node_modules
-node/.env
-node/package-lock.json
-files/db
-files/animes.json
-files/config2.php
-files/docker.txt
-files/core_class.php
-files/mail.php
-files/webPage.php
-scripts/trigger.sql
+src/media
+node_modules
+.env
+package-lock.json
 
 *.zip
 *.rar
@@ -41,7 +28,6 @@ scripts/trigger.sql
 !.vscode/extensions.json
 
 # misc
-/.sass-cache
 /connect.lock
 /coverage
 /libpeerconnection.log
