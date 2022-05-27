@@ -5,4 +5,4 @@ const langs = require("./langs.js");
 router.use("/translation", translations);
 router.use("/media", media);
 router.use("/langs", langs);
-module.exports = router;
+export default router;

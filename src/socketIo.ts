@@ -1,7 +1,7 @@
 // const { responseCustome } = require("../../utils/index.js");
-const { Server } = require("socket.io");
-module.exports = (http) => {
-  const io = new Server(http, {
+import { Server } from "socket.io";
+export default (http:any) => {
+  const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(http, {
     cors: {
       origins: ["http://localhost:" + process.env.PORT],
     },

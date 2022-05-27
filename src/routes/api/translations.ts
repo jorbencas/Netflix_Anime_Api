@@ -1,6 +1,6 @@
 var router = require("express").Router();
 const { index, newTranslation } = require("../../controllers/Translations.js");
-router.route("/").post((req, res, next) => {
+router.route("/").post((req: Request, res: Response, next: NextFunction) => {
   let translations = req.body.translations.map((element) => {
     element.lang = parseInt(req.body.code);
     if (typeof element.keyword != "undefined") {
@@ -26,7 +26,7 @@ router.route("/new").post(newTranslation);
 //   .get(getTranslation)
 //   .put(replaceTranslation)
 //   .patch(updateTranslation);
-router.use((err, req, res, next) => {
+router.use((err, req: Request, res: Response, next: NextFunction) => {
   next(err);
 });
 module.exports = router;

@@ -1,4 +1,5 @@
-const responseCustome = (message = "", code = 200, data = null) => {
+const responseCustome = (menssage: string = "", code: number = 200, data = null) => {
+  let text: string = "";
   switch (code) {
     case 100:
       text = "Continue";
@@ -116,27 +117,15 @@ const responseCustome = (message = "", code = 200, data = null) => {
       break;
   }
 
-  let response = {
+  let response: object = {
     data: data,
     status: {
       code: code,
       text: text,
-      message: message,
+      message: menssage,
     },
   };
-
-  let msg = response.status.message;
-  if (msg.length === 0 || msg.includes(text)) {
-    delete msg;
-  }
   return response;
 };
 
-const requestLangsCustome = (code, translations) => {
-  return [{ code }, { translations }];
-};
-
-module.exports = {
-  responseCustome,
-  requestLangsCustome,
-};
+export default responseCustome;

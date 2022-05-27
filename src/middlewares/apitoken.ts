@@ -1,6 +1,7 @@
+import { Request, Response, NextFunction } from 'express';
 const { responseCustome } = require("../utils/index.js");
 const isLocalHost = require("./isLocalHost.js");
-module.exports = (req, res, next) => {
+export default (req: Request, res: Response, next: NextFunction) => {
   if (
     !isLocalHost(req) &&
     (typeof req.headers.api_token == "undefined" ||

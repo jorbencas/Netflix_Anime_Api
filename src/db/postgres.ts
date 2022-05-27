@@ -1,10 +1,14 @@
-const { Client } = require("pg");
-const postgress = new Client({
+import { Client, ClientConfig } from "pg";
+
+let port: number = parseInt(`${process.env.POSTGRES_PORT}`);
+let conf: ClientConfig = {
   host: process.env.POSTGRES_HOST,
-  port: process.env.POSTGRES_PORT,
+  port,
   user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-});
+  password: process.env.POSTGRES_PASSWORD
+};
+
+const postgress = new Client(conf);
 
 const connectPostgress = () => {
   postgress
@@ -18,7 +22,7 @@ process.on("uncaughtException", (error) => {
   postgress.end();
 });
 
-module.exports = {
+export {
   postgress,
   connectPostgress,
 };

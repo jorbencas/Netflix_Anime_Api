@@ -1,7 +1,7 @@
 const { responseCustome } = require("../utils/index.js");
 const { postgress } = require("../db/postgres.js");
 
-const getlistanime = (req, res, next) => {
+const getlistanime = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
 
   postgress
@@ -29,7 +29,7 @@ const getlistanime = (req, res, next) => {
     });
 };
 
-const getslides = (req, res, next) => {
+const getslides = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   let first = req.params.first;
   let last = req.params.last;
@@ -70,7 +70,7 @@ const getslides = (req, res, next) => {
     });
 };
 
-const getone = (req, res, next) => {
+const getone = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   let siglas = req.params.siglas;
   postgress
@@ -124,7 +124,7 @@ const getone = (req, res, next) => {
     });
 };
 
-const getFiltersByCode = (req, res, next) => {
+const getFiltersByCode = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -146,7 +146,7 @@ const getFiltersByCode = (req, res, next) => {
     });
 };
 
-const getnumanimes = (req, res, next) => {
+const getnumanimes = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -168,7 +168,7 @@ const getnumanimes = (req, res, next) => {
     });
 };
 
-const lastanimes = (req, res, next) => {
+const lastanimes = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -209,7 +209,7 @@ const lastanimes = (req, res, next) => {
     });
 };
 
-const getfav = (req, res, next) => {
+const getfav = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -231,7 +231,7 @@ const getfav = (req, res, next) => {
     });
 };
 
-const addFavorite = (req, res, next) => {
+const addFavorite = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -253,7 +253,7 @@ const addFavorite = (req, res, next) => {
     });
 };
 
-const removeFavorite = (req, res, next) => {
+const removeFavorite = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(

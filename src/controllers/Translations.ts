@@ -11,14 +11,14 @@ module.exports = {
     res.status(201).json(t);
   },
 
-  getTranslation: (req, res, next) => {
+  getTranslation: (req: Request, res: Response, next: NextFunction) => {
     const { TranslationId } = req.params;
 
     const Translation = Translation.findById(TranslationId);
     res.json(Translation);
   },
 
-  replaceTranslation: (req, res, next) => {
+  replaceTranslation: (req: Request, res: Response, next: NextFunction) => {
     // enforce req.body to contain all fields
     const { TranslationId } = req.params;
     const newTranslation = req.body;
@@ -28,7 +28,7 @@ module.exports = {
     res.json({ success: true });
   },
 
-  updateTranslation: (req, res, next) => {
+  updateTranslation: (req: Request, res: Response, next: NextFunction) => {
     // req.body may contain any number of fields
     const { TranslationId } = req.params;
     const newTranslation = req.body;

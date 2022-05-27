@@ -1,7 +1,7 @@
 const { responseCustome } = require("../utils/index.js");
 const { postgress } = require("../db/postgres.js");
 
-const getTittleLangs = (req, res, next) => {
+const getTittleLangs = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -23,7 +23,7 @@ const getTittleLangs = (req, res, next) => {
     });
 };
 
-const getcodelangs = (req, res, next) => {
+const getcodelangs = (req: Request, res: Response, next: NextFunction) => {
   postgress
     .query("SELECT id, code FROM langs")
     .then((result) => res.json(responseCustome("", 200, result.rows)))

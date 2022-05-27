@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('node:fs');
     fs.access(): check if the file exists and Node.js can access it with its permissions
     fs.appendFile(): append data to a file. If the file does not exist, it's created
     fs.chmod(): change the permissions of a file specified by the filename passed. Related: fs.lchmod(), fs.fchmod()
