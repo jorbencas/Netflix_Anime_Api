@@ -1,7 +1,8 @@
-const { responseCustome } = require("../utils/index.js");
-const { postgress } = require("../db/postgres.js");
+import responseCustome from "../utils/index";
+import { postgress } from "../db/postgres";
+import { Request, Response, NextFunction } from 'express';
 
-const getTittleLangs = (req: Request, res: Response, next: NextFunction) => {
+const getTittleLangs = (req: Request, res: Response) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -11,19 +12,18 @@ const getTittleLangs = (req: Request, res: Response, next: NextFunction) => {
       WHERE l.code = ${lang} AND tf.kind = 'langs'`
     )
     .then((result) => {
-      console.log(trans);
+      console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
       console.error(e.stack);
-      console.error(err);
       let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
       res.status(500).json(responseCustome(msg, 500));
     });
 };
 
-const getcodelangs = (req: Request, res: Response, next: NextFunction) => {
+const getcodelangs = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query("SELECT id, code FROM langs")
     .then((result) => res.json(responseCustome("", 200, result.rows)))
@@ -32,7 +32,7 @@ const getcodelangs = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-module.exports = {
+export {
   getTittleLangs,
   getcodelangs,
 };

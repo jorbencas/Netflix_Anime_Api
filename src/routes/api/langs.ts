@@ -1,5 +1,6 @@
-var router = require("express").Router();
-const { getTittleLangs, getcodelangs } = require("../../controllers/Langs.js");
-router.route("/:lang").get(getTittleLangs);
-router.route("/").get(getcodelangs);
-module.exports = router;
+import { Router } from "express";
+const router = Router();
+import { getTittleLangs, getcodelangs } from "../../controllers/langs";
+router.get("/:lang", getTittleLangs);
+router.get("/", getcodelangs);
+export default router;

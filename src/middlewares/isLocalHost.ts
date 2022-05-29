@@ -1,5 +1,5 @@
-import { Response } from "express";
+import { Request } from 'express';
 
-export default (req: Response) => {
-  return req.header.toString().includes("localhost") ? true : false;
+export default (req: Request) => {
+  return req.headers.host?.includes("localhost") ? true : false;
 };

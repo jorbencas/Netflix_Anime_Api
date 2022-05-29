@@ -1,6 +1,8 @@
-require("dotenv").config();
-const path = require("node:path");
-const fs = require("node:fs");
+import { config } from "dotenv";
+config();
+import path from "node:path";
+import { readdir, access, createReadStream } from "node:fs";
+
 console.log(process.env.MEDIA_PATH);
 // let fileName = path.join(
 //   __dirname,
@@ -13,7 +15,7 @@ let fileName = path.join(
 );
 
 var regex = /(\d+)/g;
-fs.readdir(fileName, (err, files) => {
+readdir(fileName, (err, files) => {
   if (!err) {
     files.forEach((fileName, i) => {
       if (i + 1 < files.length) {
@@ -24,7 +26,7 @@ fs.readdir(fileName, (err, files) => {
   } else console.log(err);
 });
 
-// fs.access(fileName, "r", (err) => {
-//   if (!err) fs.createReadStream(fileName).pipe(res);
+// access(fileName, "r", (err) => {
+//   if (!err) createReadStream(fileName).pipe(res);
 //   else next(err);
 // });

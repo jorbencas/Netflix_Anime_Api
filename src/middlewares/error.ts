@@ -1,16 +1,12 @@
-const { responseCustome } = require("../utils/index.js");
-export default (err, req, res) => {
-  const error = app.get("env") === "dev" ? err.message : "";
-  const status = err.status || 500;
+import { Request, Response } from 'express';
+import responseCustome from "../utils/index";
+
+export default (err: Error, _req: Request, res: Response) => {
+  const error = process.env.NODE_ENV === "dev" ? err.message : "";
+  let status = parseInt(`${err.stack}`) || 500;
   if (err.name === "ValidationError") {
     status = 422;
-    let json = {
-      errors: Object.keys(err.errors).reduce(function (errors, key) {
-        errors[key] = err.errors[key].message;
-        return errors;
-      }, {}),
-    };
-    res.status(status).json(responseCustome(error, status, json));
+    res.status(status).json(responseCustome(error, status, err));
   } else {
     res.status(status).json(responseCustome(error, status));
   }

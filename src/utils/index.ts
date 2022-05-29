@@ -1,4 +1,5 @@
-const responseCustome = (menssage: string = "", code: number = 200, data = null) => {
+import { QueryResult } from "pg";
+const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | null = null) => {
   let text: string = "";
   switch (code) {
     case 100:
@@ -118,14 +119,9 @@ const responseCustome = (menssage: string = "", code: number = 200, data = null)
   }
 
   let response: object = {
-    data: data,
-    status: {
-      code: code,
-      text: text,
-      message: menssage,
-    },
+    data,
+    status: { code, text, message },
   };
   return response;
 };
-
 export default responseCustome;

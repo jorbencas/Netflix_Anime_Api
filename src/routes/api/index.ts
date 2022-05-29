@@ -1,8 +1,9 @@
-var router = require("express").Router();
-const translations = require("./translations.js");
-const media = require("./media.js");
-const langs = require("./langs.js");
-router.use("/translation", translations);
-router.use("/media", media);
+import { Router } from "express";
+import langs from "./langs";
+import animes from "./animes";
+import episodes from "./episodes";
+const router = Router();
 router.use("/langs", langs);
+router.use("/animes", animes);
+router.use("/episodes", episodes);
 export default router;

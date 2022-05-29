@@ -1,4 +1,4 @@
-FROM node:12.18.4-alpine as base-node
+FROM node:16.15.0-alpine
 ENV NODE_ENV=dev
 RUN mkdir -p /usr/app
 WORKDIR /usr/app

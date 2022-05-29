@@ -1,11 +1,13 @@
-import { Request, Response, NextFunction, express } from "express";
-var router = express.Router();
-import { postgress } from "../../db/postgres";
-router.get("/pg", (req: Request, res: Response, next: NextFunction) => {
-  postgress
-    .query("SELECT * FROM animes")
-    .then((result) => res.json(responseCustome("", 200, result.rows)))
-    .catch((e) => console.error(e.stack))
-    .then(() => postgress.end());
-});
+import { Router } from "express";
+import { addFavorite, getfav, getlistanime, getnumanimes, getone, getslides, lastanimes, removeFavorite } from "../../controllers/animes";
+var router = Router();
+router.get("/", getlistanime);
+router.get("/:first/:last", getslides);
+router.get("/:siglas", getone);
+router.get("/:num", getnumanimes);
+router.get("/lastanimes/:siglas", lastanimes);
+router.route("favorites/")
+.get(getfav)
+.post(addFavorite)
+.delete(removeFavorite);
 export default router;

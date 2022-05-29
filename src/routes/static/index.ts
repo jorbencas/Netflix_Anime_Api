@@ -1,105 +1,45 @@
 import path from "node:path";
-import fs from "node:fs";
+import { access, createReadStream } from "node:fs";
 import express, { Request, Response, NextFunction } from "express";
+import banner from "./banner";
+import episodes from "./episodes";
+import endings from "./endings";
+import openings from "./openings";
+import portada from "./portada";
 var router = express.Router();
-router.get("/animes", (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
-  let fileName = path.join(
-    __dirname,
-    "/../../" + process.env.MEDIA_PATH + "/CY/openings/02.webm"
-  );
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
-    else next(err);
-  });
-});
-router.get("/banner", (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
-  let fileName = path.join(
-    __dirname,
-    process.env.MEDIA_PATH + "/CY/openings/01.mp4"
-  );
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
-    else next(err);
-  });
-});
-router.get("/endings", (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
-  let fileName = path.join(
-    __dirname,
-    process.env.MEDIA_PATH + "/CY/openings/01.mp4"
-  );
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
-    else next(err);
-  });
-});
-router.get("/episodes", (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
-  let fileName = path.join(
-    __dirname,
-    process.env.MEDIA_PATH + "/CY/openings/01.mp4"
-  );
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
-    else next(err);
-  });
-});
-router.get("/openings", (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
-  let fileName = path.join(
-    __dirname,
-    process.env.MEDIA_PATH + "/CY/openings/01.mp4"
-  );
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
-    else next(err);
-  });
-});
-router.get("/portada", (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
-  let fileName = path.join(
-    __dirname,
-    process.env.MEDIA_PATH + "/CY/openings/01.mp4"
-  );
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
-    else next(err);
-  });
-});
-router.use(
-  "/chat",
-  express.static(path.join(__dirname, "../../static/chat.html"))
-);
-
-router.get("/chat-leat", (req: Request, res: Response, next: NextFunction) => {
+router.use("/banner", banner);
+router.use("/endings", endings);
+router.use("/episodes", episodes);
+router.use("/openings", openings);
+router.use("/portada", portada);
+router.use("/chat", express.static(path.join(__dirname, "../../static/chat.html")));
+router.get("/chat-leat", (_req: Request, res: Response, next: NextFunction) => {
   res.writeHead(200, { "content-type": "video/mp4" });
   let fileName = path.join(
     __dirname,
     "../../static/notifications/notification.mp3"
   );
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
+  access(fileName, 7, (err) => {
+    if (!err) createReadStream(fileName).pipe(res);
     else next(err);
   });
 });
 router.get(
   "/notify-send",
-  (req: Request, res: Response, next: NextFunction) => {
+  (_req: Request, res: Response, next: NextFunction) => {
     res.writeHead(200, { "content-type": "video/mp4" });
     let fileName = path.join(__dirname, "../../static/notifications/send.mp3");
-    fs.access(fileName, 7, (err) => {
-      if (!err) fs.createReadStream(fileName).pipe(res);
+    access(fileName, 7, (err) => {
+      if (!err) createReadStream(fileName).pipe(res);
       else next(err);
     });
   }
 );
-router.get("/notify", (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
+router.get("/notify", (_req: Request, res: Response, next: NextFunction) => {
+  res.writeHead(200, { "content-type": "audio/mp3" });
   let fileName = path.join(__dirname, "../../static/notifications/recibe.mp3");
-  fs.access(fileName, 7, (err) => {
-    if (!err) fs.createReadStream(fileName).pipe(res);
+  access(fileName, 7, (err) => {
+    if (!err) createReadStream(fileName).pipe(res);
     else next(err);
   });
 });

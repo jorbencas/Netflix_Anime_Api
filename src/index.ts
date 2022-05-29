@@ -1,8 +1,8 @@
 import { config } from "dotenv";
+config();
 import { connectMongo } from "./db/mongo";
 import { connectPostgress } from "./db/postgres";
 import express from "express";
-const app = express();
 import { createServer } from "node:http";
 import sockets from "./socketIo";
 import morgan from "morgan";
@@ -13,8 +13,9 @@ import apitoken from "./middlewares/apitoken";
 import notfound from "./middlewares/404";
 import errors from "./middlewares/error";
 import routes from "./routes/api/index";
-import satics from "./routes/static/index";// import { apollo } from "./graphql/index";
-config();
+import satics from "./routes/static/index";
+// import { apollo } from "./graphql/index";
+const app = express();
 const server = createServer(app);
 connectMongo();
 connectPostgress();
@@ -32,10 +33,10 @@ app.use(satics);
 // app.use("/graphql", apollo);
 app.use(notfound);
 app.use(errors);
-var port: number = parseInt(process.env.PORT || '3001');
+var port: number = parseInt(`${process.env.PORT}`);
 var hostname: string = process.env.HOSTNAME || "127.0.0.1";
 server.listen(port, hostname, () => {
-  console.log(`El servidor esta corriendo 😱 😋 :  http://${hostname}:${port}/`);
+  console.log(`El servidor esta corriendo: 😱 😋 http://${hostname}:${port}`);
 }).on("error", (e) => {
   console.log("Address in use, retrying..." + e.message);
 }).close();

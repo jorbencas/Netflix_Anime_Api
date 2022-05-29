@@ -1,7 +1,14 @@
-const isImage = (extension) => {
+const isDocument = (extension: string) => {
+  return extension.toLowerCase() == "pdf" ? true : false;
+};
+
+const isMusic = (extension: string) => {
+  return extension.toLowerCase() == "mp3" ? true : false;
+};
+
+const isImage = (extension: string) => {
   let valid = false;
-  extension = extension.toLowerCase();
-  switch (extension) {
+  switch (extension.toLowerCase()) {
     case "jpg":
     case "gif":
     case "png":
@@ -15,22 +22,9 @@ const isImage = (extension) => {
   return valid;
 };
 
-const isDocument = (extension) => {
-  extension = extension.toLowerCase();
-  switch (extension) {
-    case "pdf":
-      valid = true;
-      break;
-    default:
-      valid = false;
-      break;
-  }
-  return valid;
-};
-
-const isVideo = (extension) => {
-  let extension = extension.toLowerCase();
-  switch (extension) {
+const isVideo = (extension: string) => {
+  let valid = false;
+  switch (extension.toLowerCase()) {
     case "mp4":
     case "webm":
       valid = true;
@@ -42,16 +36,7 @@ const isVideo = (extension) => {
   return valid;
 };
 
-const isMusic = (extension) => {
-  let valid = false;
-  extension = extension.toLowerCase();
-  if (extension == "mp3") {
-    valid = true;
-  }
-  return valid;
-};
-
-module.exports = {
+export {
   isImage,
   isDocument,
   isVideo,

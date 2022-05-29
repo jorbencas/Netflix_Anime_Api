@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-const { responseCustome } = require("../utils/index.js");
-const isLocalHost = require("./isLocalHost.js");
+import responseCustome from "../utils/index";
+import isLocalHost from "./isLocalHost";
+
 export default (req: Request, res: Response, next: NextFunction) => {
   if (
     !isLocalHost(req) &&

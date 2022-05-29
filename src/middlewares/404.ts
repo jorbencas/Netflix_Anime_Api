@@ -1,6 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
-const { responseCustome } = require("../utils/index.js");
-export default (req: Request, res: Response, next: NextFunction) => {
+import { Request, Response } from 'express';
+import responseCustome from "../utils/index";
+
+export default (_req: Request, res: Response) => {
   let status = 404;
   res.status(status).json(responseCustome("Endpoint Not found", status)).end();
 };
