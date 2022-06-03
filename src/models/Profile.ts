@@ -1,22 +1,22 @@
- <?php
-  class Profile extends Database
-  {
-    private $id;
-    private $nombre;
-    private $username;
 
-    public function __construct()
+  class Profile 
+  {
+    private id;
+    private nombre;
+    private username;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -24,19 +24,19 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of nombre
      */
-    public function getNombre()
+    public getNombre()
     {
-      return $this->nombre;
+      return this.nombre;
     }
 
     /**
@@ -44,19 +44,19 @@
      *
      * @return  self
      */
-    public function setNombre($nombre)
+    public setNombre($nombre)
     {
-      $this->nombre = $nombre;
+      this.nombre = nombre;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of username
      */
-    public function getUsername()
+    public getUsername()
     {
-      return $this->username;
+      return this.username;
     }
 
     /**
@@ -64,10 +64,10 @@
      *
      * @return  self
      */
-    public function setUsername($username)
+    public setUsername($username)
     {
-      $this->username = $username;
+      this.username = username;
 
-      return $this;
+      return this;
     }
   }

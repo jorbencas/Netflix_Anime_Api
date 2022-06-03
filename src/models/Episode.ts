@@ -1,15 +1,15 @@
- <?php
-  class Episode extends Database
-  {
-    private $id;
-    private $anime;
-    private $num;
-    private $seasion;
-    private $madia_type;
-    private $madia_name;
-    private $madia_extension;
 
-    public function __construct()
+  class Episode 
+  {
+    private id;
+    private anime;
+    private num;
+    private seasion;
+    private madia_type;
+    private madia_name;
+    private madia_extension;
+
+    public __construct()
     {
       parent::__construct();
     }
@@ -18,9 +18,9 @@
     /**
      * Get the value of seasion
      */
-    public function getSeasion()
+    public getSeasion()
     {
-      return $this->seasion;
+      return this.seasion;
     }
 
     /**
@@ -28,19 +28,19 @@
      *
      * @return  self
      */
-    public function setSeasion($seasion)
+    public setSeasion($seasion)
     {
-      $this->seasion = $seasion;
+      this.seasion = seasion;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of madia_name
      */
-    public function getMadia_name()
+    public getMadia_name()
     {
-      return $this->madia_name;
+      return this.madia_name;
     }
 
     /**
@@ -48,19 +48,19 @@
      *
      * @return  self
      */
-    public function setMadia_name($madia_name)
+    public setMadia_name($madia_name)
     {
-      $this->madia_name = $madia_name;
+      this.madia_name = madia_name;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of madia_type
      */
-    public function getMadia_type()
+    public getMadia_type()
     {
-      return $this->madia_type;
+      return this.madia_type;
     }
 
     /**
@@ -68,19 +68,19 @@
      *
      * @return  self
      */
-    public function setMadia_type($madia_type)
+    public setMadia_type($madia_type)
     {
-      $this->madia_type = $madia_type;
+      this.madia_type = madia_type;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of madia_extension
      */
-    public function getMadia_extension()
+    public getMadia_extension()
     {
-      return $this->madia_extension;
+      return this.madia_extension;
     }
 
     /**
@@ -88,19 +88,19 @@
      *
      * @return  self
      */
-    public function setMadia_extension($madia_extension)
+    public setMadia_extension($madia_extension)
     {
-      $this->madia_extension = $madia_extension;
+      this.madia_extension = madia_extension;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of num
      */
-    public function getNum()
+    public getNum()
     {
-      return $this->num;
+      return this.num;
     }
 
     /**
@@ -108,19 +108,19 @@
      *
      * @return  self
      */
-    public function setNum($num)
+    public setNum($num)
     {
-      $this->num = $num;
+      this.num = num;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of anime
      */
-    public function getAnime()
+    public getAnime()
     {
-      return $this->anime;
+      return this.anime;
     }
 
     /**
@@ -128,19 +128,19 @@
      *
      * @return  self
      */
-    public function setAnime($anime)
+    public setAnime($anime)
     {
-      $this->anime = $anime;
+      this.anime = anime;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -150,8 +150,8 @@
      */
     public function setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }

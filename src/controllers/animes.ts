@@ -2,7 +2,7 @@ import responseCustome from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response } from 'express';
 
-const getlistanime = (req: Request, res: Response) => {
+const getlist = (req: Request, res: Response) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -19,11 +19,11 @@ const getlistanime = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
@@ -58,16 +58,16 @@ const getslides = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
 
-const getone = (req: Request, res: Response) => {
+const getOne = (req: Request, res: Response) => {
   let lang = req.params.lang;
   let siglas = req.params.siglas;
   postgress
@@ -77,13 +77,13 @@ const getone = (req: Request, res: Response) => {
         (SELECT ta.translation 
           FROM translation_animes ta 
           ON(ta.anime = a.siglas) 
-          WHERE ta.lang = ${lang} 
+          WHERE ta.lang = {lang} 
           AND ta.kind = 'titulo'
         ) AS titulo,
         (SELECT ta.translation 
           FROM translation_animes ta 
           ON(ta.anime = a.siglas) 
-          WHERE ta.lang = ${lang} 
+          WHERE ta.lang = {lang} 
           AND ta.kind = 'sinopsis'
         ) AS sinopsis,
         (SELECT ma.name, ma.extension
@@ -108,16 +108,16 @@ const getone = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
 
-const getFiltersByCode = (req: Request, res: Response) => {
+const getNum = (req: Request, res: Response) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -128,36 +128,57 @@ const getFiltersByCode = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
 
-const getnumanimes = (req: Request, res: Response) => {
+const lastByGenere = (req: Request, res: Response) => {
   let lang = req.params.lang;
   postgress
     .query(
-      `SELECT l.code, tf.translation, tf.id_external 
-    FROM langs l inner join translation_filter tf
-    ON(l.id = tf.id_external) 
-    WHERE l.code = ${lang} AND tf.kind = 'langs'`
+      `SELECT a.valorations, a.siglas, a.state,
+        a.date_publication, a.date_finalization,
+        (SELECT ta.translation 
+          FROM translation_animes ta 
+          ON(ta.anime = a.siglas) 
+          WHERE ta.lang = ${lang} 
+          AND ta.kind = 'titulo'
+        ) AS titulo,
+        (SELECT ma.name, ma.extension
+          FROM media_animes ma 
+          ON(ma.anime = a.siglas) 
+          WHERE ma.type = 'portada'
+        ) AS portada,
+        (SELECT f.code, tf.translation FROM anime_generes ag 
+          INNER JOIN filers f 
+          ON(f.id = ag.genere AND a.siglas = ag.anime)
+          INNER JOIN translation_filters tf ON(tf.id_external = f.id) 
+          WHERE tf.lang = '${lang}'
+        ) AS generes_code, generes_name
+      FROM animes a inner join anime_generes ag
+      ON(a.siglas = ag.anime) 
+      WHERE ag.genere = (SELECT DISTINCT ON(f.code) f.code 
+    FROM filters AS f 
+    ON ag.generes LIKE ('%' || f.code::text || '%') 
+    WHERE f.kind = 'generes')`
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
 
-const lastanimes = (req: Request, res: Response) => {
+const last = (req: Request, res: Response) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -186,16 +207,16 @@ const lastanimes = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
 
-const getfav = (req: Request, res: Response) => {
+const getFavorite = (req: Request, res: Response) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -206,11 +227,11 @@ const getfav = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
@@ -226,11 +247,11 @@ const addFavorite = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
@@ -246,23 +267,23 @@ const removeFavorite = (req: Request, res: Response) => {
     )
     .then((result) => {
       console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma ${lang}`;
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
       res.status(500).json(responseCustome(msg, 500, e.stack));
     });
 };
 
 export {
-  getlistanime,
+  getlist,
   getslides,
-  getone,
-  getFiltersByCode,
-  getnumanimes,
-  lastanimes,
-  getfav,
+  getOne,
+  getNum,
+  last,
+  lastByGenere,
+  getFavorite,
   addFavorite,
   removeFavorite
 };

@@ -1,21 +1,21 @@
- <?php
-  class Anime_genere extends Database
-  {
-    private $id;
-    private $genere;
-    private $anime;
 
-    public function __construct()
+  class Anime_genere 
+  {
+    private id;
+    private genere;
+    private anime;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -23,19 +23,19 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of anime
      */
-    public function getAnime()
+    public getAnime()
     {
-      return $this->anime;
+      return this.anime;
     }
 
     /**
@@ -43,19 +43,19 @@
      *
      * @return  self
      */
-    public function setAnime($anime)
+    public setAnime($anime)
     {
-      $this->anime = $anime;
+      this.anime = anime;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of genere
      */
-    public function getGenere()
+    public getGenere()
     {
-      return $this->genere;
+      return this.genere;
     }
 
     /**
@@ -63,10 +63,10 @@
      *
      * @return  self
      */
-    public function setGenere($genere)
+    public setGenere($genere)
     {
-      $this->genere = $genere;
+      this.genere = genere;
 
-      return $this;
+      return this;
     }
   }

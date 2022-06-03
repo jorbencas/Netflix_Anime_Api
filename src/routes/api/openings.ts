@@ -1,19 +1,14 @@
 import { Router } from "express";
 import { getOne,
   getbyAnime,
-  getLastepisodes,
+  getLast,
   getidrand,
-  inserteditOneepisode,
-  deleteOneepisode,
-  deleteEpisodesbyanime } from "../../controllers/episodes";
+  insertEdit,
+  deleteOne,
+  deletebyanime } from "../../controllers/episodes";
 var router = Router();
-router.get("/", getidrand);
-router
-.get("/:siglas", getbyAnime)
-.delete("/:siglas", deleteOneepisode);
-router
-.get("/:id", getOne)
-.post("/:id", inserteditOneepisode)
-.delete("/:id", deleteEpisodesbyanime);
-router.get("/:num", getLastepisodes);
+router.get("/:lang/", getidrand);
+router.route("/:lang/:siglas").get(getbyAnime).delete(deleteOne);
+router.route("/:lang/:id").get(getOne).post(insertEdit).delete(deletebyanime);
+router.get("/:lang/:num", getLast);
 export default router;

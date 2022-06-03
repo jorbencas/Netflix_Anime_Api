@@ -1,21 +1,21 @@
- <?php
-  class Collection extends Database
-  {
-    private $id;
-    private $name;
-    private $profile;
 
-    public function __construct()
+  class Collection 
+  {
+    private id;
+    private name;
+    private profile;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
     /**
      * Get the value of profile
      */
-    public function getProfile()
+    public getProfile()
     {
-      return $this->profile;
+      return this.profile;
     }
 
     /**
@@ -23,19 +23,19 @@
      *
      * @return  self
      */
-    public function setProfile($profile)
+    public setProfile($profile)
     {
-      $this->profile = $profile;
+      this.profile = profile;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of name
      */
-    public function getName()
+    public getName()
     {
-      return $this->name;
+      return this.name;
     }
 
     /**
@@ -43,19 +43,19 @@
      *
      * @return  self
      */
-    public function setName($name)
+    public setName($name)
     {
-      $this->name = $name;
+      this.name = name;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -63,10 +63,10 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }

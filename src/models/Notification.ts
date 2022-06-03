@@ -1,22 +1,22 @@
- <?php
-  class Notification extends Database
-  {
-    private $id;
-    private $name;
-    private $avaible;
-    private $config;
 
-    public function __construct()
+  class Notification 
+  {
+    private id;
+    private name;
+    private avaible;
+    private config;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
     /**
      * Get the value of config
      */
-    public function getConfig()
+    public getConfig()
     {
-      return $this->config;
+      return this.config;
     }
 
     /**
@@ -24,19 +24,19 @@
      *
      * @return  self
      */
-    public function setConfig($config)
+    public setConfig($config)
     {
-      $this->config = $config;
+      this.config = config;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of avaible
      */
-    public function getAvaible()
+    public getAvaible()
     {
-      return $this->avaible;
+      return this.avaible;
     }
 
     /**
@@ -44,19 +44,19 @@
      *
      * @return  self
      */
-    public function setAvaible($avaible)
+    public setAvaible($avaible)
     {
-      $this->avaible = $avaible;
+      this.avaible = avaible;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of name
      */
-    public function getName()
+    public getName()
     {
-      return $this->name;
+      return this.name;
     }
 
     /**
@@ -64,19 +64,19 @@
      *
      * @return  self
      */
-    public function setName($name)
+    public setName($name)
     {
-      $this->name = $name;
+      this.name = name;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -84,10 +84,10 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }

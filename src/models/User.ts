@@ -1,25 +1,25 @@
- <?php
-  class User extends Database
+
+  class User 
   {
-    private $username;
-    private $nombre;
-    private $apellidos;
-    private $email;
-    private $password;
-    private $date_birthday;
-    private $tipo;
-    private $dni;
-    private $acess_token;
-    private $admin_token;
-    private $activado;
-    private $genere;
+    private username;
+    private nombre;
+    private apellidos;
+    private email;
+    private password;
+    private date_birthday;
+    private tipo;
+    private dni;
+    private acess_token;
+    private admin_token;
+    private activado;
+    private genere;
 
     /**
      * Get the value of password
      */
-    public function getPassword()
+    public getPassword()
     {
-      return $this->password;
+      return this.password;
     }
 
     /**
@@ -27,19 +27,19 @@
      *
      * @return  self
      */
-    public function setPassword($password)
+    public setPassword($password)
     {
-      $this->password = $password;
+      this.password = password;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of activado
      */
-    public function getActivado()
+    public getActivado()
     {
-      return $this->activado;
+      return this.activado;
     }
 
     /**
@@ -47,19 +47,19 @@
      *
      * @return  self
      */
-    public function setActivado($activado)
+    public setActivado($activado)
     {
-      $this->activado = $activado;
+      this.activado = activado;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of acess_token
      */
-    public function getAcess_token()
+    public getAcess_token()
     {
-      return $this->acess_token;
+      return this.acess_token;
     }
 
     /**
@@ -67,19 +67,19 @@
      *
      * @return  self
      */
-    public function setAcess_token($acess_token)
+    public setAcess_token($acess_token)
     {
-      $this->acess_token = $acess_token;
+      this.acess_token = acess_token;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of email
      */
-    public function getEmail()
+    public getEmail()
     {
-      return $this->email;
+      return this.email;
     }
 
     /**
@@ -87,19 +87,19 @@
      *
      * @return  self
      */
-    public function setEmail($email)
+    public setEmail($email)
     {
-      $this->email = $email;
+      this.email = email;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of username
      */
-    public function getUsername()
+    public getUsername()
     {
-      return $this->username;
+      return this.username;
     }
 
     /**
@@ -107,19 +107,19 @@
      *
      * @return  self
      */
-    public function setUsername($username)
+    public setUsername($username)
     {
-      $this->username = $username;
+      this.username = username;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of nombre
      */
-    public function getNombre()
+    public getNombre()
     {
-      return $this->nombre;
+      return this.nombre;
     }
 
     /**
@@ -127,19 +127,19 @@
      *
      * @return  self
      */
-    public function setNombre($nombre)
+    public setNombre($nombre)
     {
-      $this->nombre = $nombre;
+      this.nombre = nombre;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of apellidos
      */
-    public function getApellidos()
+    public getApellidos()
     {
-      return $this->apellidos;
+      return this.apellidos;
     }
 
     /**
@@ -147,19 +147,19 @@
      *
      * @return  self
      */
-    public function setApellidos($apellidos)
+    public setApellidos($apellidos)
     {
-      $this->apellidos = $apellidos;
+      this.apellidos = apellidos;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of tipo
      */
-    public function getTipo()
+    public getTipo()
     {
-      return $this->tipo;
+      return this.tipo;
     }
 
     /**
@@ -167,19 +167,19 @@
      *
      * @return  self
      */
-    public function setTipo($tipo)
+    public setTipo($tipo)
     {
-      $this->tipo = $tipo;
+      this.tipo = tipo;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of dni
      */
-    public function getDni()
+    public getDni()
     {
-      return $this->dni;
+      return this.dni;
     }
 
     /**
@@ -187,19 +187,19 @@
      *
      * @return  self
      */
-    public function setDni($dni)
+    public setDni($dni)
     {
-      $this->dni = $dni;
+      this.dni = dni;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of date_birthday
      */
-    public function getDate_birthday()
+    public getDate_birthday()
     {
-      return $this->date_birthday;
+      return this.date_birthday;
     }
 
     /**
@@ -207,19 +207,19 @@
      *
      * @return  self
      */
-    public function setDate_birthday($date_birthday)
+    public setDate_birthday($date_birthday)
     {
-      $this->date_birthday = $date_birthday;
+      this.date_birthday = date_birthday;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of genere
      */
-    public function getGenere()
+    public getGenere()
     {
-      return $this->genere;
+      return this.genere;
     }
 
     /**
@@ -227,19 +227,19 @@
      *
      * @return  self
      */
-    public function setGenere($genere)
+    public setGenere($genere)
     {
-      $this->genere = $genere;
+      this.genere = genere;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of admin_token
      */
-    public function getAdmin_token()
+    public getAdmin_token()
     {
-      return $this->admin_token;
+      return this.admin_token;
     }
 
     /**
@@ -247,10 +247,10 @@
      *
      * @return  self
      */
-    public function setAdmin_token($admin_token)
+    public setAdmin_token($admin_token)
     {
-      $this->admin_token = $admin_token;
+      this.admin_token = admin_token;
 
-      return $this;
+      return this;
     }
   }

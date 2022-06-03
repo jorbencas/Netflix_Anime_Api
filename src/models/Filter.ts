@@ -1,22 +1,22 @@
- <?php
-  class Filter extends Database
-  {
-    private $id;
-    private $code;
-    private $kind;
 
-    public function __construct()
+  class Filter 
+  {
+    private id: number;
+    private code:string;
+    private kind:string;
+
+    public  __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -24,19 +24,19 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of code
      */
-    public function getCode()
+    public getCode()
     {
-      return $this->code;
+      return this.code;
     }
 
     /**
@@ -44,19 +44,19 @@
      *
      * @return  self
      */
-    public function setCode($code)
+    public setCode($code)
     {
-      $this->code = $code;
+      this.code = code;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of kind
      */
-    public function getKind()
+    public getKind()
     {
-      return $this->kind;
+      return this.kind;
     }
 
     /**
@@ -64,10 +64,10 @@
      *
      * @return  self
      */
-    public function setKind($kind)
+    public setKind($kind)
     {
-      $this->kind = $kind;
+      this.kind = kind;
 
-      return $this;
+      return this;
     }
   }

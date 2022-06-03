@@ -1,21 +1,21 @@
- <?php
-  class Season extends Database
-  {
-    private $id;
-    private $title;
 
-    public function __construct()
+  class Season 
+  {
+    private id;
+    private title;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of title
      */
-    public function getTitle()
+    public getTitle()
     {
-      return $this->title;
+      return this.title;
     }
 
     /**
@@ -23,19 +23,19 @@
      *
      * @return  self
      */
-    public function setTitle($title)
+    public setTitle($title)
     {
-      $this->title = $title;
+      this.title = title;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -43,10 +43,10 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }

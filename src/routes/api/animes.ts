@@ -1,13 +1,19 @@
 import { Router } from "express";
-import { addFavorite, getfav, getlistanime, getnumanimes, getone, getslides, lastanimes, removeFavorite } from "../../controllers/animes";
+import { getlist, 
+    getNum, 
+    getOne, 
+    getslides, 
+    last,
+    lastByGenere,
+    removeFavorite,
+    addFavorite,
+    getFavorite } from "../../controllers/animes";
 var router = Router();
-router.get("/", getlistanime);
-router.get("/:first/:last", getslides);
-router.get("/:siglas", getone);
-router.get("/:num", getnumanimes);
-router.get("/lastanimes/:siglas", lastanimes);
-router.route("favorites/")
-.get(getfav)
-.post(addFavorite)
-.delete(removeFavorite);
+router.get("/:lang/", getlist);
+router.get("/lastByGenere/:lang/", lastByGenere);
+router.get("/:lang/:first/:last", getslides);
+router.get("/:lang/:siglas", getOne);
+router.get("/:lang/:num", getNum);
+router.get("/lastanimes/:lang/:siglas", last);
+router.route("favorites/").get(getFavorite).post(addFavorite).delete(removeFavorite);
 export default router;

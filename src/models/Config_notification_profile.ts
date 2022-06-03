@@ -1,23 +1,23 @@
- <?php
-  class Config_notification_profile extends Database
-  {
-    private $id;
-    private $kind;
-    private $profile;
-    private $sound;
 
-    public function __construct()
+  class Config_notification_profile 
+  {
+    private id;
+    private kind;
+    private profile;
+    private sound;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of sound
      */
-    public function getSound()
+    public getSound()
     {
-      return $this->sound;
+      return this.sound;
     }
 
     /**
@@ -25,19 +25,19 @@
      *
      * @return  self
      */
-    public function setSound($sound)
+    public setSound($sound)
     {
-      $this->sound = $sound;
+      this.sound = sound;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of profile
      */
-    public function getProfile()
+    public getProfile()
     {
-      return $this->profile;
+      return this.profile;
     }
 
     /**
@@ -45,19 +45,19 @@
      *
      * @return  self
      */
-    public function setProfile($profile)
+    public setProfile($profile)
     {
-      $this->profile = $profile;
+      this.profile = profile;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of kind
      */
-    public function getKind()
+    public getKind()
     {
-      return $this->kind;
+      return this.kind;
     }
 
     /**
@@ -65,19 +65,19 @@
      *
      * @return  self
      */
-    public function setKind($kind)
+    public setKind($kind)
     {
-      $this->kind = $kind;
+      this.kind = kind;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -85,10 +85,10 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }

@@ -1,5 +1,5 @@
- <?php class UserGroup extends Database {
-  private $id;
-  private $username;
-  private $group;
+ class UserGroup  {
+  private id;
+  private username;
+  private group;
 }

@@ -1,23 +1,23 @@
- <?php
-  class History extends Database
-  {
-    private $id;
-    private $episode;
-    private $profile;
-    private $time;
 
-    public function __construct()
+  class History 
+  {
+    private id;
+    private episode;
+    private profile;
+    private time;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -25,19 +25,19 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of episode
      */
-    public function getEpisode()
+    public getEpisode()
     {
-      return $this->episode;
+      return this.episode;
     }
 
     /**
@@ -45,19 +45,19 @@
      *
      * @return  self
      */
-    public function setEpisode($episode)
+    public setEpisode($episode)
     {
-      $this->episode = $episode;
+      this.episode = episode;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of profile
      */
-    public function getProfile()
+    public getProfile()
     {
-      return $this->profile;
+      return this.profile;
     }
 
     /**
@@ -65,19 +65,19 @@
      *
      * @return  self
      */
-    public function setProfile($profile)
+    public setProfile($profile)
     {
-      $this->profile = $profile;
+      this.profile = profile;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of time
      */
-    public function getTime()
+    public getTime()
     {
-      return $this->time;
+      return this.time;
     }
 
     /**
@@ -85,10 +85,10 @@
      *
      * @return  self
      */
-    public function setTime($time)
+    public setTime($time)
     {
-      $this->time = $time;
+      this.time = time;
 
-      return $this;
+      return this;
     }
   }

@@ -1,24 +1,24 @@
- <?php
-  class Translation_anime extends Database
-  {
-    private $id;
-    private $translation;
-    private $kind;
-    private $lang;
-    private $anime;
 
-    public function __construct()
+  class Translation_anime 
+  {
+    private id;
+    private translation;
+    private kind;
+    private lang;
+    private anime;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -26,19 +26,19 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of translation
      */
-    public function getTranslation()
+    public getTranslation()
     {
-      return $this->translation;
+      return this.translation;
     }
 
     /**
@@ -46,19 +46,19 @@
      *
      * @return  self
      */
-    public function setTranslation($translation)
+    public setTranslation($translation)
     {
-      $this->translation = $translation;
+      this.translation = translation;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of kind
      */
-    public function getKind()
+    public getKind()
     {
-      return $this->kind;
+      return this.kind;
     }
 
     /**
@@ -66,19 +66,19 @@
      *
      * @return  self
      */
-    public function setKind($kind)
+    public setKind($kind)
     {
-      $this->kind = $kind;
+      this.kind = kind;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of lang
      */
-    public function getLang()
+    public getLang()
     {
-      return $this->lang;
+      return this.lang;
     }
 
     /**
@@ -86,19 +86,19 @@
      *
      * @return  self
      */
-    public function setLang($lang)
+    public setLang($lang)
     {
-      $this->lang = $lang;
+      this.lang = lang;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of anime
      */
-    public function getAnime()
+    public getAnime()
     {
-      return $this->anime;
+      return this.anime;
     }
 
     /**
@@ -106,10 +106,10 @@
      *
      * @return  self
      */
-    public function setAnime($anime)
+    public setAnime($anime)
     {
-      $this->anime = $anime;
+      this.anime = anime;
 
-      return $this;
+      return this;
     }
   }

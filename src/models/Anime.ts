@@ -1,26 +1,26 @@
- <?php
-  class Anime extends Database
-  {
-    private $siglas;
-    private $idiomas;
-    private $date_publication;
-    private $date_finalization;
-    private $state;
-    private $kind;
-    private $valorations;
-    private $temporada;
 
-    public function __construct()
+  class Anime 
+  {
+    private siglas;
+    private idiomas;
+    private date_publication;
+    private date_finalization;
+    private state;
+    private kind;
+    private valorations;
+    private temporada;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
     /**
      * Get the value of state
      */
-    public function getState()
+    public getState()
     {
-      return $this->state;
+      return this.state;
     }
 
     /**
@@ -28,19 +28,19 @@
      *
      * @return  self
      */
-    public function setState($state)
+    public setState($state)
     {
-      $this->state = $state;
+      this.state = state;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of idiomas
      */
-    public function getIdiomas()
+    public getIdiomas()
     {
-      return $this->idiomas;
+      return this.idiomas;
     }
 
     /**
@@ -48,46 +48,46 @@
      *
      * @return  self
      */
-    public function setIdiomas($idiomas)
+    public setIdiomas($idiomas)
     {
-      $this->idiomas = $idiomas;
+      this.idiomas = idiomas;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of siglas
      */
-    public function getSiglas()
+    public getSiglas()
     {
-      return $this->siglas;
+      return this.siglas;
     }
 
-    public function setSiglas($siglas)
+    public setSiglas($siglas)
     {
-      $this->siglas = $siglas;
+      this.siglas = siglas;
 
-      return $this;
+      return this;
     }
 
-    public function getDate_publication()
+    public getDate_publication()
     {
-      return $this->date_publication;
+      return this.date_publication;
     }
 
-    public function setDate_publication($date_publication)
+    public setDate_publication($date_publication)
     {
-      $this->date_publication = $date_publication;
+      this.date_publication = date_publication;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of date_finalization
      */
-    public function getDate_finalization()
+    public getDate_finalization()
     {
-      return $this->date_finalization;
+      return this.date_finalization;
     }
 
     /**
@@ -95,19 +95,19 @@
      *
      * @return  self
      */
-    public function setDate_finalization($date_finalization)
+    public setDate_finalization($date_finalization)
     {
-      $this->date_finalization = $date_finalization;
+      this.date_finalization = date_finalization;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of kind
      */
-    public function getKind()
+    public getKind()
     {
-      return $this->kind;
+      return this.kind;
     }
 
     /**
@@ -115,19 +115,19 @@
      *
      * @return  self
      */
-    public function setKind($kind)
+    public setKind($kind)
     {
-      $this->kind = $kind;
+      this.kind = kind;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of valorations
      */
-    public function getValorations()
+    public getValorations()
     {
-      return $this->valorations;
+      return this.valorations;
     }
 
     /**
@@ -135,19 +135,19 @@
      *
      * @return  self
      */
-    public function setValorations($valorations)
+    public setValorations($valorations)
     {
-      $this->valorations = $valorations;
+      this.valorations = valorations;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of temporada
      */
-    public function getTemporada()
+    public getTemporada()
     {
-      return $this->temporada;
+      return this.temporada;
     }
 
     /**
@@ -155,10 +155,10 @@
      *
      * @return  self
      */
-    public function setTemporada($temporada)
+    public setTemporada($temporada)
     {
-      $this->temporada = $temporada;
+      this.temporada = temporada;
 
-      return $this;
+      return this;
     }
   }

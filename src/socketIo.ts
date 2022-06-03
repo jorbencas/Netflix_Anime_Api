@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 export default (http:any) => {
   const io = new Server(http);
   io.on("connection", (socket) => {
-    console.log(`A new Used Connected ${socket.id}`);
+    console.log(`A new Used Connected {socket.id}`);
     io.emit("user joined", {
       id: socket.id,
       audio: "/chat-leat",

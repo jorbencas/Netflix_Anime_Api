@@ -1,13 +1,13 @@
- <?php
-  class Episode_collection extends Database
-  {
-    private $id;
-    private $episode;
-    private $collection;
 
-    public function __construct()
+  class Episode_collection 
+  {
+    private id;
+    private episode;
+    private collection;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
@@ -15,9 +15,9 @@
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -25,19 +25,19 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of episode
      */
-    public function getEpisode()
+    public getEpisode()
     {
-      return $this->episode;
+      return this.episode;
     }
 
     /**
@@ -45,19 +45,19 @@
      *
      * @return  self
      */
-    public function setEpisode($episode)
+    public setEpisode($episode)
     {
-      $this->episode = $episode;
+      this.episode = episode;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of collection
      */
-    public function getCollection()
+    public getCollection()
     {
-      return $this->collection;
+      return this.collection;
     }
 
     /**
@@ -65,10 +65,10 @@
      *
      * @return  self
      */
-    public function setCollection($collection)
+    public setCollection($collection)
     {
-      $this->collection = $collection;
+      this.collection = collection;
 
-      return $this;
+      return this;
     }
   }

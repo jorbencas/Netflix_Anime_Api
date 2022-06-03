@@ -1,22 +1,22 @@
- <?php
-  class Metadata extends Database
-  {
-    private $id;
-    private $visiteds;
-    private $num_users;
 
-    public function __construct()
+  class Metadata 
+  {
+    private id;
+    private visiteds;
+    private num_users;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of num_users
      */
-    public function getNum_users()
+    public getNum_users()
     {
-      return $this->num_users;
+      return this.num_users;
     }
 
     /**
@@ -24,19 +24,19 @@
      *
      * @return  self
      */
-    public function setNum_users($num_users)
+    public setNum_users($num_users)
     {
-      $this->num_users = $num_users;
+      this.num_users = num_users;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of visiteds
      */
-    public function getVisiteds()
+    public getVisiteds()
     {
-      return $this->visiteds;
+      return this.visiteds;
     }
 
     /**
@@ -44,19 +44,19 @@
      *
      * @return  self
      */
-    public function setVisiteds($visiteds)
+    public setVisiteds($visiteds)
     {
-      $this->visiteds = $visiteds;
+      this.visiteds = visiteds;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -64,10 +64,10 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }

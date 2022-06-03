@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { getTittleLangs, getcodelangs } from "../../controllers/langs";
-router.get("/:lang", getTittleLangs);
-router.get("/", getcodelangs);
+import { getTittle, getCode } from "../../controllers/langs";
+router.get("/:lang", getTittle);
+router.get("/", getCode);
 export default router;

@@ -1,23 +1,23 @@
- <?php
-  class Translation_episode extends Database
-  {
-    private $id;
-    private $translation;
-    private $lang;
-    private $episode;
 
-    public function __construct()
+  class Translation_episode 
+  {
+    private id;
+    private translation;
+    private lang;
+    private episode;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of episode
      */
-    public function getEpisode()
+    public getEpisode()
     {
-      return $this->episode;
+      return this.episode;
     }
 
     /**
@@ -25,19 +25,19 @@
      *
      * @return  self
      */
-    public function setEpisode($episode)
+    public setEpisode($episode)
     {
-      $this->episode = $episode;
+      this.episode = episode;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of lang
      */
-    public function getLang()
+    public getLang()
     {
-      return $this->lang;
+      return this.lang;
     }
 
     /**
@@ -45,19 +45,19 @@
      *
      * @return  self
      */
-    public function setLang($lang)
+    public setLang($lang)
     {
-      $this->lang = $lang;
+      this.lang = lang;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of translation
      */
-    public function getTranslation()
+    public getTranslation()
     {
-      return $this->translation;
+      return this.translation;
     }
 
     /**
@@ -65,19 +65,19 @@
      *
      * @return  self
      */
-    public function setTranslation($translation)
+    public setTranslation($translation)
     {
-      $this->translation = $translation;
+      this.translation = translation;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -85,10 +85,10 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }

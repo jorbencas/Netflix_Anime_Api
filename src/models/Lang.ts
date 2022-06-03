@@ -1,20 +1,20 @@
- <?php 
- class Lang extends Database
+ 
+ class Lang 
   {
-    private $id;
-    private $code;
+    private id;
+    private code;
 
-    public function __construct()
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
     /**
      * Get the value of code
      */ 
-    public function getCode()
+    public getCode()
     {
-        return $this->code;
+        return this.code;
     }
 
     /**
@@ -22,19 +22,19 @@
      *
      * @return  self
      */ 
-    public function setCode($code)
+    public setCode($code)
     {
-        $this->code = $code;
+        this.code = code;
 
-        return $this;
+        return this;
     }
 
     /**
      * Get the value of id
      */ 
-    public function getId()
+    public getId()
     {
-        return $this->id;
+        return this.id;
     }
 
     /**
@@ -42,10 +42,10 @@
      *
      * @return  self
      */ 
-    public function setId($id)
+    public setId($id)
     {
-        $this->id = $id;
+        this.id = id;
 
-        return $this;
+        return this;
     }
   }

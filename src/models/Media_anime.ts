@@ -1,24 +1,24 @@
- <?php
-  class Media_anime extends Database
-  {
-    private $id;
-    private $type;
-    private $name;
-    private $extension;
-    private $anime;
 
-    public function __construct()
+  class Media_anime 
+  {
+    private id;
+    private type;
+    private name;
+    private extension;
+    private anime;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of extension
      */
-    public function getExtension()
+    public getExtension()
     {
-      return $this->extension;
+      return this.extension;
     }
 
     /**
@@ -26,19 +26,19 @@
      *
      * @return  self
      */
-    public function setExtension($extension)
+    public setExtension($extension)
     {
-      $this->extension = $extension;
+      this.extension = extension;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of name
      */
-    public function getName()
+    public getName()
     {
-      return $this->name;
+      return this.name;
     }
 
     /**
@@ -46,19 +46,19 @@
      *
      * @return  self
      */
-    public function setName($name)
+    public setName($name)
     {
-      $this->name = $name;
+      this.name = name;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of type
      */
-    public function getType()
+    public getType()
     {
-      return $this->type;
+      return this.type;
     }
 
     /**
@@ -66,19 +66,19 @@
      *
      * @return  self
      */
-    public function setType($type)
+    public setType($type)
     {
-      $this->type = $type;
+      this.type = type;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -86,19 +86,19 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of anime
      */
-    public function getAnime()
+    public getAnime()
     {
-      return $this->anime;
+      return this.anime;
     }
 
     /**
@@ -106,10 +106,10 @@
      *
      * @return  self
      */
-    public function setAnime($anime)
+    public setAnime($anime)
     {
-      $this->anime = $anime;
+      this.anime = anime;
 
-      return $this;
+      return this;
     }
   }

@@ -1,23 +1,23 @@
- <?php
-  class Config_user extends Database
-  {
-    private $id;
-    private $username;
-    private $limit_num_profiles;
-    private $see_video_profiles_time;
 
-    public function __construct()
+  class Config_user 
+  {
+    private id;
+    private username;
+    private limit_num_profiles;
+    private see_video_profiles_time;
+
+    public __construct()
     {
-      parent::__construct();
+      
     }
 
 
     /**
      * Get the value of see_video_profiles_time
      */
-    public function getSee_video_profiles_time()
+    public getSee_video_profiles_time()
     {
-      return $this->see_video_profiles_time;
+      return this.see_video_profiles_time;
     }
 
     /**
@@ -25,19 +25,19 @@
      *
      * @return  self
      */
-    public function setSee_video_profiles_time($see_video_profiles_time)
+    public setSee_video_profiles_time($see_video_profiles_time)
     {
-      $this->see_video_profiles_time = $see_video_profiles_time;
+      this.see_video_profiles_time = see_video_profiles_time;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of limit_num_profiles
      */
-    public function getLimit_num_profiles()
+    public getLimit_num_profiles()
     {
-      return $this->limit_num_profiles;
+      return this.limit_num_profiles;
     }
 
     /**
@@ -45,19 +45,19 @@
      *
      * @return  self
      */
-    public function setLimit_num_profiles($limit_num_profiles)
+    public setLimit_num_profiles($limit_num_profiles)
     {
-      $this->limit_num_profiles = $limit_num_profiles;
+      this.limit_num_profiles = limit_num_profiles;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of username
      */
-    public function getUsername()
+    public getUsername()
     {
-      return $this->username;
+      return this.username;
     }
 
     /**
@@ -65,19 +65,19 @@
      *
      * @return  self
      */
-    public function setUsername($username)
+    public setUsername($username)
     {
-      $this->username = $username;
+      this.username = username;
 
-      return $this;
+      return this;
     }
 
     /**
      * Get the value of id
      */
-    public function getId()
+    public getId()
     {
-      return $this->id;
+      return this.id;
     }
 
     /**
@@ -85,10 +85,10 @@
      *
      * @return  self
      */
-    public function setId($id)
+    public setId($id)
     {
-      $this->id = $id;
+      this.id = id;
 
-      return $this;
+      return this;
     }
   }
