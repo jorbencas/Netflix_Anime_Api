@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const animes_1 = require("../../controllers/animes");
+var router = (0, express_1.Router)();
+router.get("/:lang/", animes_1.getlist);
+router.get("/lastByGenere/:lang/", animes_1.lastByGenere);
+router.get("/:lang/:first/:last", animes_1.getslides);
+router.get("/:lang/:siglas", animes_1.getOne);
+router.get("/:lang/:num", animes_1.getNum);
+router.get("/lastanimes/:lang/:siglas", animes_1.last);
+router.route("favorites/").get(animes_1.getFavorite).post(animes_1.addFavorite).delete(animes_1.removeFavorite);
+exports.default = router;

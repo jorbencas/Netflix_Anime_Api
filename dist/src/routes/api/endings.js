@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const episodes_1 = require("../../controllers/episodes");
+var router = (0, express_1.Router)();
+router.get("/:lang/", episodes_1.getidrand);
+router.route("/:lang/:siglas").get(episodes_1.getbyAnime).delete(episodes_1.deleteOne);
+router.route("/:lang/:id").get(episodes_1.getOne).post(episodes_1.insertEdit).delete(episodes_1.deletebyanime);
+router.get("/:num", episodes_1.getLast);
+exports.default = router;
