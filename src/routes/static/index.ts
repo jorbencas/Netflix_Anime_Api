@@ -1,5 +1,5 @@
 import path from "node:path";
-import { access, createReadStream } from "node:fs";
+import { access, createReadStream, existsSync } from "node:fs";
 import express, { Request, Response, NextFunction } from "express";
 import banner from "./banner";
 import episodes from "./episodes";
@@ -19,28 +19,40 @@ router.get("/chat-leat", (_req: Request, res: Response, next: NextFunction) => {
     __dirname,
     "../../static/notifications/notification.mp3"
   );
-  access(fileName, 7, (err) => {
+  if (existsSync(fileName)) {
+      access(fileName, 7, (err) => {
     if (!err) createReadStream(fileName).pipe(res);
     else next(err);
   });
+  } else {
+    next(new Error("File not found"));
+  }
 });
 router.get(
   "/notify-send",
   (_req: Request, res: Response, next: NextFunction) => {
-    res.writeHead(200, { "content-type": "video/mp4" });
+    res.writeHead(200, { "content-type": "video/mp3" });
     let fileName = path.join(__dirname, "../../static/notifications/send.mp3");
-    access(fileName, 7, (err) => {
-      if (!err) createReadStream(fileName).pipe(res);
-      else next(err);
-    });
+    if (existsSync(fileName)) {
+      access(fileName, 7, (err) => {
+    if (!err) createReadStream(fileName).pipe(res);
+    else next(err);
+  });
+  } else {
+    next(new Error("File not found"));
+  }
   }
 );
 router.get("/notify", (_req: Request, res: Response, next: NextFunction) => {
   res.writeHead(200, { "content-type": "audio/mp3" });
   let fileName = path.join(__dirname, "../../static/notifications/recibe.mp3");
-  access(fileName, 7, (err) => {
+  if (existsSync(fileName)) {
+      access(fileName, 7, (err) => {
     if (!err) createReadStream(fileName).pipe(res);
     else next(err);
   });
+  } else {
+    next(new Error("File not found"));
+  }
 });
 export default router;

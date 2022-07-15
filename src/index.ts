@@ -1,3 +1,6 @@
+// oauth 2.0
+// auth0
+
 import app from './app';
 import { createServer } from "node:http";
 import sockets from "./socketIo";
