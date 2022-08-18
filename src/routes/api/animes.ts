@@ -7,7 +7,7 @@ import { getlist,
     lastByGenere,
     removeFavorite,
     addFavorite,
-    getFavorite } from "../../controllers/animes";
+    getFavorite } from "@controllers/animes";
 var router = Router();
 router.get("/:lang/", getlist);
 router.get("/lastByGenere/:lang/", lastByGenere);

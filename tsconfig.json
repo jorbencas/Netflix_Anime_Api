@@ -2,6 +2,18 @@
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@db/*": ["src/db/*"],
+      "@graphql/*": ["src/graphql/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@modules/*": ["src/modules/*"],
+      "@api/*": ["src/styles/*"],
+      "@apistatic/*": ["src/styles/*"],
+      "@static/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"]
+    },
     /* Projects */
     // "incremental": true,                              /* Enable incremental compilation */
     // "composite": true,                                /* Enable constraints that allow a TypeScript project to be used with project references. */

@@ -5,7 +5,7 @@ import { getOne,
   getidrand,
   insertEdit,
   deleteOne,
-  deletebyanime } from "../../controllers/episodes";
+  deletebyanime } from "@controllers/episodes";
 var router = Router();
 router.get("/:lang/", getidrand);
 router.route("/:lang/:siglas").get(getbyAnime).delete(deleteOne);

@@ -22,7 +22,7 @@ router.get("/chat-leat", (_req: Request, res: Response, next: NextFunction) => {
   if (existsSync(fileName)) {
       access(fileName, 7, (err) => {
     if (!err) createReadStream(fileName).pipe(res);
-    else next(err);
+    else next(new Error("File not found"));
   });
   } else {
     next(new Error("File not found"));
@@ -36,7 +36,7 @@ router.get(
     if (existsSync(fileName)) {
       access(fileName, 7, (err) => {
     if (!err) createReadStream(fileName).pipe(res);
-    else next(err);
+    else next(new Error("File not found"));
   });
   } else {
     next(new Error("File not found"));
@@ -49,7 +49,7 @@ router.get("/notify", (_req: Request, res: Response, next: NextFunction) => {
   if (existsSync(fileName)) {
       access(fileName, 7, (err) => {
     if (!err) createReadStream(fileName).pipe(res);
-    else next(err);
+    else next(new Error("File not found"));
   });
   } else {
     next(new Error("File not found"));

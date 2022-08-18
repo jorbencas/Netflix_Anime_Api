@@ -1,5 +1,5 @@
-import responseCustome from "../utils/index";
-import { postgress } from "../db/postgres";
+import responseCustome from "@utils/index";
+import { postgress } from "@db/postgres";
 import { Request, Response } from 'express';
 
 const getFilters = (req: Request, res: Response) => {

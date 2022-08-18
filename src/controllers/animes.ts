@@ -1,5 +1,5 @@
-import responseCustome from "../utils/index";
-import { postgress } from "../db/postgres";
+import responseCustome from "@utils/index";
+import { postgress } from "@db/postgres";
 import { Request, Response } from 'express';
 
 const getlist = (req: Request, res: Response) => {
@@ -276,6 +276,21 @@ const removeFavorite = (req: Request, res: Response) => {
     });
 };
 
+const insert = (req: Request, res: Response) => {
+  //let lang = req.params.lang;
+  postgress
+    .query( `INSERT INTO animes (siglas, state, date_publication, date_finalization) VALUES ('${req.body.siglas}', '${req.body.state}', '${req.body.date_publication}', '${req.body.date_finalization}')`)
+    .then((result) => {
+      console.log(result);
+      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+      res.json(responseCustome(msg, 200, result.rows));
+    })
+    .catch((e) => {
+      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
+      res.status(500).json(responseCustome(msg, 500, e.stack));
+    });
+}
+
 export {
   getlist,
   getslides,
@@ -285,5 +300,6 @@ export {
   lastByGenere,
   getFavorite,
   addFavorite,
-  removeFavorite
+  removeFavorite,
+  insert,
 };
