@@ -11,9 +11,6 @@ let conf: ClientConfig = {
 const postgress = new Client(conf);
 
 const connectPostgress = () => {
-
-
-  
   postgress
     .connect()
     .then(() => console.log("Connected to Postgres"))

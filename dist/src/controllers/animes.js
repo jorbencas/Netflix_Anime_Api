@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeFavorite = exports.addFavorite = exports.getFavorite = exports.lastByGenere = exports.last = exports.getNum = exports.getOne = exports.getslides = exports.getlist = void 0;
-const index_1 = __importDefault(require("../utils/index"));
-const postgres_1 = require("../db/postgres");
+exports.insert = exports.removeFavorite = exports.addFavorite = exports.getFavorite = exports.lastByGenere = exports.last = exports.getNum = exports.getOne = exports.getslides = exports.getlist = void 0;
+const index_1 = __importDefault(require("@utils/index"));
+const postgres_1 = require("@db/postgres");
 const getlist = (req, res) => {
     let lang = req.params.lang;
     postgres_1.postgress
@@ -262,3 +262,56 @@ const removeFavorite = (req, res) => {
     });
 };
 exports.removeFavorite = removeFavorite;
+const insert = (req, res) => {
+    const { siglas, state, date_publication, date_finalization, titulo, sinopsis, idiomas, generes, temporadas } = req.body;
+    postgres_1.postgress
+        .query(`SELECT id AS lang FROM langs WHERE code = ${req.params.lang}`)
+        .then((result) => {
+        console.log(result.rows);
+        let lang = result.rows[0].lang; // Idioma
+        postgres_1.postgress
+            .query(`INSERT INTO animes (siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5)`, [siglas, state, date_publication, date_finalization, idiomas, temporadas])
+            .then((result) => {
+            console.log(result);
+            postgres_1.postgress
+                .query(`INSERT INTO translation_animes (translation, kind, lang, anime) VALUES ($1, $2, $3, $4)`, [titulo, 'titulo', lang, siglas])
+                .then(() => {
+                postgres_1.postgress
+                    .query(`INSERT INTO translation_animes (translation, kind, lang, anime) VALUES ($1, $2, $3, $4)`, [sinopsis, 'sinopsis', lang, siglas])
+                    .then((result) => {
+                    console.log(result);
+                    let sql = '';
+                    generes.forEach((genere) => {
+                        sql += `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}');`;
+                    });
+                    postgres_1.postgress
+                        .query(sql)
+                        .then((result) => {
+                        console.log(result);
+                        let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+                        return res.json((0, index_1.default)(msg, 200, result.rows));
+                    })
+                        .catch((e) => {
+                        let msg = `No se ha podido obtener la traducion del idioma ${req.params.lang}`;
+                        return res.status(500).json((0, index_1.default)(msg, 500, e.stack));
+                    });
+                })
+                    .catch((e) => {
+                    let msg = `No se ha podido obtener la traducion del idioma ${req.params.lang}`;
+                    return res.status(500).json((0, index_1.default)(msg, 500, e.stack));
+                });
+            }).catch((e) => {
+                let msg = `No se ha podido obtener la traducion del idioma ${req.params.lang}`;
+                return res.status(500).json((0, index_1.default)(msg, 500, e.stack));
+            });
+        }).catch((e) => {
+            let msg = `No se ha podido obtener la traducion del idioma ${req.params.lang}`;
+            return res.status(500).json((0, index_1.default)(msg, 500, e.stack));
+        });
+    })
+        .catch((e) => {
+        let msg = `No se ha podido obtener la traducion del idioma ${req.params.lang}`;
+        return res.status(500).json((0, index_1.default)(msg, 500, e.stack));
+    });
+};
+exports.insert = insert;

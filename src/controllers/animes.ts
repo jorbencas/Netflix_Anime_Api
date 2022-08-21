@@ -1,8 +1,9 @@
-import responseCustome from "@utils/index";
-import { postgress } from "@db/postgres";
-import { Request, Response } from 'express';
+import responseCustome from "../utils/index";
+import { postgress } from "../db/postgres";
+import { Request, Response, NextFunction } from "express";
+import { QueryResult } from 'pg';
 
-const getlist = (req: Request, res: Response) => {
+const getlist = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -17,18 +18,17 @@ const getlist = (req: Request, res: Response) => {
       FROM animes a
       WHERE a.created IS NOT NULL `
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const getslides = (req: Request, res: Response) => {
+const getslides = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   let first = req.params.first;
   let last = req.params.last;
@@ -56,18 +56,17 @@ const getslides = (req: Request, res: Response) => {
       FROM animes a inner join
       OFFSET ${first} LIMIT ${last}`
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+     next(e);
     });
 };
 
-const getOne = (req: Request, res: Response) => {
+const getOne = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   let siglas = req.params.siglas;
   postgress
@@ -106,18 +105,17 @@ const getOne = (req: Request, res: Response) => {
       ON(a.siglas = ag.anime)
       WHERE a.siglas = '${siglas}'`
     )
-    .then((result) => {
+    .then((result : QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const getNum = (req: Request, res: Response) => {
+const getNum = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -126,18 +124,17 @@ const getNum = (req: Request, res: Response) => {
     ON(l.id = tf.id_external) 
     WHERE l.code = ${lang} AND tf.kind = 'langs'`
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const lastByGenere = (req: Request, res: Response) => {
+const lastByGenere = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -167,18 +164,17 @@ const lastByGenere = (req: Request, res: Response) => {
     ON ag.generes LIKE ('%' || f.code::text || '%') 
     WHERE f.kind = 'generes')`
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const last = (req: Request, res: Response) => {
+const last = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -205,18 +201,17 @@ const last = (req: Request, res: Response) => {
       ON(a.siglas = ag.anime) 
       WHERE a.created IS NOT NULL`
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const getFavorite = (req: Request, res: Response) => {
+const getFavorite = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -225,18 +220,17 @@ const getFavorite = (req: Request, res: Response) => {
     ON(l.id = tf.id_external) 
     WHERE l.code = ${lang} AND tf.kind = 'langs'`
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const addFavorite = (req: Request, res: Response) => {
+const addFavorite = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -245,18 +239,17 @@ const addFavorite = (req: Request, res: Response) => {
     ON(l.id = tf.id_external) 
     WHERE l.code = ${lang} AND tf.kind = 'langs'`
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const removeFavorite = (req: Request, res: Response) => {
+const removeFavorite = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
@@ -265,31 +258,74 @@ const removeFavorite = (req: Request, res: Response) => {
         ON(l.id = tf.id_external) 
         WHERE l.code = ${lang} AND tf.kind = 'langs'`
     )
-    .then((result) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+      next(e);
     });
 };
 
-const insert = (req: Request, res: Response) => {
-  //let lang = req.params.lang;
+const insert = (req: Request, res: Response, next: NextFunction) => {
+  const {
+    siglas,
+    state,
+    date_publication,
+    date_finalization,
+    titulo,
+    sinopsis,
+    idiomas,
+    generes,
+    temporadas
+  } = req.body;
   postgress
-    .query( `INSERT INTO animes (siglas, state, date_publication, date_finalization) VALUES ('${req.body.siglas}', '${req.body.state}', '${req.body.date_publication}', '${req.body.date_finalization}')`)
-    .then((result) => {
-      console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
+    .query(`SELECT id AS lang FROM langs WHERE code = ${req.params.lang}`)
+    .then((result: QueryResult) => {
+      console.log(result.rows);
+      let lang = result.rows[0].lang; // Idioma
+      postgress
+        .query(`INSERT INTO animes (siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5)`, [siglas, state, date_publication, date_finalization, idiomas, temporadas])
+        .then((result: QueryResult) => {
+          console.log(result);
+          postgress
+            .query(`INSERT INTO translation_animes (translation, kind, lang, anime) VALUES ($1, $2, $3, $4)`, [titulo, 'titulo', lang, siglas])
+            .then(() => {
+              postgress
+                .query(`INSERT INTO translation_animes (translation, kind, lang, anime) VALUES ($1, $2, $3, $4)`, [sinopsis, 'sinopsis', lang, siglas])
+                .then((result: QueryResult) => {
+                  console.log(result);
+                  let sql = '';
+                  generes.forEach((genere: string) => {
+                    sql += `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}');`;
+                  });
+
+                  postgress
+                    .query(sql)
+                    .then((result: QueryResult) => {
+                      console.log(result);
+                      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+                       res.json(responseCustome(msg, 200, result.rows));
+                    })
+                    .catch((e: Error) => {
+                       next(e);
+                    });
+                })
+                .catch((e: Error) => {
+                   next(e);
+                });
+            }).catch((e: Error) => {
+               next(e);
+            })
+        }).catch((e: Error) => {
+           next(e);
+        })
     })
-    .catch((e) => {
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500, e.stack));
+    .catch((e: Error) => {
+       next(e);
     });
-}
+};
 
 export {
   getlist,

@@ -7,9 +7,9 @@ import { getlist,
     lastByGenere,
     removeFavorite,
     addFavorite,
-    getFavorite } from "@controllers/animes";
+    getFavorite, insert } from "../../controllers/animes";
 var router = Router();
-router.get("/:lang/", getlist);
+router.get("/:lang/", getlist).post("/:lang/", insert);
 router.get("/lastByGenere/:lang/", lastByGenere);
 router.get("/:lang/:first/:last", getslides);
 router.get("/:lang/:siglas", getOne);

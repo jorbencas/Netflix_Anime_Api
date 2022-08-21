@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const episodes_1 = require("../../controllers/episodes");
+const episodes_1 = require("@controllers/episodes");
 var router = (0, express_1.Router)();
 router.get("/:lang/", episodes_1.getidrand);
 router.route("/:lang/:siglas").get(episodes_1.getbyAnime).delete(episodes_1.deleteOne);

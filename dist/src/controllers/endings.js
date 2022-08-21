@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletebyanime = exports.deleteOne = exports.insertEdit = exports.getOne = exports.getbyAnime = void 0;
-const index_1 = __importDefault(require("../utils/index"));
-const postgres_1 = require("../db/postgres");
+const index_1 = __importDefault(require("@utils/index"));
+const postgres_1 = require("@db/postgres");
 const getbyAnime = (req, res) => {
     let lang = req.params.lang;
     let siglas = req.params.siglas;

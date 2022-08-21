@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFilters = exports.deletesearch = exports.mysearches = exports.updatesearchuser = exports.handlesearch = void 0;
-const index_1 = __importDefault(require("../utils/index"));
-const postgres_1 = require("../db/postgres");
+const index_1 = __importDefault(require("@utils/index"));
+const postgres_1 = require("@db/postgres");
 const getFilters = (req, res) => {
     let kind = req.params.kind;
     if (kind == 'years') {

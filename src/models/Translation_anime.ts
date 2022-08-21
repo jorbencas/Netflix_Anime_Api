@@ -1,22 +1,25 @@
 
-  class Translation_anime 
+  export default class Translation_anime 
   {
-    private id;
-    private translation;
-    private kind;
-    private lang;
-    private anime;
+    private id!: number;
+    private translation!: string;
+    private kind!: string;
+    private lang!: number;
+    private anime!: string;
 
-    public __construct()
-    {
-      
+    public __construct(id: number, translation: string, kind: string, lang: number, anime: string) {
+      this.id = id;
+      this.translation = translation;
+      this.kind = kind;
+      this.lang = lang;
+      this.anime = anime;
     }
 
 
     /**
      * Get the value of id
      */
-    public getId()
+    public getId: any()
     {
       return this.id;
     }
@@ -26,7 +29,7 @@
      *
      * @return  self
      */
-    public setId($id)
+    public setId(id : number)
     {
       this.id = id;
 
@@ -46,7 +49,7 @@
      *
      * @return  self
      */
-    public setTranslation($translation)
+    public setTranslation(translation : string)
     {
       this.translation = translation;
 
@@ -66,7 +69,7 @@
      *
      * @return  self
      */
-    public setKind($kind)
+    public setKind(kind : string)
     {
       this.kind = kind;
 
@@ -86,7 +89,7 @@
      *
      * @return  self
      */
-    public setLang($lang)
+    public setLang(lang : number)
     {
       this.lang = lang;
 
@@ -106,7 +109,7 @@
      *
      * @return  self
      */
-    public setAnime($anime)
+    public setAnime(anime : string)
     {
       this.anime = anime;
 

@@ -1,8 +1,7 @@
-// oauth 2.0
-// auth0
-
-import app from './app';
 import { createServer } from "node:http";
+import { config } from "dotenv";
+config();
+import app from './app';
 import sockets from "./socketIo";
 const server = createServer(app);
 sockets(server);

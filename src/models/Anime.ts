@@ -1,18 +1,26 @@
 
-  class Anime 
+  export default class Anime extends Model {
   {
-    private siglas;
-    private idiomas;
-    private date_publication;
-    private date_finalization;
-    private state;
-    private kind;
-    private valorations;
-    private temporada;
+    private siglas!: string;
+    private idiomas!: string;
+    private date_publication!: string;
+    private date_finalization!: string;
+    private state!: string;
+    private kind!: string;
+    private valorations!: number;
+    private temporada!: string;
+    private titulo !:   
 
-    public __construct()
+    public __construct(siglas: string, idiomas: string, date_publication: string, date_finalization: string, state: string, kind: string, valorations: number, temporada: string) 
     {
-      
+      this.siglas = siglas;
+      this.idiomas = idiomas;
+      this.date_publication = date_publication;
+      this.date_finalization = date_finalization;
+      this.state = state;
+      this.kind = kind;
+      this.valorations = valorations;
+      this.temporada = temporada;
     }
 
     /**
@@ -28,7 +36,7 @@
      *
      * @return  self
      */
-    public setState($state)
+    public setState(state: string)
     {
       this.state = state;
 
@@ -48,7 +56,7 @@
      *
      * @return  self
      */
-    public setIdiomas($idiomas)
+    public setIdiomas(idiomas: string)
     {
       this.idiomas = idiomas;
 
@@ -63,7 +71,7 @@
       return this.siglas;
     }
 
-    public setSiglas($siglas)
+    public setSiglas(siglas : string)
     {
       this.siglas = siglas;
 
@@ -75,7 +83,7 @@
       return this.date_publication;
     }
 
-    public setDate_publication($date_publication)
+    public setDate_publication(date_publication : string)
     {
       this.date_publication = date_publication;
 
@@ -95,7 +103,7 @@
      *
      * @return  self
      */
-    public setDate_finalization($date_finalization)
+    public setDate_finalization(date_finalization : string)
     {
       this.date_finalization = date_finalization;
 
@@ -115,7 +123,7 @@
      *
      * @return  self
      */
-    public setKind($kind)
+    public setKind(kind : string)
     {
       this.kind = kind;
 
@@ -135,7 +143,7 @@
      *
      * @return  self
      */
-    public setValorations($valorations)
+    public setValorations(valorations : number)
     {
       this.valorations = valorations;
 
@@ -155,7 +163,7 @@
      *
      * @return  self
      */
-    public setTemporada($temporada)
+    public setTemporada(temporada : string)
     {
       this.temporada = temporada;
 

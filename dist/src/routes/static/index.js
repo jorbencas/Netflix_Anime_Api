@@ -21,31 +21,46 @@ router.use("/chat", express_1.default.static(node_path_1.default.join(__dirname,
 router.get("/chat-leat", (_req, res, next) => {
     res.writeHead(200, { "content-type": "video/mp4" });
     let fileName = node_path_1.default.join(__dirname, "../../static/notifications/notification.mp3");
-    (0, node_fs_1.access)(fileName, 7, (err) => {
-        if (!err)
-            (0, node_fs_1.createReadStream)(fileName).pipe(res);
-        else
-            next(err);
-    });
+    if ((0, node_fs_1.existsSync)(fileName)) {
+        (0, node_fs_1.access)(fileName, 7, (err) => {
+            if (!err)
+                (0, node_fs_1.createReadStream)(fileName).pipe(res);
+            else
+                next(new Error("File not found"));
+        });
+    }
+    else {
+        next(new Error("File not found"));
+    }
 });
 router.get("/notify-send", (_req, res, next) => {
-    res.writeHead(200, { "content-type": "video/mp4" });
+    res.writeHead(200, { "content-type": "video/mp3" });
     let fileName = node_path_1.default.join(__dirname, "../../static/notifications/send.mp3");
-    (0, node_fs_1.access)(fileName, 7, (err) => {
-        if (!err)
-            (0, node_fs_1.createReadStream)(fileName).pipe(res);
-        else
-            next(err);
-    });
+    if ((0, node_fs_1.existsSync)(fileName)) {
+        (0, node_fs_1.access)(fileName, 7, (err) => {
+            if (!err)
+                (0, node_fs_1.createReadStream)(fileName).pipe(res);
+            else
+                next(new Error("File not found"));
+        });
+    }
+    else {
+        next(new Error("File not found"));
+    }
 });
 router.get("/notify", (_req, res, next) => {
     res.writeHead(200, { "content-type": "audio/mp3" });
     let fileName = node_path_1.default.join(__dirname, "../../static/notifications/recibe.mp3");
-    (0, node_fs_1.access)(fileName, 7, (err) => {
-        if (!err)
-            (0, node_fs_1.createReadStream)(fileName).pipe(res);
-        else
-            next(err);
-    });
+    if ((0, node_fs_1.existsSync)(fileName)) {
+        (0, node_fs_1.access)(fileName, 7, (err) => {
+            if (!err)
+                (0, node_fs_1.createReadStream)(fileName).pipe(res);
+            else
+                next(new Error("File not found"));
+        });
+    }
+    else {
+        next(new Error("File not found"));
+    }
 });
 exports.default = router;

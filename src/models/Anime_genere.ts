@@ -1,13 +1,14 @@
 
   class Anime_genere 
   {
-    private id;
-    private genere;
-    private anime;
+    private id!: number;
+    private genere!: number;
+    private anime!: string;
 
-    public __construct()
-    {
-      
+    public __construct(id: number, genere: number, anime: string) {
+      this.id = id;
+      this.genere = genere;
+      this.anime = anime;
     }
 
     /**
@@ -23,7 +24,7 @@
      *
      * @return  self
      */
-    public setId($id)
+    public setId(id: number)
     {
       this.id = id;
 
@@ -43,7 +44,7 @@
      *
      * @return  self
      */
-    public setAnime($anime)
+    public setAnime(anime : string)
     {
       this.anime = anime;
 
@@ -63,7 +64,7 @@
      *
      * @return  self
      */
-    public setGenere($genere)
+    public setGenere(genere : number)
     {
       this.genere = genere;
 

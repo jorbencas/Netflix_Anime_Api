@@ -1,7 +1,8 @@
 {
   "name": "netflix_anime_api",
   "version": "1.0.0",
-  "description": "this is a api rest using typescript, using shocketio and graphql",
+  "description": "this is a api rest using typescript, shocketio and graphql",
+  "private": true,
   "main": "dist/src/index.js",
   "scripts": {
     "tsc": "tsc",
@@ -36,6 +37,10 @@
     "@types/graphql": "14.5.0",
     "@types/morgan": "1.9.3",
     "@types/pg": "8.6.1",
-    "ts-node-dev": "1.1.8"
+    "ts-node-dev": "1.1.8",
+    "semistandard": "^16.0.1"
+  },
+  "eslintConfig": {
+    "extends": "semistandard"
   }
 }

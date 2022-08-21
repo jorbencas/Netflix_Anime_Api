@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import responseCustome from "@utils/index";
+import responseCustome from "../utils/index";
 import isLocalHost from "./isLocalHost";
 
 export default (req: Request, res: Response, next: NextFunction) => {
