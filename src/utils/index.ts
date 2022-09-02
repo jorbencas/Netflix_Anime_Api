@@ -1,5 +1,7 @@
 import { QueryResult } from "pg";
-const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | null = null) => {
+import nodemailer from 'nodemailer';
+
+const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
   let text: string = "";
   switch (code) {
     case 100:
@@ -118,10 +120,46 @@ const responseCustome = (message: string = "", code: number = 200, data: QueryRe
       break;
   }
 
-  let response: object = {
+  return {
     data,
     status: { code, text, message },
   };
-  return response;
 };
-export default responseCustome;
+
+const sendEmail = () => {
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type:"login", 
+      user: `${process.env.GMAIL}`,
+      pass: `${process.env.GMAIL_PASSW}`
+    }
+  });
+
+  var mailOptions = {
+    from: process.env.GMAIL,
+    to: process.env.EMAIL,
+    subject: 'Cosas de Anime Sending Email using Node.js',
+    html: ` 
+           <div> 
+           <p>Hola amigo</p> 
+           <p>Esto es una prueba del vídeo</p> 
+           <p>¿Cómo enviar correos eletrónicos con Nodemailer en NodeJS </p> 
+           </div> 
+       ` 
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+    transporter.close(); 
+  });
+}
+
+export {
+  sendEmail,
+  responseCustome
+}

@@ -1,4 +1,4 @@
-import responseCustome from "../utils/index";
+import {responseCustome  } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";

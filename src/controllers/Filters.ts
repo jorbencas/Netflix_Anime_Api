@@ -1,4 +1,4 @@
-import responseCustome from "../utils/index";
+import {responseCustome  } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
@@ -71,14 +71,11 @@ const getFilters = (req: Request, res: Response, next: NextFunction) => {
     let lang = req.params.lang;
     postgress
       .query(
-        `SELECT l.code, tf.translation, tf.id_external 
-        FROM langs l inner join translation_filter tf
-        ON(l.id = tf.id_external) 
-        WHERE l.code = ${lang} AND tf.kind = 'langs'`
+        `SELECT code, tittle FROM langs WHERE kind = 'langs'`
       )
       .then((result: QueryResult) => {
         console.log(result);
-        let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+        let msg = `Se ha podido obtener la traducion del idioma ${lang}`;
         res.json(responseCustome(msg, 200, result.rows));
       })
       .catch((e: Error) => {
@@ -86,6 +83,28 @@ const getFilters = (req: Request, res: Response, next: NextFunction) => {
       });
   }
 };
+
+const getTemporadas =  (_req: Request, res: Response, _next: NextFunction) => { 
+let lista: Array<object> = [
+  { tittle : "Primavera", code : 'spring' },
+  { tittle : "Verano", code : 'summer' },
+  { tittle : "Otoño", code : 'autumn' },
+  { tittle : "Invierno", code : 'winter' }
+];
+
+// postgress.query(`SELECT code, tittle FROM filters WHERE kind = 'temporadas'`)
+// .then((result: QueryResult) => {
+//   if(result.rowCount > 0){
+//     lista = result.rows;
+//   }
+  let msg = `Se ha podido obtener las temporadas`;
+    res.json(responseCustome(msg, 200, lista));
+// })
+// .catch((e: Error) => {
+//     next(e);
+// });
+
+}
 
 // const handlesearch = (req: Request, res: Response, next: NextFunction) => {};
 
@@ -100,4 +119,4 @@ const getFilters = (req: Request, res: Response, next: NextFunction) => {
 // const deletesearch = (req: Request, res: Response, next: NextFunction) => {};
 
 // export { handlesearch, updatesearchuser, mysearches, deletesearch, getFilters };
-export { getFilters };
+export { getFilters, getTemporadas };

@@ -68,6 +68,8 @@ CREATE TABLE collections (
 
 CREATE TABLE animes (
     siglas VARCHAR(250) NOT NULL PRIMARY KEY,
+    tittle VARCHAR(250) NOT NULL,
+    sinopsis VARCHAR(250) NOT NULL,
     idiomas VARCHAR(255) DEFAULT NULL,
     date_publication VARCHAR(250) DEFAULT NULL,
     date_finalization VARCHAR(250) DEFAULT NULL,
@@ -87,14 +89,6 @@ CREATE TABLE media_animes (
     anime VARCHAR(250) NOT NULL
 );
 
-CREATE TABLE translation_animes (
-    id SERIAL NOT NULL PRIMARY KEY
-    translation VARCHAR(250) NOT NULL,
-    kind VARCHAR(25) DEFAULT NULL,
-    lang int4,
-    anime VARCHAR(250) NOT NULL
-);
-
 CREATE TABLE anime_generes (
     id SERIAL NOT NULL PRIMARY KEY,
     genere int4,
@@ -109,6 +103,8 @@ CREATE TABLE anime_favorites (
 
 CREATE TABLE episodes (
     id VARCHAR(250) NOT NULL PRIMARY KEY,
+    tittle VARCHAR(250) NOT NULL,
+    sinopsis VARCHAR(250) NOT NULL,
     anime VARCHAR(250) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -117,13 +113,6 @@ CREATE TABLE episodes (
     madia_type VARCHAR(250) NOT NULL,
     madia_name VARCHAR(250) NOT NULL,
     madia_extension VARCHAR(250) NOT NULL,
-);
-
-CREATE TABLE translation_episodes (
-    id SERIAL NOT NULL PRIMARY KEY
-    translation VARCHAR(250) NOT NULL,
-    lang int4,
-    episodes VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE clips (
@@ -144,8 +133,8 @@ CREATE TABLE episode_collections (
 
 CREATE TABLE openings (
     id VARCHAR(250) PRIMARY KEY,
-    nombre VARCHAR(150),
-    descripcion VARCHAR(255) NOT NULL,
+    tittle VARCHAR(250) NOT NULL,
+    sinopsis VARCHAR(250) NOT NULL,
     anime int4 NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -158,8 +147,8 @@ CREATE TABLE openings (
 
 CREATE TABLE endings (
     id VARCHAR(250) PRIMARY KEY,
-    nombre VARCHAR(150),
-    descripcion VARCHAR(255) NOT NULL,
+    tittle VARCHAR(250) NOT NULL,
+    sinopsis VARCHAR(250) NOT NULL,
     anime int4 NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -181,30 +170,12 @@ CREATE TABLE config_user (
 
 CREATE TABLE filters (
     id SERIAL NOT NULL PRIMARY KEY,
+    tittle VARCHAR(250) NOT NULL,
     code VARCHAR(255) DEFAULT NULL,
     kind VARCHAR(255) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
-CREATE TABLE translation_filters (
-    id SERIAL NOT NULL PRIMARY KEY
-    translation VARCHAR(250) NOT NULL,
-    lang int4,
-    id_external int4
-);
-
-CREATE TABLE langs (
-    id SERIAL NOT NULL PRIMARY KEY,
-    code VARCHAR(5) DEFAULT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-INSERT INTO langs(id, code) VALUES(1, 'es');
-INSERT INTO langs(id, code) VALUES(2, 'en');
-INSERT INTO langs(id, code) VALUES(3, 'va');
-INSERT INTO langs(id, code) VALUES(4, 'ca');
 
 CREATE TABLE seasons (
     id VARCHAR(250) NOT NULL PRIMARY KEY,
@@ -220,7 +191,6 @@ CREATE TABLE config_profile (
     autoplay bool DEFAULT false,
     columns int4 DEFAULT 2,
     orden VARCHAR(150) DEFAULT 'asc',
-    lang VARCHAR(255) DEFAULT 1,
     volume Float DEFAULT 0.5,
     video_velocity_default VARCHAR(150) NOT NULL,
     default_view VARCHAR(150) DEFAULT 'grid',

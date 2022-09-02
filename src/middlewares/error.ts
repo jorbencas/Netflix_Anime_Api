@@ -1,13 +1,15 @@
-import { Request, Response } from 'express';
-import responseCustome from "../utils/index";
+import { Request, Response, NextFunction } from 'express';
+import {responseCustome  } from "../utils/index";
 
-export default (err: Error, _req: Request, res: Response) => {
-  const error = process.env.NODE_ENV === "dev" ? err.message : "";
-  let status = parseInt(`${err.stack}`) || 500;
+export default (err: Error, _req: Request, res: Response, next: NextFunction) => {
+  let s = parseInt(`${err.stack}`) || 200;
+  const { status } = responseCustome(err.message, s);
   if (err.name === "ValidationError") {
-    status = 422;
-    res.status(status).json(responseCustome(error, status, err));
+    s = 422;
+    res.status(s).json(status);
+  } else if(err.message.length > 0) {
+    res.status(status?.code).json(status);
   } else {
-    res.status(status).json(responseCustome(error, status));
+    next();
   }
 };

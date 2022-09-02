@@ -12,7 +12,7 @@ router.use("/endings", endings);
 router.use("/episodes", episodes);
 router.use("/openings", openings);
 router.use("/portada", portada);
-router.use("/chat", express.static(path.join(__dirname, "../../static/chat.html")));
+router.get("/chat", express.static(path.join(__dirname, "../../static/chat.html")));
 router.get("/chat-leat", (_req: Request, res: Response, next: NextFunction) => {
   res.writeHead(200, { "content-type": "video/mp4" });
   let fileName = path.join(

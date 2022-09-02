@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import responseCustome from "../utils/index";
+import {responseCustome  } from "../utils/index";
 
 export default (_req: Request, res: Response) => {
   let status = 404;

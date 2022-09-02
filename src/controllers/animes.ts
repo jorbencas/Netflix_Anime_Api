@@ -1,4 +1,4 @@
-import responseCustome from "../utils/index";
+import {responseCustome  } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from 'pg';
@@ -284,40 +284,31 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     .query(`SELECT id AS lang FROM langs WHERE code = ${req.params.lang}`)
     .then((result: QueryResult) => {
       console.log(result.rows);
-      let lang = result.rows[0].lang; // Idioma
+     // let lang = result.rows[0].lang; // Idioma
+      let t = '';
+      temporadas.forEach( (temp: String) => {
+        t += temp;
+      });;
       postgress
-        .query(`INSERT INTO animes (siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5)`, [siglas, state, date_publication, date_finalization, idiomas, temporadas])
+        .query(`INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5)`, [titulo, sinopsis, siglas, state, date_publication, date_finalization, idiomas, t])
         .then((result: QueryResult) => {
           console.log(result);
-          postgress
-            .query(`INSERT INTO translation_animes (translation, kind, lang, anime) VALUES ($1, $2, $3, $4)`, [titulo, 'titulo', lang, siglas])
-            .then(() => {
-              postgress
-                .query(`INSERT INTO translation_animes (translation, kind, lang, anime) VALUES ($1, $2, $3, $4)`, [sinopsis, 'sinopsis', lang, siglas])
-                .then((result: QueryResult) => {
-                  console.log(result);
-                  let sql = '';
-                  generes.forEach((genere: string) => {
-                    sql += `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}');`;
-                  });
+          let sql = '';
+          generes.forEach((genere: string) => {
+            sql += `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}');`;
+          });
 
-                  postgress
-                    .query(sql)
-                    .then((result: QueryResult) => {
-                      console.log(result);
-                      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-                       res.json(responseCustome(msg, 200, result.rows));
-                    })
-                    .catch((e: Error) => {
-                       next(e);
-                    });
-                })
-                .catch((e: Error) => {
-                   next(e);
-                });
-            }).catch((e: Error) => {
-               next(e);
+          postgress
+            .query(sql)
+            .then((result: QueryResult) => {
+              console.log(result);
+              let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+                res.json(responseCustome(msg, 200, result.rows));
             })
+            .catch((e: Error) => {
+                next(e);
+            });
+
         }).catch((e: Error) => {
            next(e);
         })
@@ -337,5 +328,5 @@ export {
   getFavorite,
   addFavorite,
   removeFavorite,
-  insert,
+  insert
 };

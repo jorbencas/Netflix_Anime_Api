@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import responseCustome from "../utils/index";
+import { responseCustome } from "../utils/index";
 import isLocalHost from "./isLocalHost";
 
 export default (req: Request, res: Response, next: NextFunction) => {
@@ -9,8 +9,10 @@ export default (req: Request, res: Response, next: NextFunction) => {
       req.headers.api_token == process.env.API_TOKEN)
   ) {
     let message = `No estas autorizado para utilizar la api de cosas de anime`;
-    let status = 401;
-    res.status(status).json(responseCustome(message, status)).end();
+    let s = 401;
+    const { status } = responseCustome(message, s);
+
+    res.status(status.code).json(status).end();
   } else {
     next();
   }
