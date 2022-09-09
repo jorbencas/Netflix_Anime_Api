@@ -1,7 +1,9 @@
 import { Router } from "express";
 import langs from "./langs";
 import animes from "./animes";
-// import episodes from "./episodes";
+import episodes from "./episodes";
+import openings from "./openings";
+import endings from "./endings";
 import generes from "./generes";
 import filters from "./filters";
 import media from "./media";
@@ -11,5 +13,8 @@ router.use("/animes", animes);
 router.use('/generes', generes);
 router.use('/filters', filters);
 router.use('/media', media);
-// router.use("/episodes", episodes);
+router.use("/episodes", episodes);
+router.use("/openings", openings);
+router.use("/endings", endings);
+
 export default router;
