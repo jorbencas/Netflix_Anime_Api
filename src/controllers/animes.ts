@@ -318,6 +318,10 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+const edit = (req: Request, res: Response, next: NextFunction) => {
+    
+};
+
 export {
   getlist,
   getslides,
@@ -328,5 +332,6 @@ export {
   getFavorite,
   addFavorite,
   removeFavorite,
-  insert
+  insert,
+  edit
 };
