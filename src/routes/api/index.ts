@@ -7,6 +7,7 @@ import endings from "./endings";
 import generes from "./generes";
 import filters from "./filters";
 import media from "./media";
+import seasions from './seasions';
 const router = Router();
 router.use("/langs", langs);
 router.use("/animes", animes);
@@ -16,5 +17,5 @@ router.use('/media', media);
 router.use("/episodes", episodes);
 router.use("/openings", openings);
 router.use("/endings", endings);
-
+router.use('/seasions', seasions);
 export default router;

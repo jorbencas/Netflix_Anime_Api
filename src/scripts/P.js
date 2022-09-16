@@ -1,5 +1,6 @@
 // nodejs scraping plutotv to download anime
-//
+// let obj = { hola: "hola" };
+// let obj2 = structuredClone(obj);
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const url = "https://plutotv.com/anime/";
