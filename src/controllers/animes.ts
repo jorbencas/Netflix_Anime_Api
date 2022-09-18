@@ -318,7 +318,7 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const edit = (req: Request, res: Response, next: NextFunction) => {
+const edit = (_req: Request, _res: Response, _next: NextFunction) => {
     
 };
 

@@ -1,5 +1,6 @@
-import { QueryResult } from "pg";
+import { QueryResult, QueryResultRow } from "pg";
 import nodemailer from 'nodemailer';
+import { Request } from 'express';
 
 const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
   let text: string = "";
@@ -159,7 +160,16 @@ const sendEmail = () => {
   });
 }
 
+const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
+  e.media = req.baseUrl+'/'+e.kind+'/'+siglas+'/'+e.name+'/'+e.extension;
+  delete e.kind;
+  delete e.name;
+  delete e.extension;
+  return e;
+}
+
 export {
+  handleMedia,
   sendEmail,
   responseCustome
 }

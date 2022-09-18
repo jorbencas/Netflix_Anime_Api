@@ -3,7 +3,7 @@ import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
 
-const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
+const getbyAnime = (_req: Request, _res: Response, _next: NextFunction) => {
    
     // sql = "SELECT o.id, o.nombre, o.descripcion, o.anime, a.siglas, o.num, a.kind
     // FROM animes AS a
@@ -29,7 +29,7 @@ const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
     // }
 }
 
-const getOne = (req: Request, res: Response, next: NextFunction) => {
+const getOne = (_req: Request, _res: Response, _next: NextFunction) => {
     // db = api->getDb();
     // GET = api->getGET();
     // sql = "SELECT o.id, o.anime, o.nombre, o.descripcion, a.siglas, o.num,
@@ -68,7 +68,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
     // }
 }
 
-const insert = (req: Request, res: Response, next: NextFunction) => {
+const insert = (_req: Request, _res: Response, _next: NextFunction) => {
     // db = api->getDb();
     // POST = api->getPOST();
     // sql = "SELECT * FROM openings WHERE id = '{$POST['id']}'";
@@ -99,11 +99,11 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     // }
 };
 
-const edit = (req: Request, res: Response, next: NextFunction) => {
+const edit = (_req: Request, _res: Response, _next: NextFunction) => {
     
 };
 
-const deleteOne = (req: Request, res: Response, next: NextFunction) => {
+const deleteOne = (_req: Request, _res: Response, _next: NextFunction) => {
     // db = api->getDb();
     // POST = api->getPOST();
     // data = api->apiReq("Openings&ap={$POST['id']}");
@@ -130,7 +130,7 @@ const deleteOne = (req: Request, res: Response, next: NextFunction) => {
     // }
 };
 
-const deletebyanime = (req: Request, res: Response, next: NextFunction) => {
+const deletebyanime = (_req: Request, _res: Response, _next: NextFunction) => {
     // db = api->getDb();
     // POST = api->getPOST();
     // data = api->apiReq("Openings&aa={$POST['id']}");

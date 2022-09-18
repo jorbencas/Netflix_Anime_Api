@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { getTittle, getCode } from "../../controllers/langs";
-router.get("/:lang", getTittle);
-router.get("/", getCode);
+import { getSasion, getListIds } from "../../controllers/seasions";
+router.get("/:id", getSasion);
+router.get("/getListIds/:lang/:siglas", getListIds);
 export default router;

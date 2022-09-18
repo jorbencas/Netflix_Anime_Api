@@ -3,7 +3,7 @@ import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
 
-const getOne = (req: Request, res: Response, next: NextFunction) => {
+const getOne = (_req: Request, _res: Response, _next: NextFunction) => {
     // GET = api->getGET();
     // db = api->getDb();
     // if (isset($GET['kind'])) {
@@ -55,7 +55,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
     // }
 };
 
-const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
+const getbyAnime = (_req: Request, _res: Response, _next: NextFunction) => {
     // GET = api->getGET();
     // db = api->getDb();
     // if (isset($GET['kind'])) {
@@ -100,7 +100,7 @@ const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
     // }
 }
 
-const getLast = (req: Request, res: Response, next: NextFunction) => {
+const getLast = (_req: Request, _res: Response, _next: NextFunction) => {
     // GET = api->getGET();
     // db = api->getDb();
     // limit = explode("_",$GET['as']);
@@ -140,7 +140,7 @@ const getLast = (req: Request, res: Response, next: NextFunction) => {
     // }
 }
 
-const getidrand = (req: Request, res: Response, next: NextFunction) => {
+const getidrand = (_req: Request, _res: Response, _next: NextFunction) => {
     // db = api->getDb();
     // sql = "SELECT e.id, a.kind FROM episodes AS e INNER JOIN animes AS a ON(e.anime = a.id) ORDER BY random() LIMIT 1;";
     // valor = db->obtener_uno($sql);
@@ -152,19 +152,19 @@ const getidrand = (req: Request, res: Response, next: NextFunction) => {
 
 }
 
-const insert = (req: Request, res: Response, next: NextFunction) => {
+const insert = (_req: Request, _res: Response, _next: NextFunction) => {
    
 };
 
-const edit = (req: Request, res: Response, next: NextFunction) => {
+const edit = (_req: Request, _res: Response, _next: NextFunction) => {
     
 };
 
-const deleteOne = (req: Request, res: Response, next: NextFunction) => {
+const deleteOne = (_req: Request, _res: Response, _next: NextFunction) => {
 
 };
 
-const deletebyanime = (req: Request, res: Response, next: NextFunction) => {
+const deletebyanime = (_req: Request, _res: Response, _next: NextFunction) => {
     
 }
 

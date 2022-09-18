@@ -25,12 +25,12 @@ const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
         res.json(responseCustome(msg, 200, result.rows));
         })
         .catch((e: Error) => {
-        let msg = `No se ha podido obtener la traducion del idioma {lang}`;
+        // let msg = `No se ha podido obtener la traducion del idioma {lang}`;
         next(e);
         });
 }
 
-const getOne = (req: Request, res: Response, next: NextFunction) => {
+const getOne = (_req: Request, _res: Response, _next: NextFunction) => {
     // sql = "SELECT e.id, e.anime, e.nombre, e.descripcion, a.siglas, e.num,
     // (SELECT id FROM endings WHERE anime = e.anime AND num = ( SELECT num FROM endings WHERE id = '{$GET['ap']}' - 1) ) AS prev,
     // (SELECT id FROM endings WHERE anime = e.anime AND num = ( SELECT num FROM endings WHERE id = '{$GET['ap']}' + 1) ) AS next
@@ -66,19 +66,19 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
     // }
 }
 
-const insert = (req: Request, res: Response, next: NextFunction) => {
+const insert = (_req: Request, _res: Response, _next: NextFunction) => {
     
 };
 
-const edit = (req: Request, res: Response, next: NextFunction) => {
+const edit = (_req: Request, _res: Response, _next: NextFunction) => {
     
 };
 
-const deleteOne = (req: Request, res: Response, next: NextFunction) => {
+const deleteOne = (_req: Request, _res: Response, _next: NextFunction) => {
    
 };
 
-const deletebyanime = (req: Request, res: Response, next: NextFunction) => {
+const deletebyanime = (_req: Request, _res: Response, _next: NextFunction) => {
     
 }
 const getListIds = (req: Request, res: Response, next: NextFunction) => {
