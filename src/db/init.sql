@@ -86,7 +86,7 @@ CREATE TABLE media_animes (
     type VARCHAR(250) NOT NULL,
     name VARCHAR(250) NOT NULL,
     extension VARCHAR(250) NOT NULL,
-    anime VARCHAR(250) NOT NULL
+    id_external VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE anime_generes (
@@ -110,9 +110,13 @@ CREATE TABLE episodes (
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     num int4 DEFAULT 1,
     seasion VARCHAR(250) DEFAULT null,
-    madia_type VARCHAR(250) NOT NULL,
-    madia_name VARCHAR(250) NOT NULL,
-    madia_extension VARCHAR(250) NOT NULL,
+);
+
+CREATE TABLE media_episodes (
+    id SERIAL NOT NULL PRIMARY KEY
+    name VARCHAR(250) NOT NULL,
+    extension VARCHAR(250) NOT NULL,
+    id_external VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE clips (
@@ -140,9 +144,13 @@ CREATE TABLE openings (
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     num int4 DEFAULT 1,
     seasion VARCHAR(250) DEFAULT null,
-    madia_type VARCHAR(250) NOT NULL,
-    madia_name VARCHAR(250) NOT NULL,
-    madia_extension VARCHAR(250) NOT NULL
+);
+
+CREATE TABLE media_openings (
+    id SERIAL NOT NULL PRIMARY KEY
+    name VARCHAR(250) NOT NULL,
+    extension VARCHAR(250) NOT NULL,
+    id_external VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE endings (
@@ -154,9 +162,13 @@ CREATE TABLE endings (
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     num int4 DEFAULT 1,
     seasion VARCHAR(250) DEFAULT null,
-    madia_type VARCHAR(250) NOT NULL,
-    madia_name VARCHAR(250) NOT NULL,
-    madia_extension VARCHAR(250) NOT NULL
+);
+
+CREATE TABLE media_endings (
+    id SERIAL NOT NULL PRIMARY KEY
+    name VARCHAR(250) NOT NULL,
+    extension VARCHAR(250) NOT NULL,
+    id_external VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE config_user (

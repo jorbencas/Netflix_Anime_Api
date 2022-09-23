@@ -1,6 +1,7 @@
 // import { responseCustome, sendEmail } from "../utils/index";
 import { responseCustome } from "../utils/index";
-
+// import { postgress } from "../db/postgres";
+// import { QueryResult } from 'pg';
 import { Request, Response, NextFunction } from "express";
 import { readdir, access } from 'node:fs/promises';
 import { PathLike, existsSync } from "node:fs";
@@ -31,7 +32,7 @@ const defaultSiglas = (_req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const insert = (req: Request, _res: Response, _next: NextFunction) => {
+const insert = (req: Request, res: Response, _next: NextFunction) => {
 const app = express();
 app.use(fileUpload);
   if(!req.files){
@@ -39,7 +40,7 @@ app.use(fileUpload);
     console.log(req.body);
     console.log('====================================');
   } else {
-     console.log('====================================');
+    console.log('====================================');
     console.log(req.files);
     console.log('====================================');
     console.log('====================================');
@@ -47,6 +48,23 @@ app.use(fileUpload);
     console.log('====================================');
     // const [] = req.body;
   }
+
+  const { tabla } = req.body;
+    // postgress
+    // .query(
+    //   `INSERT INTO media_${tabla} VALUES()`
+    // )
+    // .then((result: QueryResult) => {
+    //   console.log(result);
+    //   let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    //   res.json(responseCustome(msg, 200, result.rows));
+    // })
+    // .catch((e: Error) => {
+    //   next(e);
+    // });
+    console.log(tabla);
+     res.json(responseCustome("", 200, req.body));
+    
 }
 
 export { defaultSiglas, insert };
