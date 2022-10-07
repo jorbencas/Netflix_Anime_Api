@@ -1,7 +1,8 @@
-import {responseCustome  } from "../utils/index";
+import { responseCustome } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
-import { QueryResult } from 'pg';
+import { QueryResult } from "pg";
+import { saveBackupAnime } from "../utils/backup_animes";
 
 const getlist = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
@@ -62,7 +63,7 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
-     next(e);
+      next(e);
     });
 };
 
@@ -105,7 +106,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
       ON(a.siglas = ag.anime)
       WHERE a.siglas = '${siglas}'`
     )
-    .then((result : QueryResult) => {
+    .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
       res.json(responseCustome(msg, 200, result.rows));
@@ -278,48 +279,104 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     sinopsis,
     idiomas,
     generes,
-    temporadas
+    temporadas,
   } = req.body;
+
+  let t = "";
+  temporadas.forEach((temp: String) => {
+    t += temp;
+  });
   postgress
-    .query(`SELECT id AS lang FROM langs WHERE code = ${req.params.lang}`)
+    .query(
+      `INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [
+        titulo,
+        sinopsis,
+        siglas,
+        state,
+        date_publication,
+        date_finalization,
+        idiomas,
+        t,
+      ]
+    )
     .then((result: QueryResult) => {
-      console.log(result.rows);
-     // let lang = result.rows[0].lang; // Idioma
-      let t = '';
-      temporadas.forEach( (temp: String) => {
-        t += temp;
-      });;
+      console.log(result);
+      let sql = "";
+      generes.forEach((genere: string) => {
+        sql += `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}');`;
+      });
+
       postgress
-        .query(`INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5)`, [titulo, sinopsis, siglas, state, date_publication, date_finalization, idiomas, t])
-        .then((result: QueryResult) => {
-          console.log(result);
-          let sql = '';
-          generes.forEach((genere: string) => {
-            sql += `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}');`;
-          });
-
-          postgress
-            .query(sql)
-            .then((result: QueryResult) => {
-              console.log(result);
-              let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-                res.json(responseCustome(msg, 200, result.rows));
-            })
-            .catch((e: Error) => {
-                next(e);
-            });
-
-        }).catch((e: Error) => {
-           next(e);
+        .query(sql)
+        .then((r: QueryResult) => {
+          console.log(r);
+          saveBackupAnime(siglas, result.rows, 'animes');
+          let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+          res.json(responseCustome(msg, 200, r.rows));
         })
+        .catch((e: Error) => {
+          next(e);
+        });
     })
     .catch((e: Error) => {
-       next(e);
+      next(e);
     });
 };
 
-const edit = (_req: Request, _res: Response, _next: NextFunction) => {
-    
+const edit = (req: Request, res: Response, next: NextFunction) => {
+     const {
+    siglas,
+    state,
+    date_publication,
+    date_finalization,
+    titulo,
+    sinopsis,
+    idiomas,
+    generes,
+    temporadas,
+  } = req.body;
+
+  let t = "";
+  temporadas.forEach((temp: String) => {
+    t += temp;
+  });
+  postgress
+    .query(
+      `UPDATE FROM animes SET tittle = $1, sinopsis = $2, state = $3, date_publication = $4, date_finalization = $5, idiomas = $6, temporadas = $7) WHERE siglas=$8`,
+      [
+        titulo,
+        sinopsis,
+        state,
+        date_publication,
+        date_finalization,
+        idiomas,
+        t,
+        siglas
+      ]
+    )
+    .then((result: QueryResult) => {
+      console.log(result);
+      let sql = "";
+      generes.forEach((genere: string) => {
+        sql += `UPDATE FROM anime_generes genere=${genere} WHERE anime=${siglas});`;
+      });
+
+      postgress
+        .query(sql)
+        .then((r: QueryResult) => {
+          console.log(r);
+          saveBackupAnime(siglas, result.rows, 'animes');
+          let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+          res.json(responseCustome(msg, 200, r.rows));
+        })
+        .catch((e: Error) => {
+          next(e);
+        });
+    })
+    .catch((e: Error) => {
+      next(e);
+    });
 };
 
 export {
@@ -333,5 +390,5 @@ export {
   addFavorite,
   removeFavorite,
   insert,
-  edit
+  edit,
 };

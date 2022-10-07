@@ -15,7 +15,7 @@ CREATE TABLE comments (
     id_external VARCHAR(250) NOT NULL,
     response_comment_id int4 DEFAULT 0,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE metadata (
@@ -23,7 +23,7 @@ CREATE TABLE metadata (
     visiteds int4 DEFAULT 1,
     num_users int4 DEFAULT 0,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users (
@@ -40,14 +40,14 @@ CREATE TABLE users (
     activado bool NULL,
     genere VARCHAR(25) NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE groups (
     id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(255) NULL,  
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE usergroups (
@@ -55,7 +55,7 @@ CREATE TABLE usergroups (
     username VARCHAR(55) DEFAULT NULL,
     group_id int4 NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE collections (
@@ -63,7 +63,7 @@ CREATE TABLE collections (
     name VARCHAR(255) NOT NULL,
     profile int4 DEFAULT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE animes (
@@ -77,7 +77,7 @@ CREATE TABLE animes (
     kind VARCHAR(25) DEFAULT NULL,
     valorations int4 DEFAULT 0,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated timestamp DEFAULT CURRENT_TIMESTAMP,
     temporada VARCHAR(25) DEFAULT NULL
 );
 
@@ -107,7 +107,7 @@ CREATE TABLE episodes (
     sinopsis VARCHAR(250) NOT NULL,
     anime VARCHAR(250) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated timestamp DEFAULT CURRENT_TIMESTAMP,
     num int4 DEFAULT 1,
     seasion VARCHAR(250) DEFAULT null,
 );
@@ -126,7 +126,7 @@ CREATE TABLE clips (
     profile int4 DEFAULT NULL,
     time VARCHAR(25) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE episode_collections (
@@ -141,7 +141,7 @@ CREATE TABLE openings (
     sinopsis VARCHAR(250) NOT NULL,
     anime int4 NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated timestamp DEFAULT CURRENT_TIMESTAMP,
     num int4 DEFAULT 1,
     seasion VARCHAR(250) DEFAULT null,
 );
@@ -159,7 +159,7 @@ CREATE TABLE endings (
     sinopsis VARCHAR(250) NOT NULL,
     anime int4 NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated timestamp DEFAULT CURRENT_TIMESTAMP,
     num int4 DEFAULT 1,
     seasion VARCHAR(250) DEFAULT null,
 );
@@ -177,7 +177,7 @@ CREATE TABLE config_user (
     limit_num_profiles int4 DEFAULT 5,
     see_video_profiles_time bool DEFAULT false,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE filters (
@@ -186,7 +186,7 @@ CREATE TABLE filters (
     code VARCHAR(255) DEFAULT NULL,
     kind VARCHAR(255) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE seasions (
@@ -194,7 +194,7 @@ CREATE TABLE seasions (
     tittle VARCHAR(50) DEFAULT NULL,
     anime int4 NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE config_profile (
@@ -216,7 +216,7 @@ CREATE TABLE config_profile (
     option_paginator VARCHAR(150) DEFAULT 'new',
     avable_notifications bool DEFAULT false,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE notifications (
@@ -225,7 +225,7 @@ CREATE TABLE notifications (
     avaible int4 NOT NULL,
     config int4 NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE config_notification_profile(
@@ -247,7 +247,7 @@ CREATE TABLE history(
     profile int4 DEFAULT NULL,
     time VARCHAR(25) NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE profiles (
@@ -255,5 +255,5 @@ CREATE TABLE profiles (
     nombre VARCHAR(150),
     username VARCHAR(55) DEFAULT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );

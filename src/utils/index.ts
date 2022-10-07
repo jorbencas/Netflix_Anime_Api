@@ -1,6 +1,7 @@
 import { QueryResult, QueryResultRow } from "pg";
 import nodemailer from 'nodemailer';
 import { Request } from 'express';
+import { postgress } from "../db/postgres";
 
 const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
   let text: string = "";
@@ -168,7 +169,67 @@ const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
   return e;
 }
 
+const createTable = (sql: string) => {
+  postgress
+    .query(sql)
+    .then((result: QueryResult) => {
+     console.log('====================================');
+     console.log(result);
+     console.log('====================================');
+    })
+    .catch((err: Error) => {
+      console.log(err);
+    });
+}
+
+
+
+const checkTables = () => {
+  postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
+    WHERE schemaname != 'pg_catalog' AND schemaname   'information_schema'`)
+  .then((result: QueryResult) => {
+    console.log('====================================');
+    console.log(result.oid);
+    console.log(result.rowCount);
+    console.log(result.rows);
+    console.log(result.fields);
+    console.log(result.command);
+    console.log('====================================');
+  }).catch((err: Error) => {
+    console.log('====================================');
+    console.log(err);
+    console.log('====================================');
+  });
+}
+
+const dropDeleteTables = (isdrop = true) => {
+  let sqlValid = isdrop ? 'DROP TABLE IF EXISTS' : 'DELETE FROM';
+   postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
+   WHERE schemaname != 'pg_catalog' AND schemaname 'information_schema'`)
+  .then((result: QueryResult) => {
+    if (result.rowCount > 0) {
+      result.rows.forEach((row) => {
+        postgress.query(`${sqlValid} $1`, [row.tablename])
+        .then((result: QueryResult) => {
+          console.log(result.rows);
+        }).catch((err: Error) => {
+          console.log(err);
+        });
+      });
+    } else {
+      console.log('====================================');
+      console.log("No hay tablas");
+      console.log('====================================');
+    }
+  }).catch((err: Error) => {
+    console.log(err);
+  });
+}
+
 export {
+  createTable,
+  dropDeleteTables,
+  checkTables,
   handleMedia,
   sendEmail,
   responseCustome

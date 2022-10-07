@@ -2,6 +2,7 @@ import { responseCustome } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
+import { saveBackupAnime } from "../utils/backup_animes";
 
 const getbyAnime = (_req: Request, _res: Response, _next: NextFunction) => {
    
@@ -68,39 +69,30 @@ const getOne = (_req: Request, _res: Response, _next: NextFunction) => {
     // }
 }
 
-const insert = (_req: Request, _res: Response, _next: NextFunction) => {
-    // db = api->getDb();
-    // POST = api->getPOST();
-    // sql = "SELECT * FROM openings WHERE id = '{$POST['id']}'";
-    // valor = db->listar($sql);
-    // if (!isset($valor[0]->id)) {
-    //     sql = "INSERT INTO openings( id, nombre, 
-    //     descripcion, anime, num) VALUES('{$POST['id']}', 
-    //     '{$POST['nombre']}', '{$POST['descripcion']}', '{$POST['anime']}', 
-    //     '{$POST['num']}')";
-    //     inserted = db->ejecutar($sql);
-    //     if ($inserted) {
-    //         api->writeFile(array("kind" => "Opening insertado", "message" => "Se ha insertado el opening {$POST['nombre']}"),"log");
-    //         return api->response("api_Openings_insert_msg", 200, sql);
-    //     } else {
-    //         return api->response("api_Openings_insert_error_msg", 404); 
-    //     }
-    // } else {
-    //     sql = "UPDATE openings set  
-    //     nombre = '{$POST['nombre']}',  descripcion = '{$POST['descripcion']}', 
-    //     anime = '{$POST['anime']}', num = '{$POST['num']}'  WHERE id = '{$POST['id']}'";
-    //     updated = db->ejecutar($sql);
-    //     if ($updated) {
-    //         api->writeFile(array("kind" => "Opening actualizado", "message" => "Se ha actualizado el opening {$POST['nombre']}"),"log");
-    //         return api->response("api_Openings_update_msg", 200, sql);
-    //     } else {
-    //         return api->response("api_Openings_update_error_msg", 404); 
-    //     }
-    // }
+const insert = (req: Request, res: Response, next: NextFunction) => {
+     const { id, tittle, sinopsis, anime, num, seasion } = req.params;
+     postgress
+    .query(`INSERT INTO openings (id, tittle, sinopsis, anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6)`, [id, tittle, sinopsis, anime, num, seasion])
+    .then((result: QueryResult) => {
+      saveBackupAnime(anime,result.rows, 'openings');
+      res.json(responseCustome("", 200, result.rows))
+    })
+    .catch((err: Error) => {
+      next(err);
+    });
 };
 
-const edit = (_req: Request, _res: Response, _next: NextFunction) => {
-    
+const edit = (req: Request, res: Response, next: NextFunction) => {
+       const { id, tittle, sinopsis, anime, num, seasion } = req.params;
+     postgress
+    .query(`UPDATE FROM openings tittle=$2, sinopsis=$3, num=$4, seasion=$5 WHERE id=$1`, [id, tittle, sinopsis, num, seasion])
+    .then((result: QueryResult) => {
+      saveBackupAnime(anime,result.rows, 'openings');
+      res.json(responseCustome("", 200, result.rows))
+    })
+    .catch((err: Error) => {
+      next(err);
+    });
 };
 
 const deleteOne = (_req: Request, _res: Response, _next: NextFunction) => {

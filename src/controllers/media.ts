@@ -20,6 +20,7 @@ const defaultSiglas = (_req: Request, res: Response, next: NextFunction) => {
       readdir(PATH_TO_FILES).then((file: string[]) => {
         const siglas = file.filter((stat: string) => stat.trim() !== 'nuevos');
         // sendEmail();
+        
         res.json(responseCustome('La lista de siglas', 200, siglas));
       }).catch((err: Error) => {
         next(err);

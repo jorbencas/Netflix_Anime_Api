@@ -2,6 +2,7 @@ import {responseCustome  } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
+import { saveBackupAnime } from "../utils/backup_animes";
 
 const getOne = (_req: Request, _res: Response, _next: NextFunction) => {
     // GET = api->getGET();
@@ -152,12 +153,30 @@ const getidrand = (_req: Request, _res: Response, _next: NextFunction) => {
 
 }
 
-const insert = (_req: Request, _res: Response, _next: NextFunction) => {
-   
+const insert = (req: Request, res: Response, next: NextFunction) => {
+    const { id, tittle, sinopsis, anime, num, seasion } = req.params;
+     postgress
+    .query(`INSERT INTO episodes (id, tittle, sinopsis, anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6)`, [id, tittle, sinopsis, anime, num, seasion])
+    .then((result: QueryResult) => {
+      saveBackupAnime(anime, result.rows,'episodes');
+      res.json(responseCustome("", 200, result.rows))
+    })
+    .catch((err: Error) => {
+      next(err);
+    });
 };
 
-const edit = (_req: Request, _res: Response, _next: NextFunction) => {
-    
+const edit = (req: Request, res: Response, next: NextFunction) => {
+     const { id, tittle, sinopsis, anime, num, seasion } = req.params;
+     postgress
+    .query(`UPDATE FROM episodes tittle=$2, sinopsis=$3, num=$4, seasion=$5 WHERE id=$1`, [id, tittle, sinopsis, num, seasion])
+    .then((result: QueryResult) => {
+     saveBackupAnime(anime, result.rows,'episodes');
+      res.json(responseCustome("", 200, result.rows))
+    })
+    .catch((err: Error) => {
+      next(err);
+    });
 };
 
 const deleteOne = (_req: Request, _res: Response, _next: NextFunction) => {
