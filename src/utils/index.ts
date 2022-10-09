@@ -182,7 +182,16 @@ const createTable = (sql: string) => {
     });
 }
 
-
+const updateIdAcumulative = (id: string, table: string, field: string) => {
+  let num:string = id+'1';
+ postgress.query(`SELECT ${field} AS id FROM ${table} WHERE ${field} = '${num}'`)
+  .then((r: QueryResult) => {
+    if(r.rowCount > 0) {
+      let actual_id : number = parseInt(r.rows.shift().replace(/[^0-9]/ig,''));
+      num = id +''+ actual_id + 1;
+    }
+  }).finally( () => {return num});
+}
 
 const checkTables = () => {
   postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
@@ -232,5 +241,6 @@ export {
   checkTables,
   handleMedia,
   sendEmail,
-  responseCustome
+  responseCustome,
+  updateIdAcumulative
 }

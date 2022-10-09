@@ -1,4 +1,4 @@
-import {responseCustome  } from "../utils/index";
+import {responseCustome, updateIdAcumulative  } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
@@ -154,11 +154,12 @@ const getidrand = (_req: Request, _res: Response, _next: NextFunction) => {
 }
 
 const insert = (req: Request, res: Response, next: NextFunction) => {
-    const { id, tittle, sinopsis, anime, num, seasion } = req.params;
-     postgress
-    .query(`INSERT INTO episodes (id, tittle, sinopsis, anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6)`, [id, tittle, sinopsis, anime, num, seasion])
+    const { id, tittle, sinopsis, anime, num, seasion } = req.body;
+    let ID = updateIdAcumulative(id,'episodes', 'id');
+    postgress
+    .query(`INSERT INTO episodes (id, tittle, sinopsis, anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6) RETURNNING *`, [ID, tittle, sinopsis, anime, num, seasion])
     .then((result: QueryResult) => {
-      saveBackupAnime(anime, result.rows,'episodes');
+      saveBackupAnime(anime,{'id':ID}, result.rows,'episodes');
       res.json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {
@@ -167,11 +168,11 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const edit = (req: Request, res: Response, next: NextFunction) => {
-     const { id, tittle, sinopsis, anime, num, seasion } = req.params;
+     const { id, tittle, sinopsis, anime, num, seasion } = req.body;
      postgress
-    .query(`UPDATE FROM episodes tittle=$2, sinopsis=$3, num=$4, seasion=$5 WHERE id=$1`, [id, tittle, sinopsis, num, seasion])
+    .query(`UPDATE FROM episodes tittle=$2, sinopsis=$3, num=$4, seasion=$5 WHERE id=$1 RETURNNING *`, [id, tittle, sinopsis, num, seasion])
     .then((result: QueryResult) => {
-     saveBackupAnime(anime, result.rows,'episodes');
+     saveBackupAnime(anime,{'id':id}, result.rows,'episodes');
       res.json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {

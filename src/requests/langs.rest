@@ -1,1 +1,1 @@
-GET http://localhost:3001/lang
+GET http://localhost:3001/insertAllGeneres

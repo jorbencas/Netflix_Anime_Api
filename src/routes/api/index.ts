@@ -1,5 +1,4 @@
 import { Router } from "express";
-import langs from "./langs";
 import animes from "./animes";
 import episodes from "./episodes";
 import openings from "./openings";
@@ -8,7 +7,6 @@ import filters from "./filters";
 import media from "./media";
 import seasions from './seasions';
 const router = Router();
-router.use("/langs", langs);
 router.use("/animes", animes);
 router.use('/filters', filters);
 router.use('/media', media);

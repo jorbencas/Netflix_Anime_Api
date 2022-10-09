@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { defaultSiglas, insert } from "../../controllers/media";
+import { defaultSiglas } from "../../controllers/media";
 var router = Router();
-router.get("/", defaultSiglas).put('/', insert);
+router.get("/", defaultSiglas);
 export default router;

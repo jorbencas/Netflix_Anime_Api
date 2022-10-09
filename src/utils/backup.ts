@@ -1,5 +1,4 @@
 import { writeFile, access, readFile } from 'node:fs/promises';
-// import { access, readFile } from 'node:fs/promises';
 import { PathLike, existsSync } from "node:fs";
 import path from "node:path";
 
@@ -23,10 +22,7 @@ function doBackup(PATH_TO_FILES: PathLike, primary: any, obj: any){
           content.forEach((elem:any) => {
             if(valuePrimary.includes(elem[keyPrimary])){
               Object.entries(elem).forEach(([key, value]:any) => {
-                if (value.length == 0 || value.toLocaleLowerCase() !== obj[key].toLocaleLowerCase()) {
-                  console.log('====================================');
-                  console.log(key + '===' + value);
-                  console.log('====================================');
+                if (value.toLocaleLowerCase() !== obj[key].toLocaleLowerCase()) {
                   elem[key] = obj[key];
                 }
               });
@@ -47,7 +43,7 @@ function doBackup(PATH_TO_FILES: PathLike, primary: any, obj: any){
   }
 }
 
-const safeFile = (path: string,content: Array<any>) => {
+const safeFile = (path: PathLike,content: Array<any>) => {
   writeFile(path,JSON.stringify(content)).then( (file) => {
       console.log('====================================');
       console.log(file);

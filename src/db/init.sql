@@ -85,7 +85,7 @@ CREATE TABLE media_animes (
     id SERIAL NOT NULL PRIMARY KEY
     type VARCHAR(250) NOT NULL,
     name VARCHAR(250) NOT NULL,
-    extension VARCHAR(250) NOT NULL,
+    ext VARCHAR(250) NOT NULL,
     id_external VARCHAR(250) NOT NULL
 );
 
@@ -115,7 +115,7 @@ CREATE TABLE episodes (
 CREATE TABLE media_episodes (
     id SERIAL NOT NULL PRIMARY KEY
     name VARCHAR(250) NOT NULL,
-    extension VARCHAR(250) NOT NULL,
+    ext VARCHAR(250) NOT NULL,
     id_external VARCHAR(250) NOT NULL
 );
 
@@ -149,7 +149,7 @@ CREATE TABLE openings (
 CREATE TABLE media_openings (
     id SERIAL NOT NULL PRIMARY KEY
     name VARCHAR(250) NOT NULL,
-    extension VARCHAR(250) NOT NULL,
+    ext VARCHAR(250) NOT NULL,
     id_external VARCHAR(250) NOT NULL
 );
 
@@ -167,7 +167,7 @@ CREATE TABLE endings (
 CREATE TABLE media_endings (
     id SERIAL NOT NULL PRIMARY KEY
     name VARCHAR(250) NOT NULL,
-    extension VARCHAR(250) NOT NULL,
+    ext VARCHAR(250) NOT NULL,
     id_external VARCHAR(250) NOT NULL
 );
 

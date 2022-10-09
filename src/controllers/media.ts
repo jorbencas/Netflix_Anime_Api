@@ -33,7 +33,7 @@ const defaultSiglas = (_req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const insert = (req: Request, res: Response, _next: NextFunction) => {
+const insertMedia = (req: Request, res: Response, _next: NextFunction) => {
 const app = express();
 app.use(fileUpload);
   if(!req.files){
@@ -50,7 +50,7 @@ app.use(fileUpload);
     // const [] = req.body;
   }
 
-  const { tabla } = req.body;
+  const { tabla,mediaFiles, mediaFiles2, kind, id_external  } = req.body;
     // postgress
     // .query(
     //   `INSERT INTO media_${tabla} VALUES()`
@@ -64,8 +64,11 @@ app.use(fileUpload);
     //   next(e);
     // });
     console.log(tabla);
-     res.json(responseCustome("", 200, req.body));
-    
+    console.log(mediaFiles);
+    console.log(mediaFiles2);
+    console.log(id_external);
+    console.log(kind);
+    res.json(responseCustome("", 200, req.body));
 }
 
-export { defaultSiglas, insert };
+export { defaultSiglas, insertMedia };
