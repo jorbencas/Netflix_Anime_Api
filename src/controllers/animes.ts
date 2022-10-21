@@ -2,7 +2,7 @@ import { responseCustome } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
-import { saveBackupAnime } from "../utils/backup_animes";
+import { saveBackupAnime } from "../utils/backup";
 import { insertMedia } from "./media";
 
 const getlist = (_req: Request, res: Response, next: NextFunction) => {
@@ -225,10 +225,6 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     temporadas,
   } = req.body;
 
-  let t = "";
-  temporadas.forEach((temp: String) => {
-    t += temp;
-  });
   postgress
     .query(
       `INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`,
@@ -240,7 +236,7 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
         date_publication,
         date_finalization,
         idiomas,
-        t,
+        temporadas.join(),
       ]
     )
     .then((result: QueryResult) => {

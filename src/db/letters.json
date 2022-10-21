@@ -1,5 +1,4 @@
-export default function letters(){
-    return [
+[
     "A",
     "B",
     "C",
@@ -29,4 +28,3 @@ export default function letters(){
     "Z",
     "0-9"
 ]
-}

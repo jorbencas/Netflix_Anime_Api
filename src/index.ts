@@ -1,6 +1,5 @@
 import { createServer } from "node:http";
-import { config } from "dotenv";
-config();
+import "dotenv/config";
 import app from './app';
 import sockets from "./socketIo";
 const server = createServer(app);

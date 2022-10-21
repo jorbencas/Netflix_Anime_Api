@@ -51,7 +51,17 @@ const safeFile = (path: PathLike,content: Array<any>) => {
   });
 }
 
+const saveBackupAnime = (siglas: string, primary:Object, obj: any, kind: string) => {
+  let relativepath = siglas.length > 0 ? siglas+'/':'';
+  const PATH_TO_FILES : PathLike = path.join(
+    __dirname,
+    "/../media"+ '/'+relativepath+'/.backup/'+kind+ '.json'
+  );
+
+  doBackup(PATH_TO_FILES, primary, obj);
+}
+
 export {
-  doBackup,
+  saveBackupAnime,
   saveBackup
 }

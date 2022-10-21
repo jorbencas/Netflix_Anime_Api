@@ -2,7 +2,7 @@ import { responseCustome, updateIdAcumulative } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
-import { saveBackupAnime } from "../utils/backup_animes";
+import { saveBackupAnime } from "../utils/backup";
 
 const getbyAnime = (_req: Request, _res: Response, _next: NextFunction) => {
    

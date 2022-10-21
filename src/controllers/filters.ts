@@ -6,8 +6,8 @@ import { access, readFile } from 'node:fs/promises';
 import { PathLike, existsSync } from "node:fs";
 import path from "node:path";
 import { saveBackup } from "../utils/backup";
-import letters from '../db/letters';
-import years from '../db/years';
+import letters from '../db/letters.json';
+import years from '../db/years.json';
 
 const getFilters = (req: Request, res: Response, next: NextFunction) => {
   let kind = req.params.kind;
@@ -98,15 +98,14 @@ const deleteAll = (_req: Request, res: Response, next: NextFunction) => {
 
 
 const insertAll = (_req: Request, _res: Response, next: NextFunction) => {
-
-   createTable(`CREATE TABLE filters (
+   createTable(`DROP TABLE IF EXISTS filters;`);
+   createTable(`CREATE TABLE IF NOT EXISTS filters (
       tittle VARCHAR(250) NOT NULL,
       code VARCHAR(255) PRIMARY KEY,
       kind VARCHAR(255) NOT NULL,
       created timestamp DEFAULT CURRENT_TIMESTAMP,
       updated timestamp DEFAULT CURRENT_TIMESTAMP
     );`);
-
   const PATH_TO_FILES : PathLike = path.join(
     __dirname,
     "/../media/.backup/filters.json"
