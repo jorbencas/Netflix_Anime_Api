@@ -1,0 +1,55 @@
+El dia de hoy ha que hacer 
+que los ficheros que estan en el backup, 
+se metan dentro de las carpetas de media, 
+si no exite un fchero, creamos su version 
+sql, y los 2 no sql (estos ficvheros estan ocultos, 
+para no trastocar los otros ficheros que ya exiasten),
+si si existe, dividimos los ficheros por carpetas, 
+salvo el banner y la portada, no contiene ningun fichero
+ya que estos se almacenan en el fichero principal de
+la carpeta.
+
+hay que dividir el fichero de sql o json en partes, 
+teninendo en cuenta esto hay que dejar los ficheros
+nuevos generados en las distintas localizaciones para 
+poder simplificar los backups, y a la hora de cambiar 
+algun dato, es mucho mas facil poder hacer-lo, si se
+elimina alguna carpeta, se han de borrar todos los ficheros
+si se ha de despublicar algun elemento hay que comprimir
+la carpeta contenedora, pero no hay que borrar los archivos de 
+la copia de seguridad no crear componentes entre 50 y 3000 lineas
+de media para no hacer los componentes muy largos y reutilizables
+organizar los componentes de tal forma que no se agrupen muchos 
+o pocos de tal forma que el numero de coponetes no sea demasiado 
+largo
+
+si no existe el backup de una carpeta, se debe de crear la estructura
+de archivos, i cada archivo debe tener su propia estructura, si para 
+los episodios, se precisa de crear un script que genere un modelo por 
+episodio, se hace, al igual que las temporadas, que se deben meter dentro 
+de la carpeta de episodios, pero en un archivo aparte, para así separar todoso
+los elementos en diferentes archivos y despues poder manegar los mas facilmente
+
+principal problema, a la hora de decidir el numero de episodios por temporada, 
+ya que si falta algun episodio, no se debe de poner la carpeta en la base de datos
+el nuevo campo de serie activada o desactivada, se pondra para otorgar mas dinamismo 
+a la aplicación y las series deactivadas no se mostraran (no se ara nada en el disco 
+para así intentar prolontgar un poco la vida del disco duro)
+
+encontrar una forma de eliminar los ids autoincrementales 
+problemas
+ si se borra un episodio, opening o ending estos autoincrementales, no se reincrementan
+ para no dejar ningun numero sin poner
+    solucion
+        crear un tipo string con las siglas y el numero del episodio
+
+        problema 
+            si se hace esto hay que cambiar el modelo de media, al igual que el de collecion ...
+             se debe estudiar con detenimiento que implicaria dichos cambios, para la architectura 
+             de la base de datos, es un poco complicado realizar esta acción, por la cantidad de media que hay 
+
+3 rutas, las del media, las delbackup sql i por ultimo las del backup no sql
+
+se debe de recorrer las del nosql y comprovar si hay una carpeta, también lo comprobamos en la ruta de media, 
+si la hay, hay que ir a la ruta no sql y comprovar si hay un archivo con el nombre de las siglas
+una vez hecho esto hay que, coger el archivo sql y la carpeta nosql y copiarlas dentro de media

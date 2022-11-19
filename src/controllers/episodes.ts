@@ -3,6 +3,7 @@ import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
 import { saveBackupAnime } from "../utils/backup";
+// import { insertMedia } from "./media";
 
 const getOne = (_req: Request, _res: Response, _next: NextFunction) => {
     // GET = api->getGET();

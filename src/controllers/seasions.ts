@@ -20,13 +20,10 @@ const getSasion = (req: Request, res: Response) => {
 };
 
 
-const getListIds = (req: Request, res: Response, next: NextFunction) => {
-    const { siglas } = req.params;
+const insert = (req: Request, res: Response, next: NextFunction) => {
+    const { tittle, siglas } = req.body;
     postgress
-  .query(`SELECT s.tittle, m.extension, m.name, m.kind 
-    FROM seasions AS s INNER JOIN animes AS a ON a.id = s.anime
-    INNER JOIN media_animes AS m ON(m.id_external = a.id)
-    WHERE a.id = ${siglas} AND m.kind = 'portada'`)
+  .query(`INSERT INTO seasions(tittle,anime) VALUES('${tittle}', '${siglas}')`)
   .then((result: QueryResult) => {
     let resultados = result.rows.map( (e: QueryResultRow) => {
       e = handleMedia(e, siglas, req);
@@ -37,4 +34,4 @@ const getListIds = (req: Request, res: Response, next: NextFunction) => {
   });
 }
 
-export { getSasion, getListIds };
+export { getSasion, insert };

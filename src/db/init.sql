@@ -77,8 +77,7 @@ CREATE TABLE animes (
     kind VARCHAR(25) DEFAULT NULL,
     valorations int4 DEFAULT 0,
     created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
-    temporada VARCHAR(25) DEFAULT NULL
+    updated timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE media_animes (
@@ -87,6 +86,12 @@ CREATE TABLE media_animes (
     name VARCHAR(250) NOT NULL,
     ext VARCHAR(250) NOT NULL,
     id_external VARCHAR(250) NOT NULL
+);
+
+CREATE TABLE anime_temporadas ( 
+    id SERIAL NOT NULL PRIMARY KEY,
+    temporada int4,
+    anime VARCHAR(250) NOT NULL
 );
 
 CREATE TABLE anime_generes (

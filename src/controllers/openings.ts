@@ -3,6 +3,7 @@ import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
 import { saveBackupAnime } from "../utils/backup";
+import { insertMedia } from "./media";
 
 const getbyAnime = (_req: Request, _res: Response, _next: NextFunction) => {
    
@@ -75,6 +76,7 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     postgress.query(`INSERT INTO openings (id, tittle, sinopsis, anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6) RETURNNING *;`, [ID, tittle, sinopsis, anime, num, seasion])
     .then((result: QueryResult) => {
       saveBackupAnime(anime,{'id':ID}, result.rows, 'openings');
+      insertMedia(req, res, next);
       res.json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {
@@ -88,6 +90,7 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
     .query(`UPDATE FROM openings tittle=$2, sinopsis=$3, num=$4, seasion=$5 WHERE id=$1 RETURNNING *;`, [id, tittle, sinopsis, num, seasion])
     .then((result: QueryResult) => {
       saveBackupAnime(anime,{'id':id}, result.rows, 'openings');
+      insertMedia(req, res, next);
       res.json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {

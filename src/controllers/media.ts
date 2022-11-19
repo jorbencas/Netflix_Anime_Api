@@ -50,7 +50,7 @@ app.use(fileUpload);
     // const [] = req.body;
   }
 
-  const { tabla,mediaFiles, mediaFiles2, kind, id_external  } = req.body;
+  const { tabla,mediaFiles, mediaFiles2, kind, id_external } = req.body;
     // postgress
     // .query(
     //   `INSERT INTO media_${tabla} VALUES()`
