@@ -1,36 +1,19 @@
-// import { responseCustome, sendEmail } from "../utils/index";
-import { responseCustome } from "../utils/index";
-// import { postgress } from "../db/postgres";
-// import { QueryResult } from 'pg';
+import { readMyDir, responseCustome } from "../utils/index";
 import { Request, Response, NextFunction } from "express";
-import { readdir, access } from 'node:fs/promises';
-import { PathLike, existsSync } from "node:fs";
+import { PathLike } from "node:fs";
 import path from "node:path";
 import fileUpload from 'express-fileupload';
 import express from "express";
 
-const defaultSiglas = (_req: Request, res: Response, next: NextFunction) => {
+const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) => {
   const PATH_TO_FILES : PathLike = path.join(
     __dirname,
     "/../" + process.env.MEDIA_PATH
   );
 
-  if (existsSync(PATH_TO_FILES)) {
-    access(PATH_TO_FILES, 7).then(() => {
-      readdir(PATH_TO_FILES).then((file: string[]) => {
-        const siglas = file.filter((stat: string) => stat.trim() !== 'nuevos');
-        // sendEmail();
-        
-        res.json(responseCustome('La lista de siglas', 200, siglas));
-      }).catch((err: Error) => {
-        next(err);
-      });
-    }).catch((err: Error) => {
-      next(err);
-    });
-  } else {
-    next(new Error("No hay lista de siglas disponibles"));
-  }
+  let file = await readMyDir(PATH_TO_FILES);
+  const siglas: string[] | undefined = file?.filter((stat: string) => stat.trim() !== 'nuevos');
+  res.json(responseCustome('La lista de siglas', 200, siglas));
 };
 
 const insertMedia = (req: Request, res: Response, _next: NextFunction) => {

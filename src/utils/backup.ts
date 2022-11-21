@@ -1,6 +1,7 @@
-import { writeFile, access, readFile } from 'node:fs/promises';
-import { PathLike, existsSync } from "node:fs";
+import { writeFile } from 'node:fs/promises';
+import { PathLike } from "node:fs";
 import path from "node:path";
+import { readMyFile } from '.';
 
 const saveBackup = (primary: any, obj: any, kind: string) => {
   const PATH_TO_FILES : PathLike = path.join(
@@ -10,34 +11,26 @@ const saveBackup = (primary: any, obj: any, kind: string) => {
   doBackup(PATH_TO_FILES, primary, obj);
 }
 
-function doBackup(PATH_TO_FILES: PathLike, primary: any, obj: any){
+async function doBackup(PATH_TO_FILES: PathLike, primary: any, obj: any){
   const keyPrimary = Object.keys(primary)[0];
   const valuePrimary = Object.values(primary);
-  if (existsSync(PATH_TO_FILES)) {
-    access(PATH_TO_FILES, 7).then(() => {
-      readFile(PATH_TO_FILES).then((file: Buffer) => {
-        let content = JSON.parse(file.toString("utf-8"));
-        let backupFile = content.filter( (e:any) => valuePrimary.includes(e[keyPrimary]));
-        if(backupFile.length > 0) {
-          content.forEach((elem:any) => {
-            if(valuePrimary.includes(elem[keyPrimary])){
-              Object.entries(elem).forEach(([key, value]:any) => {
-                if (value.toLocaleLowerCase() !== obj[key].toLocaleLowerCase()) {
-                  elem[key] = obj[key];
-                }
-              });
+  let content = await readMyFile(PATH_TO_FILES);
+  if(content){
+    let backupFile = content.filter( (e:any) => valuePrimary.includes(e[keyPrimary]));
+    if(backupFile.length > 0) {
+      content.forEach((elem:any) => {
+        if(valuePrimary.includes(elem[keyPrimary])){
+          Object.entries(elem).forEach(([key, value]:any) => {
+            if (value.toLocaleLowerCase() !== obj[key].toLocaleLowerCase()) {
+              elem[key] = obj[key];
             }
           });
-        } else {
-          content.push(obj);
         }
-        safeFile(PATH_TO_FILES,content);
-      }).catch((err: Error) => {
-        console.log(err);
       });
-    }).catch((err: Error) => {
-      console.log(err);
-    });
+    } else {
+      content.push(obj);
+    }
+    safeFile(PATH_TO_FILES,content);
   } else {
     safeFile(PATH_TO_FILES,[obj]);
   }

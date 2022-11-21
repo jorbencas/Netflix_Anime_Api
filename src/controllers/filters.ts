@@ -2,9 +2,6 @@ import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
 import {createTable, responseCustome  } from "../utils/index";
-import { access, readFile } from 'node:fs/promises';
-import { PathLike, existsSync } from "node:fs";
-import path from "node:path";
 import { saveBackup } from "../utils/backup";
 import letters from '../db/letters.json';
 import years from '../db/years.json';
@@ -96,47 +93,6 @@ const deleteAll = (_req: Request, res: Response, next: NextFunction) => {
   });
 }
 
-
-const insertAll = (_req: Request, _res: Response, next: NextFunction) => {
-   createTable(`DROP TABLE IF EXISTS filters;`);
-   createTable(`CREATE TABLE IF NOT EXISTS filters (
-      tittle VARCHAR(250) NOT NULL,
-      code VARCHAR(255) PRIMARY KEY,
-      kind VARCHAR(255) NOT NULL,
-      created timestamp DEFAULT CURRENT_TIMESTAMP,
-      updated timestamp DEFAULT CURRENT_TIMESTAMP
-    );`);
-  const PATH_TO_FILES : PathLike = path.join(
-    __dirname,
-    "/../media/.backup/filters.json"
-  );
-  if (existsSync(PATH_TO_FILES)) {
-    access(PATH_TO_FILES, 7).then(() => {
-      readFile(PATH_TO_FILES).then((file: Buffer) => {
-        let content = JSON.parse(file.toString("utf-8"));
-        content.forEach( (element: any) => {
-          const { tittle, code, kind } = element;
-          postgress.query("INSERT INTO filters(tittle, code, kind) values($1, $2, $3)",[tittle, code, kind]).then((result: QueryResult) => {
-            console.log('====================================');
-            console.log(result);
-            console.log('====================================');
-          }).catch((err: Error) => {
-            next(err);
-          });
-        });
-      }).catch((err: Error) => {
-        console.log(err);
-      });
-    }).catch((err: Error) => {
-      console.log(err);
-    });
-  } else {
-    console.log('====================================');
-    console.log("ERROR");
-    console.log('====================================');
-  }
-}
-
 // const handlesearch = (req: Request, res: Response, next: NextFunction) => {};
 
 // const mysearches = (req: Request, res: Response, next: NextFunction) => {};
@@ -153,7 +109,6 @@ const insertAll = (_req: Request, _res: Response, next: NextFunction) => {
 export {   
   insert, 
   deleteAll,
-  insertAll,
   getFilters, 
   update 
 };

@@ -2,6 +2,8 @@ import { QueryResult, QueryResultRow } from "pg";
 import nodemailer from 'nodemailer';
 import { Request } from 'express';
 import { postgress } from "../db/postgres";
+import { access, readFile, readdir } from 'node:fs/promises';
+import { PathLike, existsSync, constants } from "node:fs";
 
 const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
   let text: string = "";
@@ -130,18 +132,20 @@ const responseCustome = (message: string = "", code: number = 200, data: QueryRe
 
 const sendEmail = () => {
   var transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 587,
     auth: {
-      type:"login", 
       user: `${process.env.GMAIL}`,
       pass: `${process.env.GMAIL_PASSW}`
-    }
+    },
+      from: process.env.GMAIL,
   });
 
   var mailOptions = {
     from: process.env.GMAIL,
     to: process.env.EMAIL,
     subject: 'Cosas de Anime Sending Email using Node.js',
+    text:'Prueba de email',
     html: ` 
            <div> 
            <p>Hola amigo</p> 
@@ -235,6 +239,43 @@ const dropDeleteTables = (isdrop = true) => {
   });
 }
 
+async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
+  const isValid = await isAccesible(PATH_TO_FILES);
+  if (isValid) {
+    try {
+      const file :any = await readFile(PATH_TO_FILES, "utf-8");
+      return file.toJSON();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return null;
+}
+
+async function readMyDir(PATH_TO_FILES: PathLike): Promise<string[] | null> {
+  const isValid = await isAccesible(PATH_TO_FILES);
+  if (isValid) {
+    try {
+      return await readdir(PATH_TO_FILES);;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return null;
+}
+
+async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
+  if (existsSync(PATH_TO_FILES)) {
+    try {
+      await access(PATH_TO_FILES, constants.R_OK);
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return false;
+}
+
 export {
   createTable,
   dropDeleteTables,
@@ -242,5 +283,7 @@ export {
   handleMedia,
   sendEmail,
   responseCustome,
-  updateIdAcumulative
+  updateIdAcumulative,
+  readMyFile,
+  readMyDir
 }
