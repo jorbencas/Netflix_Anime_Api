@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { postgress } from "../db/postgres";
 import { access, readFile, readdir } from 'node:fs/promises';
 import { PathLike, existsSync, constants } from "node:fs";
+import { mailOptions, transporter } from "./sendMail";
 
 const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
   let text: string = "";
@@ -130,39 +131,29 @@ const responseCustome = (message: string = "", code: number = 200, data: QueryRe
   };
 };
 
-const sendEmail = () => {
-  var transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    auth: {
-      user: `${process.env.GMAIL}`,
-      pass: `${process.env.GMAIL_PASSW}`
-    },
-      from: process.env.GMAIL,
-  });
-
-  var mailOptions = {
-    from: process.env.GMAIL,
-    to: process.env.EMAIL,
+const sendEmail = async () => {
+  mailOptions = {
+    ...mailOptions,
     subject: 'Cosas de Anime Sending Email using Node.js',
     text:'Prueba de email',
     html: ` 
-           <div> 
-           <p>Hola amigo</p> 
-           <p>Esto es una prueba del vídeo</p> 
-           <p>¿Cómo enviar correos eletrónicos con Nodemailer en NodeJS </p> 
-           </div> 
-       ` 
+      <div> 
+        <p>Hola amigo</p> 
+        <p>Esto es una prueba del vídeo</p> 
+        <p>¿Cómo enviar correos eletrónicos con Nodemailer en NodeJS </p> 
+      </div> 
+    `
   };
 
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-    transporter.close(); 
-  });
+ 
+  try{
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Message sent: ' + info.response);
+    return info;
+} catch(error: Error) {
+    return console.log(error);
+};
+
 }
 
 const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
