@@ -8,7 +8,13 @@ import isLocalHost from "../../middlewares/isLocalHost";
 import { sendEmail } from "../../utils";
 
 var router = Router();
-router.get('/sendEmail',sendEmail);
+router.get('/sendEmail',async (req: Request, res: Response, next: NextFunction) => {
+    if(isLocalHost(req)){
+    res.send(await sendEmail);
+    } else {
+         next();
+    }
+});
 router.put("/insertAllGeneres", async (req: Request, _res: Response, next: NextFunction) => {
     if(isLocalHost(req)){
         createTable(`DROP TABLE IF EXISTS filters;`);

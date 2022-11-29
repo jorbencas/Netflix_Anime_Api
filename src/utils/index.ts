@@ -144,7 +144,7 @@ const sendEmail = async () => {
     const transporter = await createTransport(optionsEmail);
     const info:SentMessageInfo = await transporter.sendMail(makerMail(subject,text,html))
     .catch((error:Error) => {
-      return console.error(error);
+      return error;
     });
     console.log('Message sent: ' + info.response);
     return info;

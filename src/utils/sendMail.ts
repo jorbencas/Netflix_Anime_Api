@@ -1,5 +1,5 @@
 export const optionsEmail = {
-    service:String(process.env.EMAIL_HOSTNAME), // hostname
+    host:String(process.env.EMAIL_HOSTNAME), // hostname
     secureConnection: false, // TLS requires secureConnection to be false
     port: 587, // port for secure SMTP
     tls: {
