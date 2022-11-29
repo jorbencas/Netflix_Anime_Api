@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from "cors";
 import ExpressPinoLogger from "express-pino-logger";
-import DBConnect from "./db/index";
 import apitoken from "./middlewares/apitoken";
 import notfound from "./middlewares/404";   
 import errors from "./middlewares/error";
@@ -9,7 +8,6 @@ import routes from "./routes/api/index";
 import statics from "./routes/static/index";
 import apiscripts from "./routes/scripts/index";
 import { logger } from "./libs/pino";
-DBConnect();
 const app = express();
 app.use(cors({
     origin: "http://localhost:3000",

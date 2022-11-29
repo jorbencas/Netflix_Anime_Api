@@ -2,6 +2,8 @@ import { createServer } from "node:http";
 import "dotenv/config";
 import app from './app';
 import sockets from "./socketIo";
+import DBConnect from "./db/index";
+DBConnect();
 const server = createServer(app);
 sockets(server);
 const port: number = parseInt(`${process.env.PORT}`) || 0;
