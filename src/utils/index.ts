@@ -4,7 +4,7 @@ import { postgress } from "../db/postgres";
 import { access, readFile, readdir } from 'node:fs/promises';
 import { PathLike, existsSync, constants } from "node:fs";
 import { optionsEmail, makerMail } from './sendMail';
-import {createTransport, SentMessageInfo} from "nodemailer";
+import { createTransport, SentMessageInfo } from "nodemailer";
 
 const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
   let text: string = "";
@@ -142,12 +142,18 @@ const sendEmail = async () => {
       </div> 
     `;
     const transporter = await createTransport(optionsEmail);
-    const info:SentMessageInfo = await transporter.sendMail(makerMail(subject,text,html))
-    .catch((error:Error) => {
-      return error;
-    });
-    console.log('Message sent: ' + info.response);
-    return info;
+    const response : string | Error = await transporter
+    .sendMail(
+      makerMail(subject,text,html)
+    )
+    .then( 
+      res:string => {
+        console.log(res.response);
+        return 'send';
+      }
+    )
+    .catch(error:Error => error);
+    return response;
 }
 
 const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
