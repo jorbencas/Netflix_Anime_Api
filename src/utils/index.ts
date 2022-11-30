@@ -42,12 +42,13 @@ const sendEmail = async () => {
 
 const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
   e.media = req.baseUrl+'/'+e.kind+'/'+siglas+'/'+e.name+'/'+e.extension;
-   let properties = ['kind',
+  let myObj = structuredClone(e);
+  let properties = ['kind',
   'name',
   'extension'];
-  let myObj = structuredClone(e);
+  
   properties.forEach((property) => {
-     ({ property:_ ...myObj})
+     ({ property:_, ...myObj})
   });
   return myObj;
 }
