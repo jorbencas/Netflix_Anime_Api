@@ -5,13 +5,10 @@ import { access, readFile, readdir } from 'node:fs/promises';
 import { PathLike, existsSync, constants } from "node:fs";
 import { optionsEmail, makerMail } from './sendMail';
 import { createTransport, SentMessageInfo } from "nodemailer";
-import * as STATUS_CODE from '@static/statuscodes.json';
-const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
-  let text: string = "";
-  if (STATUS_CODE[code]) {
-      text = STATUS_CODE[code];
-  }
+import STATUS_CODE from '../static/statusCodes.json';
 
+const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
+  let text: string = STATUS_CODE[code] ?? "";
   return {
     data,
     status: { code, text, message },
@@ -45,10 +42,14 @@ const sendEmail = async () => {
 
 const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
   e.media = req.baseUrl+'/'+e.kind+'/'+siglas+'/'+e.name+'/'+e.extension;
-  delete e.kind;
-  delete e.name;
-  delete e.extension;
-  return e;
+   let properties = ['kind',
+  'name',
+  'extension'];
+  let myObj = structuredClone(e);
+  properties.forEach((property) => {
+     ({ property:_ ...myObj})
+  });
+  return myObj;
 }
 
 const createTable = (sql: string) => {
@@ -94,19 +95,18 @@ const checkTables = () => {
 }
 
 const dropDeleteTables = (isdrop = true) => {
-  let sqlValid = isdrop ? 'DROP TABLE IF EXISTS' : 'DELETE FROM';
    postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
    WHERE schemaname != 'pg_catalog' AND schemaname 'information_schema'`)
   .then((result: QueryResult) => {
     if (result.rowCount > 0) {
-      result.rows.forEach((row) => {
-        postgress.query(`${sqlValid} $1`, [row.tablename])
-        .then((result: QueryResult) => {
-          console.log(result.rows);
-        }).catch((err: Error) => {
-          console.log(err);
-        });
-      });
+      let sqlAction = isdrop ? 'DROP TABLE IF EXISTS' : 'DELETE FROM';
+      let sql = result.rows.map((row) => {
+       return `${sqlAction} ${row.tablename};`;
+      }).join("\n");
+      
+       postgress.query(sql)
+       .then( result: QueryResult => console.log(result.rows) )
+       .catch( err: Error => console.log(err) );
     } else {
       console.log('====================================');
       console.log("No hay tablas");
@@ -118,40 +118,43 @@ const dropDeleteTables = (isdrop = true) => {
 }
 
 async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
+  let content = null;
   const isValid = await isAccesible(PATH_TO_FILES);
   if (isValid) {
     try {
       const file :any = await readFile(PATH_TO_FILES, "utf-8");
-      return file.toJSON();
+      content = file.toJSON();
     } catch (error) {
       console.log(error);
     }
   }
-  return null;
+  return content;
 }
 
 async function readMyDir(PATH_TO_FILES: PathLike): Promise<string[] | null> {
+  let content = null;
   const isValid = await isAccesible(PATH_TO_FILES);
   if (isValid) {
     try {
-      return await readdir(PATH_TO_FILES);;
+      content = await readdir(PATH_TO_FILES);;
     } catch (error) {
       console.log(error);
     }
   }
-  return null;
+  return content;
 }
 
 async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
+  let isAccesible = false;
   if (existsSync(PATH_TO_FILES)) {
     try {
       await access(PATH_TO_FILES, constants.R_OK);
-      return true;
+      isAccesible = true;
     } catch (error) {
       console.log(error);
     }
   }
-  return false;
+  return isAccesible;
 }
 
 export {
