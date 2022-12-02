@@ -4,11 +4,13 @@ import { postgress } from "../db/postgres";
 import { access, readFile, readdir } from 'node:fs/promises';
 import { PathLike, existsSync, constants } from "node:fs";
 import { optionsEmail, makerMail } from './sendMail';
-import { createTransport, SentMessageInfo } from "nodemailer";
-import STATUS_CODE from '../static/statusCodes.json';
+import { createTransport } from "nodemailer";
+import statusTexts from '../static/statusCodes';
+import { StatusCode } from "../types/StatusCode";
 
 const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
-  let text: string = STATUS_CODE[code] ?? "";
+  const CODESTATUS:StatusCode = statusTexts;
+  let text: string = CODESTATUS[code] ?? "";
   return {
     data,
     status: { code, text, message },
@@ -16,39 +18,38 @@ const responseCustome = (message: string = "", code: number = 200, data: QueryRe
 };
 
 const sendEmail = async () => {
-   let subject:string = 'Cosas de Anime Sending Email using Node.js';
-   let text:string = 'Prueba de email';
-   let html:string =  ` 
-      <div> 
-        <p>Hola amigo</p> 
-        <p>Esto es una prueba del vídeo</p> 
-        <p>¿Cómo enviar correos eletrónicos con Nodemailer en NodeJS </p> 
-      </div> 
-    `;
-    const transporter = await createTransport(optionsEmail);
-    const response : string | Error = await transporter
-    .sendMail(
-      makerMail(subject,text,html)
-    )
-    .then( 
-      res:string => {
-        console.log(res.response);
-        return 'send';
-      }
-    )
-    .catch(error:Error => error);
-    return response;
+  let subject:string = 'Cosas de Anime Sending Email using Node.js';
+  let text:string = 'Prueba de email';
+  let html:string =  `
+    <div> 
+      <p>Hola amigo</p> 
+      <p>Esto es una prueba del vídeo</p> 
+      <p>¿Cómo enviar correos eletrónicos con Nodemailer en NodeJS </p> 
+    </div> 
+  `;
+  const transporter = await createTransport(optionsEmail);
+  const response : string | Error = await transporter
+  .sendMail(
+    makerMail(subject,text,html)
+  )
+  .then( 
+    res => {
+      console.log(res?.response);
+      return 'send';
+    }
+  )
+  .catch((err:Error) => err);
+  return response;
 }
 
 const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
   e.media = req.baseUrl+'/'+e.kind+'/'+siglas+'/'+e.name+'/'+e.extension;
   let myObj = structuredClone(e);
-  let properties = ['kind',
-  'name',
-  'extension'];
-  
+  let properties = ['kind', 'name', 'extension'];
   properties.forEach((property) => {
-     ({ property:_, ...myObj})
+    if (Object.prototype.hasOwnProperty.call(myObj,property)) {
+      delete myObj[property];
+    }
   });
   return myObj;
 }
@@ -106,8 +107,8 @@ const dropDeleteTables = (isdrop = true) => {
       }).join("\n");
       
        postgress.query(sql)
-       .then( result: QueryResult => console.log(result.rows) )
-       .catch( err: Error => console.log(err) );
+       .then( (result: QueryResult) => console.log(result.rows) )
+       .catch( (err: Error) => console.log(err) );
     } else {
       console.log('====================================');
       console.log("No hay tablas");
@@ -123,8 +124,9 @@ async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
   const isValid = await isAccesible(PATH_TO_FILES);
   if (isValid) {
     try {
-      const file :any = await readFile(PATH_TO_FILES, "utf-8");
-      content = file.toJSON();
+      const file = await readFile(PATH_TO_FILES, "utf-8");
+      let pathString = String(PATH_TO_FILES).toLowerCase();
+      content = pathString.includes('.json') ? JSON.stringify(file) : file;
     } catch (error) {
       console.log(error);
     }
@@ -167,5 +169,6 @@ export {
   responseCustome,
   updateIdAcumulative,
   readMyFile,
-  readMyDir
+  readMyDir,
+  isAccesible
 }

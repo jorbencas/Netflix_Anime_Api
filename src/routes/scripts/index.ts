@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { postgress } from "../../db/postgres";
 import { QueryResult } from "pg";
-import {createTable, readMyFile} from "../../utils/index";
+import {createTable, readMyFile, responseCustome} from "../../utils/index";
 import { PathLike } from "node:fs";
 import path from "node:path";
 import isLocalHost from "../../middlewares/isLocalHost";
@@ -10,9 +10,10 @@ import { sendEmail } from "../../utils";
 var router = Router();
 router.get('/sendEmail',async (req: Request, res: Response, next: NextFunction) => {
     if(isLocalHost(req)){
-    res.send(await sendEmail);
+        let data = await sendEmail();
+        res.send(responseCustome('DOIT',200, data));
     } else {
-         next();
+        next(responseCustome('Error',400));
     }
 });
 router.put("/insertAllGeneres", async (req: Request, _res: Response, next: NextFunction) => {

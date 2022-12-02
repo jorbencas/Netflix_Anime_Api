@@ -53,3 +53,7 @@ problemas
 se debe de recorrer las del nosql y comprovar si hay una carpeta, también lo comprobamos en la ruta de media, 
 si la hay, hay que ir a la ruta no sql y comprovar si hay un archivo con el nombre de las siglas
 una vez hecho esto hay que, coger el archivo sql y la carpeta nosql y copiarlas dentro de media
+
+
+Añadir redis
+( login auth ) Next auth 

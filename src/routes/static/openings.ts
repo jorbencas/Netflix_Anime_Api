@@ -1,23 +1,23 @@
 import path from "node:path";
-import {access, createReadStream, existsSync } from "node:fs";
-import express, { Request, Response, NextFunction } from "express";
-var router = express.Router();
-router.get("/:anime?/:opening?", (req: Request, res: Response, next: NextFunction) => {
+import { createReadStream } from "node:fs";
+import { Router, Request, Response, NextFunction } from "express";
+import { isAccesible } from "../../utils";
+
+const router = Router();
+
+router.get("/:anime?/:opening?", async (req: Request, res: Response, next: NextFunction) => {
   res.writeHead(200, { "content-type": "video/mp4" });
-let anime = typeof req.params.opening === undefined ? "CY" : req.params.anime;
-let kind = "openings";
-let opening = typeof req.params.opening === undefined ? "02.webm" : req.params.opening;
+  let anime = req.params.anime ?? "CY";
+  let kind = "openings";
+  let opening = req.params.opening ?? "02.webm";
   const PATH_TO_FILES = "/../../" + process.env.MEDIA_PATH;
   let fileName = path.join(
     __dirname,
      PATH_TO_FILES + path.sep + anime + path.sep + kind + path.sep + opening,
   );
-
-  if (existsSync(fileName)) {
-    access(fileName, 7, (err) => {
-    if (!err) createReadStream(fileName).pipe(res);
-    else next(err);
-  });
+  let content = await isAccesible(fileName);
+  if (content) {
+    createReadStream(fileName).pipe(res);
   } else {
     next(new Error("File not found"));
   }
