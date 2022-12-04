@@ -1,4 +1,4 @@
-import mongoose, { ConnectionOptions } from "mongoose";
+import {ConnectionOptions, disconnect, connect } from "mongoose";
 
 const connectMongo = () => {
   let url:string = `${process.env.MONGODB_URI}`;
@@ -8,7 +8,7 @@ const connectMongo = () => {
     useFindAndModify: false,
     useCreateIndex: false,
   };
-  mongoose.connect(url, options)
+  connect(url, options)
     .then(() => {
       console.log(`Connected to Mongo`);
     })
@@ -17,9 +17,9 @@ const connectMongo = () => {
     });
 };
 
-process.on("uncaughtException", (error) => {
+process.on("uncaughtException", (error: Error) => {
   console.error(error);
-  mongoose.disconnect();
+  disconnect();
 });
 
 export { connectMongo };
