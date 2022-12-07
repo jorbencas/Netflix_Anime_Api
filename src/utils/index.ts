@@ -1,33 +1,32 @@
 import { QueryResult, QueryResultRow } from "pg";
-import { Request } from 'express';
+import { NextFunction, Request } from 'express';
 import { postgress } from "../db/postgres";
 import { access, readFile, readdir } from 'node:fs/promises';
-import { PathLike, existsSync, constants } from "node:fs";
-import { optionsEmail, makerMail } from './sendMail';
+import { PathLike, existsSync, constants, createReadStream } from "node:fs";
+import { makerMail } from './sendMail';
 import { createTransport } from "nodemailer";
 import statusTexts from '../static/statusCodes';
-import { StatusCode } from "../types/StatusCode";
+import { dataResponseCustome, ResponseCustomeData, StatusCode } from "../types/StatusCode";
+import { Response } from 'express';
+import { isAudio, isVideo } from "./validators";
+import { OPTIONS_EMAIL } from "../config";
+import normal from '../templates/normal/email';
 
-const responseCustome = (message: string = "", code: number = 200, data: QueryResult<any> | object | string | Array<any> | null = null) => {
+export const responseCustome = (message: string = "", code: number = 200, data: dataResponseCustome = null) => {
   const CODESTATUS:StatusCode = statusTexts;
   let text: string = CODESTATUS[code] ?? "";
-  return {
+  let response: ResponseCustomeData = {
     data,
     status: { code, text, message },
   };
+  return response;
 };
 
-const sendEmail = async () => {
+export const sendEmail = async () => {
   let subject:string = 'Cosas de Anime Sending Email using Node.js';
   let text:string = 'Prueba de email';
-  let html:string =  `
-    <div> 
-      <p>Hola amigo</p> 
-      <p>Esto es una prueba del vídeo</p> 
-      <p>¿Cómo enviar correos eletrónicos con Nodemailer en NodeJS </p> 
-    </div> 
-  `;
-  const transporter = await createTransport(optionsEmail);
+  let html:string = normal();
+  const transporter = await createTransport(OPTIONS_EMAIL);
   const response : string | Error = await transporter
   .sendMail(
     makerMail(subject,text,html)
@@ -42,7 +41,7 @@ const sendEmail = async () => {
   return response;
 }
 
-const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
+export const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
   e.media = req.baseUrl+'/'+e.kind+'/'+siglas+'/'+e.name+'/'+e.extension;
   let myObj = structuredClone(e);
   let properties = ['kind', 'name', 'extension'];
@@ -54,7 +53,23 @@ const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
   return myObj;
 }
 
-const createTable = (sql: string) => {
+export const createMyStreamFile = async (fileName:PathLike, res: Response, next: NextFunction) => {
+  let content = await isAccesible(fileName);
+  if (content) {
+    let head = "text/html";
+    if(isVideo(String(fileName))){
+      head = "video/mp4";
+    } else if(isAudio(String(fileName)) ){
+      head = "audio/mp3";
+    }
+    res.writeHead(200, { "content-type":  head});
+    createReadStream(fileName).pipe(res);
+  } else {
+    next(new Error("File not found"));
+  } 
+}
+
+export const createTable = (sql: string) => {
   postgress
     .query(sql)
     .then((result: QueryResult) => {
@@ -67,7 +82,7 @@ const createTable = (sql: string) => {
     });
 }
 
-const updateIdAcumulative = (id: string, table: string, field: string) => {
+export const updateIdAcumulative = (id: string, table: string, field: string) => {
   let num:string = id+'1';
  postgress.query(`SELECT ${field} AS id FROM ${table} WHERE ${field} = '${num}'`)
   .then((r: QueryResult) => {
@@ -78,7 +93,7 @@ const updateIdAcumulative = (id: string, table: string, field: string) => {
   }).finally( () => {return num});
 }
 
-const checkTables = () => {
+export const checkTables = () => {
   postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
     WHERE schemaname != 'pg_catalog' AND schemaname   'information_schema'`)
   .then((result: QueryResult) => {
@@ -96,7 +111,7 @@ const checkTables = () => {
   });
 }
 
-const dropDeleteTables = (isdrop = true) => {
+export const dropDeleteTables = (isdrop = true) => {
    postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
    WHERE schemaname != 'pg_catalog' AND schemaname 'information_schema'`)
   .then((result: QueryResult) => {
@@ -119,7 +134,7 @@ const dropDeleteTables = (isdrop = true) => {
   });
 }
 
-async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
+export async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
   let content = null;
   const isValid = await isAccesible(PATH_TO_FILES);
   if (isValid) {
@@ -134,7 +149,7 @@ async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
   return content;
 }
 
-async function readMyDir(PATH_TO_FILES: PathLike): Promise<string[] | null> {
+export async function readMyDir(PATH_TO_FILES: PathLike): Promise<string[] | null> {
   let content = null;
   const isValid = await isAccesible(PATH_TO_FILES);
   if (isValid) {
@@ -158,17 +173,4 @@ async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
     }
   }
   return isAccesible;
-}
-
-export {
-  createTable,
-  dropDeleteTables,
-  checkTables,
-  handleMedia,
-  sendEmail,
-  responseCustome,
-  updateIdAcumulative,
-  readMyFile,
-  readMyDir,
-  isAccesible
 }

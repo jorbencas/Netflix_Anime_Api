@@ -1,0 +1,331 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model anime_avaible_notifications {
+  id            Int           @id @default(autoincrement())
+  avaible       Boolean?      @default(false)
+  anime         String        @db.VarChar(250)
+  notification  Int
+  animes        animes        @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+  notifications notifications @relation(fields: [notification], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model anime_favorites {
+  id       Int      @id @default(autoincrement())
+  favorite Boolean? @default(false)
+  anime    String   @db.VarChar(250)
+  animes   animes   @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model anime_generes {
+  id      Int     @id @default(autoincrement())
+  genere  String  @db.VarChar(255)
+  anime   String  @db.VarChar(250)
+  animes  animes  @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+  filters filters @relation(fields: [genere], references: [code], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model anime_temporadas {
+  id        Int     @id @default(autoincrement())
+  temporada String  @db.VarChar(255)
+  anime     String  @db.VarChar(250)
+  animes    animes  @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+  filters   filters @relation(fields: [temporada], references: [code], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model animes {
+  siglas                      String                        @id @db.VarChar(250)
+  tittle                      String                        @db.VarChar(250)
+  sinopsis                    String                        @db.VarChar(250)
+  idiomas                     String?                       @db.VarChar(255)
+  date_publication            DateTime?                     @default(dbgenerated("CURRENT_DATE")) @db.Date
+  date_finalization           DateTime?                     @default(dbgenerated("CURRENT_DATE")) @db.Date
+  state                       String?                       @db.VarChar(250)
+  kind                        String?                       @db.VarChar(25)
+  valorations                 Int?                          @default(0)
+  created                     DateTime?                     @default(now()) @db.Timestamp(6)
+  updated                     DateTime?                     @default(now()) @db.Timestamp(6)
+  anime_avaible_notifications anime_avaible_notifications[]
+  anime_favorites             anime_favorites[]
+  anime_generes               anime_generes[]
+  anime_temporadas            anime_temporadas[]
+  endings                     endings[]
+  episodes                    episodes[]
+  media_animes                media_animes[]
+  openings                    openings[]
+  seasions                    seasions[]
+}
+
+model clips {
+  id         Int       @id @default(autoincrement())
+  title      String    @db.VarChar(50)
+  episode    String    @db.VarChar(250)
+  profile    Int?
+  time_start String    @db.VarChar(25)
+  time_end   String    @db.VarChar(25)
+  created    DateTime? @default(now()) @db.Timestamp(6)
+  updated    DateTime? @default(now()) @db.Timestamp(6)
+  episodes   episodes  @relation(fields: [episode], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles   profiles? @relation(fields: [profile], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model collections {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @db.VarChar(255)
+  profile             Int?
+  created             DateTime?             @default(now()) @db.Timestamp(6)
+  updated             DateTime?             @default(now()) @db.Timestamp(6)
+  profiles            profiles?             @relation(fields: [profile], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  episode_collections episode_collections[]
+}
+
+model comments {
+  id                  Int       @id @default(autoincrement())
+  comment             String    @db.VarChar(250)
+  date                DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  hora                DateTime? @default(dbgenerated("CURRENT_TIME")) @db.Time(6)
+  username            String?   @db.VarChar(55)
+  kind                String    @db.VarChar(255)
+  id_external         String    @db.VarChar(250)
+  response_comment_id Int?      @default(0)
+  created             DateTime? @default(now()) @db.Timestamp(6)
+  updated             DateTime? @default(now()) @db.Timestamp(6)
+  users               users?    @relation(fields: [username], references: [username], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model config_profile {
+  id                      Int       @id @default(autoincrement())
+  profile                 Int?
+  theme                   String?   @default("dark") @db.VarChar(150)
+  autoplay                Boolean?  @default(false)
+  columns                 Int?      @default(2)
+  orden                   String?   @default("asc") @db.VarChar(150)
+  volume                  Float?    @default(0.5)
+  video_velocity_default  String    @db.VarChar(150)
+  default_view            String?   @default("grid") @db.VarChar(150)
+  avable_history          Boolean?  @default(true)
+  limit_elem_collection   Int?      @default(100)
+  offline_mode            Boolean?  @default(false)
+  avable_response_comment Boolean?  @default(false)
+  option_paginator        String?   @default("new") @db.VarChar(150)
+  avable_notifications    Boolean?  @default(false)
+  created                 DateTime? @default(now()) @db.Timestamp(6)
+  updated                 DateTime? @default(now()) @db.Timestamp(6)
+  profiles                profiles? @relation(fields: [profile], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model config_user {
+  id                      Int       @id @default(autoincrement())
+  username                String?   @db.VarChar(55)
+  limit_num_profiles      Int?      @default(5)
+  see_video_profiles_time Boolean?  @default(false)
+  created                 DateTime? @default(now()) @db.Timestamp(6)
+  updated                 DateTime? @default(now()) @db.Timestamp(6)
+  users                   users?    @relation(fields: [username], references: [username], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model endings {
+  id                String             @id @db.VarChar(250)
+  tittle            String             @db.VarChar(250)
+  sinopsis          String             @db.VarChar(250)
+  date_publication  DateTime?          @default(dbgenerated("CURRENT_DATE")) @db.Date
+  date_finalization DateTime?          @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anime             String             @db.VarChar(250)
+  created           DateTime?          @default(now()) @db.Timestamp(6)
+  updated           DateTime?          @default(now()) @db.Timestamp(6)
+  num               Int?               @default(1)
+  animes            animes             @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+  media_endings     media_endings[]
+  seasions_endings  seasions_endings[]
+}
+
+model episode_collections {
+  id          Int         @id @default(autoincrement())
+  episode     String      @db.VarChar(250)
+  collection  Int
+  collections collections @relation(fields: [collection], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  episodes    episodes    @relation(fields: [episode], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model episodes {
+  id                  String                @id @db.VarChar(250)
+  tittle              String                @db.VarChar(250)
+  sinopsis            String                @db.VarChar(250)
+  date_publication    DateTime?             @default(dbgenerated("CURRENT_DATE")) @db.Date
+  date_finalization   DateTime?             @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anime               String                @db.VarChar(250)
+  created             DateTime?             @default(now()) @db.Timestamp(6)
+  updated             DateTime?             @default(now()) @db.Timestamp(6)
+  num                 Int?                  @default(1)
+  clips               clips[]
+  episode_collections episode_collections[]
+  animes              animes                @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+  history             history[]
+  media_episodes      media_episodes[]
+  seasions_episodes   seasions_episodes[]
+}
+
+model filters {
+  code             String             @id @db.VarChar(255)
+  tittle           String             @db.VarChar(250)
+  kind             String             @db.VarChar(255)
+  created          DateTime?          @default(now()) @db.Timestamp(6)
+  updated          DateTime?          @default(now()) @db.Timestamp(6)
+  anime_generes    anime_generes[]
+  anime_temporadas anime_temporadas[]
+}
+
+model history {
+  id       Int       @id @default(autoincrement())
+  episode  String    @db.VarChar(250)
+  profile  Int?
+  time     String    @db.VarChar(25)
+  created  DateTime? @default(now()) @db.Timestamp(6)
+  updated  DateTime? @default(now()) @db.Timestamp(6)
+  episodes episodes  @relation(fields: [episode], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  profiles profiles? @relation(fields: [profile], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model media_animes {
+  id     Int    @id @default(autoincrement())
+  type   String @db.VarChar(250)
+  name   String @db.VarChar(250)
+  ext    String @db.VarChar(250)
+  anime  String @db.VarChar(250)
+  animes animes @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model media_endings {
+  id      Int     @id @default(autoincrement())
+  name    String  @db.VarChar(250)
+  ext     String  @db.VarChar(250)
+  ending  String  @db.VarChar(250)
+  endings endings @relation(fields: [ending], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model media_episodes {
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(250)
+  ext      String   @db.VarChar(250)
+  episode  String   @db.VarChar(250)
+  episodes episodes @relation(fields: [episode], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model media_openings {
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(250)
+  ext      String   @db.VarChar(250)
+  opening  String   @db.VarChar(250)
+  openings openings @relation(fields: [opening], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model metadata {
+  id        Int       @id @default(autoincrement())
+  visiteds  Int?      @default(1)
+  num_users Int?      @default(0)
+  created   DateTime? @default(now()) @db.Timestamp(6)
+  updated   DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model notifications {
+  id                          Int                           @id @default(autoincrement())
+  name                        String                        @db.VarChar(255)
+  created                     DateTime?                     @default(now()) @db.Timestamp(6)
+  updated                     DateTime?                     @default(now()) @db.Timestamp(6)
+  kind                        String?                       @db.VarChar(25)
+  profile                     Int?
+  sound                       Boolean?                      @default(true)
+  anime_avaible_notifications anime_avaible_notifications[]
+  profiles                    profiles?                     @relation(fields: [profile], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model openings {
+  id                String              @id @db.VarChar(250)
+  tittle            String              @db.VarChar(250)
+  sinopsis          String              @db.VarChar(250)
+  date_publication  DateTime?           @default(dbgenerated("CURRENT_DATE")) @db.Date
+  date_finalization DateTime?           @default(dbgenerated("CURRENT_DATE")) @db.Date
+  anime             String              @db.VarChar(250)
+  created           DateTime?           @default(now()) @db.Timestamp(6)
+  updated           DateTime?           @default(now()) @db.Timestamp(6)
+  num               Int?                @default(1)
+  media_openings    media_openings[]
+  animes            animes              @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+  seasions_openings seasions_openings[]
+}
+
+model profiles {
+  id             Int              @id @default(autoincrement())
+  nombre         String?          @db.VarChar(150)
+  username       String?          @db.VarChar(55)
+  created        DateTime?        @default(now()) @db.Timestamp(6)
+  updated        DateTime?        @default(now()) @db.Timestamp(6)
+  clips          clips[]
+  collections    collections[]
+  config_profile config_profile[]
+  history        history[]
+  notifications  notifications[]
+  users          users?           @relation(fields: [username], references: [username], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model seasions {
+  id                String              @id @db.VarChar(250)
+  tittle            String?             @db.VarChar(50)
+  anime             String              @db.VarChar(250)
+  created           DateTime?           @default(now()) @db.Timestamp(6)
+  updated           DateTime?           @default(now()) @db.Timestamp(6)
+  animes            animes              @relation(fields: [anime], references: [siglas], onDelete: Cascade, onUpdate: NoAction)
+  seasions_endings  seasions_endings[]
+  seasions_episodes seasions_episodes[]
+  seasions_openings seasions_openings[]
+}
+
+model seasions_endings {
+  id       Int       @id @default(autoincrement())
+  ending   String    @db.VarChar(250)
+  seasion  String?   @db.VarChar(250)
+  endings  endings   @relation(fields: [ending], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  seasions seasions? @relation(fields: [seasion], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model seasions_episodes {
+  id       Int       @id @default(autoincrement())
+  episode  String    @db.VarChar(250)
+  seasion  String?   @db.VarChar(250)
+  episodes episodes  @relation(fields: [episode], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  seasions seasions? @relation(fields: [seasion], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model seasions_openings {
+  id       Int       @id @default(autoincrement())
+  opening  String    @db.VarChar(250)
+  seasion  String?   @db.VarChar(250)
+  openings openings  @relation(fields: [opening], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  seasions seasions? @relation(fields: [seasion], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model users {
+  username      String        @id @db.VarChar(55)
+  nombre        String?       @db.VarChar(255)
+  apellidos     String?       @db.VarChar(255)
+  email         String?       @db.VarChar(255)
+  password      String?       @db.VarChar(255)
+  date_birthday String?       @db.VarChar(255)
+  tipo          String?       @db.VarChar(50)
+  dni           String?       @db.VarChar(255)
+  acess_token   String?       @db.VarChar(255)
+  admin_token   String?       @db.VarChar(255)
+  activado      Boolean?
+  genere        String?       @db.VarChar(25)
+  created       DateTime?     @default(now()) @db.Timestamp(6)
+  updated       DateTime?     @default(now()) @db.Timestamp(6)
+  comments      comments[]
+  config_user   config_user[]
+  profiles      profiles[]
+}

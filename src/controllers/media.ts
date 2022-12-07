@@ -4,11 +4,12 @@ import { PathLike } from "node:fs";
 import path from "node:path";
 import fileUpload from 'express-fileupload';
 import express from "express";
+import { MEDIA_PATH } from "../config";
 
 const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) => {
   const PATH_TO_FILES : PathLike = path.join(
     __dirname,
-    "/../" + process.env.MEDIA_PATH
+    "/../" + MEDIA_PATH
   );
 
   let file = await readMyDir(PATH_TO_FILES);

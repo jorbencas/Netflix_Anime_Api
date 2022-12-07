@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+
+  # node:
+  #   container_name: server_things_of_anime
+  #   env_file:
+  #   - ../.env
+  #   build:
+  #     context: ../
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - postgres
+  #   ports:
+  #     - "5065:80"
+  #   environment:
+  #   - SERVER_PORT=8000
+  #   volumes:
+  #   - ./:/app
+  #   command: npm run dev
+
+  postgres:
+    container_name: db_things_of_anime
+    env_file:
+      - ../.env
+    image: postgres:13.5
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./db/init.sql:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:

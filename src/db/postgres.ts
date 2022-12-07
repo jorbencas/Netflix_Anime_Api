@@ -1,11 +1,11 @@
 import { Client, ClientConfig } from "pg";
+import { POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_USER } from "../config";
 
-let port: number = parseInt(`${process.env.POSTGRES_PORT}`);
 let conf: ClientConfig = {
-  host: process.env.POSTGRES_HOST,
-  port,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD
+  host: POSTGRES_HOST,
+  port: POSTGRES_PORT,
+  user: POSTGRES_USER,
+  password: POSTGRES_PASSWORD
 };
 
 const postgress = new Client(conf);

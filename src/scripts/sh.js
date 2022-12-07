@@ -3,12 +3,12 @@ const path = require("node:path");
 const fs = require("node:fs");
 // let fileName = path.join(
 //   __dirname,
-//   "/../" + process.env.MEDIA_PATH + "/../dudas/KNY/episodes"
+//   "/../" + MEDIA_PATH + "/../dudas/KNY/episodes"
 // );
 
 let fileName = path.join(
   __dirname,
-  "/../" + process.env.MEDIA_PATH + "/../dudas/"
+  "/../" + MEDIA_PATH + "/../dudas/"
 );
 
 function getFiles(dir) {

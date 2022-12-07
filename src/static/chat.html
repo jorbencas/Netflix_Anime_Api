@@ -57,7 +57,7 @@
       socket.emit('chat message', input.value);
       input.value = '';
       let audio = new Audio();
-      audio.src = 'http://localhost:3001/notify-send';
+      audio.src = 'http://localhost:3001/chat/notify-send';
       audio.play();
     }
   });

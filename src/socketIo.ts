@@ -2,7 +2,7 @@
 import { Server, ServerOptions } from "socket.io";
 import { Server as servernode } from "node:http";
 
-export default (http:(servernode | ServerOptions)) => {
+export default function (http:(servernode | ServerOptions)) {
   const io = new Server(http);
   io.on("connection", (socket) => {
     console.log(`A new Used Connected {socket.id}`);

@@ -1,7 +1,7 @@
-import { connectMongo } from "./mongo";
+// import { connectMongo } from "./mongo";
 import { connectPostgress } from "./postgres";
 
-export default function DBConnect() {
-    connectMongo();
+(() => {
+    //connectMongo();
     connectPostgress();
-};
+})();

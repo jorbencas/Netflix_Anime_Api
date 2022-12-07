@@ -1,25 +1,19 @@
 import path from "node:path";
-import { createReadStream } from "node:fs";
 import { Router, Request, Response, NextFunction } from "express";
-import { isAccesible } from "../../utils";
+import { createMyStreamFile } from "../../utils";
+import { MEDIA_PATH } from "../../config";
 
 const router = Router();
 
-router.get("/:anime?/:episode?", async (req: Request, res: Response, next: NextFunction) => {
-  res.writeHead(200, { "content-type": "video/mp4" });
+router.get("/:anime?/:episode?", (req: Request, res: Response, next: NextFunction) => {
 let anime = req.params.anime ?? "CY";
 let kind = typeof req.params.anime === 'undefined' ? 'openings' : 'endings';
 let episode = req.params.episode ?? "02.webm";
-  const PATH_TO_FILES = "/../../" + process.env.MEDIA_PATH;
+  const PATH_TO_FILES = "/../../" + MEDIA_PATH;
   let fileName = path.join(
     __dirname,
      PATH_TO_FILES + path.sep + anime + path.sep + kind + path.sep + episode,
   );
-   let content = await isAccesible(fileName);
-  if (content) {
-    createReadStream(fileName).pipe(res);
-  } else {
-    next(new Error("File not found"));
-  }
+  createMyStreamFile(fileName, res, next);
 });
 export default router;

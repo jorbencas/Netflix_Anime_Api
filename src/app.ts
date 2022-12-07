@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from "cors";
+import helmet from 'helmet';
 import ExpressPinoLogger from "express-pino-logger";
 import apitoken from "./middlewares/apitoken";
 import notfound from "./middlewares/404";   
@@ -20,6 +21,7 @@ app.use(
 app.use(express.text({ type: "text/html" }));
 app.use(express.json({ type: "application/json" }));
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
 app.use(apitoken);
 app.use("/api", routes);
 app.use(statics);

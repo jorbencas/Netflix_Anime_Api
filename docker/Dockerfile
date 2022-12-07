@@ -1,5 +1,4 @@
-FROM node:16.15.0-alpine
-ENV NODE_ENV=dev
+FROM node:18.10.0-alpine
 RUN mkdir -p /usr/app
 WORKDIR /usr/app
 COPY . .
