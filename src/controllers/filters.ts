@@ -1,7 +1,7 @@
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
-import {createTable, responseCustome  } from "../utils/index";
+import {myQuery, responseCustome  } from "../utils/index";
 import { saveBackup } from "../utils/backup";
 import letters from '../db/letters.json';
 import years from '../db/years.json';
@@ -44,13 +44,6 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
         else insert(req,res, next);
       }).catch((err: Error) => {
         console.log(err);
-        createTable(`CREATE TABLE filters (
-          tittle VARCHAR(250) NOT NULL,
-          code VARCHAR(255) PRIMARY KEY,
-          kind VARCHAR(255) NOT NULL,
-          created timestamp DEFAULT CURRENT_TIMESTAMP,
-          updated timestamp DEFAULT CURRENT_TIMESTAMP
-        );`);
         insert(req,res, next);
       });
     });
@@ -68,13 +61,6 @@ const update = (req: Request, res: Response, next: NextFunction) => {
   })
   .catch((err: Error) => {
     console.log(err);
-    createTable(`CREATE TABLE filters (
-      tittle VARCHAR(250) NOT NULL,
-      code VARCHAR(255) PRIMARY KEY,
-      kind VARCHAR(255) NOT NULL,
-      created timestamp DEFAULT CURRENT_TIMESTAMP,
-      updated timestamp DEFAULT CURRENT_TIMESTAMP
-    );`);
     insert(req,res, next);
   });
 }

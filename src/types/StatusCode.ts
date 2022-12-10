@@ -16,3 +16,5 @@ export type ResponseCustomeData = {
         message: string;
     };
 }
+
+export type myQueryResult = QueryResult;

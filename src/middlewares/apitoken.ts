@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { API_TOKEN } from '../config';
 import { responseCustome } from "../utils/index";
-import isLocalHost from "./isLocalHost";
+import { isLocalHost } from '../utils/validators';
 
 export default (req: Request, res: Response, next: NextFunction) => {
   if (

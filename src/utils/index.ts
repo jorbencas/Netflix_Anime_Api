@@ -69,69 +69,18 @@ export const createMyStreamFile = async (fileName:PathLike, res: Response, next:
   } 
 }
 
-export const createTable = (sql: string) => {
+export const myQuery = (sql: string) => {
+  let result = null;
   postgress
-    .query(sql)
-    .then((result: QueryResult) => {
-     console.log('====================================');
-     console.log(result);
-     console.log('====================================');
-    })
-    .catch((err: Error) => {
-      console.log(err);
-    });
-}
-
-export const updateIdAcumulative = (id: string, table: string, field: string) => {
-  let num:string = id+'1';
- postgress.query(`SELECT ${field} AS id FROM ${table} WHERE ${field} = '${num}'`)
+  .query(sql)
   .then((r: QueryResult) => {
-    if(r.rowCount > 0) {
-      let actual_id : number = parseInt(r.rows.shift().replace(/[^0-9]/ig,''));
-      num = id +''+ actual_id + 1;
-    }
-  }).finally( () => {return num});
-}
-
-export const checkTables = () => {
-  postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
-    WHERE schemaname != 'pg_catalog' AND schemaname   'information_schema'`)
-  .then((result: QueryResult) => {
-    console.log('====================================');
-    console.log(result.oid);
-    console.log(result.rowCount);
-    console.log(result.rows);
-    console.log(result.fields);
-    console.log(result.command);
-    console.log('====================================');
-  }).catch((err: Error) => {
-    console.log('====================================');
+    result = r;
+  })
+  .catch((err: Error) => {
     console.log(err);
-    console.log('====================================');
+    result = err;
   });
-}
-
-export const dropDeleteTables = (isdrop = true) => {
-   postgress.query(`SELECT tablename FROM pg_catalog.pg_tables
-   WHERE schemaname != 'pg_catalog' AND schemaname 'information_schema'`)
-  .then((result: QueryResult) => {
-    if (result.rowCount > 0) {
-      let sqlAction = isdrop ? 'DROP TABLE IF EXISTS' : 'DELETE FROM';
-      let sql = result.rows.map((row) => {
-       return `${sqlAction} ${row.tablename};`;
-      }).join("\n");
-      
-       postgress.query(sql)
-       .then( (result: QueryResult) => console.log(result.rows) )
-       .catch( (err: Error) => console.log(err) );
-    } else {
-      console.log('====================================');
-      console.log("No hay tablas");
-      console.log('====================================');
-    }
-  }).catch((err: Error) => {
-    console.log(err);
-  });
+  return result;
 }
 
 export async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
@@ -141,7 +90,7 @@ export async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
     try {
       const file = await readFile(PATH_TO_FILES, "utf-8");
       let pathString = String(PATH_TO_FILES).toLowerCase();
-      content = pathString.includes('.json') ? JSON.stringify(file) : file;
+      content = pathString.includes('.json') ? JSON.parse(file) : file;
     } catch (error) {
       console.log(error);
     }

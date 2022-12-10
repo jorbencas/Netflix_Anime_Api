@@ -1,13 +1,38 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { postgress } from "../../db/postgres";
-import { QueryResult } from "pg";
-import {createTable, readMyFile, responseCustome} from "../../utils/index";
+import {myQuery, readMyFile, responseCustome, sendEmail} from "../../utils/index";
 import { PathLike } from "node:fs";
 import path from "node:path";
-import isLocalHost from "../../middlewares/isLocalHost";
-import { sendEmail } from "../../utils";
-
+import { isLocalHost } from "../../utils/validators";
+import { BACKUP_PATH } from "../../config";
+import { QueryResult } from "pg";
+import { postgress } from "../../db/postgres";
 var router = Router();
+
+router.get('/createAllTables',async (req: Request, res: Response, next: NextFunction) => {
+    if(isLocalHost(req)){
+        let sqlFile : PathLike = path.join(
+            __dirname,
+           '../../../docker/db/init.sql'
+        );
+        const CREATE_QUERY = await readMyFile(sqlFile);
+        if (CREATE_QUERY) {
+            postgress
+            .query(`${CREATE_QUERY}`)
+            .then((r: QueryResult) => {
+                console.log(r);
+                res.send(responseCustome('DOIT',200, "DOIT"));
+            })
+            .catch((err: Error) => {
+                next(responseCustome('Error',400, err.message));
+            });
+        }else {
+            next(responseCustome('Error',400));
+        }
+    } else {
+        next(responseCustome('Error',400));
+    }
+});
+
 router.get('/sendEmail',async (req: Request, res: Response, next: NextFunction) => {
     if(isLocalHost(req)){
         let data = await sendEmail();
@@ -16,34 +41,35 @@ router.get('/sendEmail',async (req: Request, res: Response, next: NextFunction) 
         next(responseCustome('Error',400));
     }
 });
-router.put("/insertAllGeneres", async (req: Request, _res: Response, next: NextFunction) => {
+
+router.get("/insertAllGeneres", async (req: Request, res: Response, next: NextFunction) => {
     if(isLocalHost(req)){
-        createTable(`DROP TABLE IF EXISTS filters;`);
-        createTable(`CREATE TABLE IF NOT EXISTS filters (
-            tittle VARCHAR(250) NOT NULL,
-            code VARCHAR(255) PRIMARY KEY,
-            kind VARCHAR(255) NOT NULL,
-            created timestamp DEFAULT CURRENT_TIMESTAMP,
-            updated timestamp DEFAULT CURRENT_TIMESTAMP
-            );`);
+        myQuery(`DELETE FROM filters WHERE code IS NOT NULL;`);
         const PATH_TO_FILES : PathLike = path.join(
             __dirname,
-            "/../media/.backup/filters.json"
+            "../../"+BACKUP_PATH+"/filters.json"
         );
-
         const content = await readMyFile(PATH_TO_FILES);
         if (content) {
-            content.forEach( (element: any) => {
-                const { tittle, code, kind } = element;
-                postgress.query("INSERT INTO filters(tittle, code, kind) values($1, $2, $3)",[tittle, code, kind]).then((result: QueryResult) => {
-                    console.log('====================================');
-                    console.log(result);
-                    console.log('====================================');
-                }).catch((err: Error) => {
-                    next(err);
-                });
+            let sql = "INSERT INTO filters(tittle, code, kind) VALUES";
+            sql += content.map( ({ tittle, code, kind }: any) => (
+                "('"+tittle+"', '"+code+"', '"+kind+"')"
+            )).join(", ").concat(";");
+            console.log(sql);
+            postgress
+            .query(sql)
+            .then((r: QueryResult) => {
+                  console.log(r);
+                res.send(responseCustome('DOIT',200, "DOIT"));
+            })
+            .catch((err: Error) => {
+                next(responseCustome('Error',400, err.message));
             });
-        }    
+        } else {
+            next(responseCustome('Error',400));
+        }
+    } else {
+        next(responseCustome('Error',400));
     }
 });
-export default router;
+export default router; 

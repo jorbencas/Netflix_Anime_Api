@@ -23,8 +23,7 @@ const getlist = (_req: Request, res: Response, next: NextFunction) => {
 };
 
 const getslides = (req: Request, res: Response, next: NextFunction) => {
-  let first = req.params.first;
-  let last = req.params.last;
+  let {first, last} = req.params;
   postgress
     .query(
       `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publicatio, a.date_finalization, a.state, a.kind,    a.valorations, a.temporada
@@ -358,30 +357,30 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
 //       let f = get.f.split('')
 //       let filter = f[1];
 //       switch (f[0]) {
-//           // case 'letters':
-//           //     let id_externals = [];
-//           //     $translations = $api->gettranslations([
-//           //         array("kind" => "titulo"),
-//           //     ]);
-//           //     if ( count($translations) > 0 ) {
-//           //         foreach ($translations as $lang) {
-//           //             $titulo = $lang['translation'];
-//           //             if ($filter == '0-9') {
-//           //                 for ($i=0; $i <= 9; $i++) { 
-//           //                     if (strchr($titulo,$i)) {
-//           //                         array_push($id_externals,$lang['id_external']);
-//           //                     }
-//           //                 }
-//           //             } else {
-//           //                 if (strchr($titulo,$filter)) {
-//           //                     array_push($id_externals,$lang['id_external']);
-//           //                 }
-//           //             }
-//           //         }
-//           //     }
-//           //     let ids = implode(",",$id_externals);
-//           //     where += `AND a.siglas IN(${ids})`;
-//           //     break;    
+//           case 'letters':
+//               let id_externals = [];
+//               $translations = $api->gettranslations([
+//                   array("kind" => "titulo"),
+//               ]);
+//               if ( count($translations) > 0 ) {
+//                   foreach ($translations as $lang) {
+//                       $titulo = $lang['translation'];
+//                       if ($filter == '0-9') {
+//                           for ($i=0; $i <= 9; $i++) { 
+//                               if (strchr($titulo,$i)) {
+//                                   array_push($id_externals,$lang['id_external']);
+//                               }
+//                           }
+//                       } else {
+//                           if (strchr($titulo,$filter)) {
+//                               array_push($id_externals,$lang['id_external']);
+//                           }
+//                       }
+//                   }
+//               }
+//               let ids = implode(",",$id_externals);
+//               where += `AND a.siglas IN(${ids})`;
+//               break;    
 //           case 'generes':
 //               where += `AND a.generes LIKE '%${filter}%'`;
 //               break;    

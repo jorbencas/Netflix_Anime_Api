@@ -1,9 +1,13 @@
--- CREATE SCHEMA IF NOT EXISTS `cosasdeanime` DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+/* slecionar todadas la tablas 
+SELECT tablename FROM pg_catalog.pg_tables
+   WHERE schemaname != 'pg_catalog' AND schemaname 'information_schema' */
+
+-- CREATE SCHEMA IF NOT EXISTS `cosasdeanime` DEFAULT(CHARACTER) SET utf8 COLLATE utf8_spanish_ci;
 -- USE `cosasdeanime`;
 
-CREATE ROLE IF NOT EXISTS cosasdeanime WITH PASSWORD 'cosasdeanime' VALID UNTIL 'infinity' LOGIN;
-CREATE DATABASE IF NOT EXISTS cosasdeanime WITH OWNER cosasdeanime ENCODING='UTF8' TEMPLATE=postgres LC_COLLATE='es_ES.UTF-8' LC_CTYPE='es_ES.UTF-8' CONNECTION LIMIT=-1 TABLESPACE=pg_default;
-GRANT SELECT, INSERT ON DATABASE cosasdeanime TO cosasdeanime;
+-- CREATE ROLE IF NOT EXISTS cosasdeanime WITH PASSWORD "cosasdeanime" VALID UNTIL "infinity" LOGIN;
+-- CREATE DATABASE IF NOT EXISTS cosasdeanime WITH OWNER cosasdeanime ENCODING="UTF8" TEMPLATE=postgres LC_COLLATE="es_ES.UTF-8" LC_CTYPE="es_ES.UTF-8" CONNECTION LIMIT=-1 TABLESPACE=pg_default;
+-- GRANT SELECT, INSERT ON DATABASE cosasdeanime TO cosasdeanime;
 
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS metadata;
@@ -38,15 +42,15 @@ CREATE TABLE IF NOT EXISTS filters (
     code VARCHAR(255) NOT NULL PRIMARY KEY,
     tittle VARCHAR(250) NOT NULL,
     kind VARCHAR(255) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP)
 );
 CREATE TABLE IF NOT EXISTS metadata (
     id INT GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
-    visiteds int4 DEFAULT 1,
-    num_users int4 DEFAULT 0,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP
+    visiteds int4 default(1),
+    num_users int4 default(0),
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -62,30 +66,30 @@ CREATE TABLE IF NOT EXISTS users (
     admin_token VARCHAR(255) NULL,
     activado bool NULL,
     genere VARCHAR(25) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE IF NOT EXISTS animes (
     siglas VARCHAR(250) NOT NULL PRIMARY KEY,
     tittle VARCHAR(250) NOT NULL,
     sinopsis VARCHAR(250) NOT NULL,
-    idiomas VARCHAR(255) DEFAULT NULL,
+    idiomas VARCHAR(255) default(NULL),
     date_publication DATE default(CURRENT_DATE),
     date_finalization DATE default(CURRENT_DATE),
-    state VARCHAR(250) DEFAULT NULL,
-    kind VARCHAR(25) DEFAULT NULL,
-    valorations int4 DEFAULT 0,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP
+    state VARCHAR(250) default(NULL),
+    kind VARCHAR(25) default(NULL),
+    valorations int4 default(0),
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE IF NOT EXISTS profiles (
     id SERIAL NOT NULL PRIMARY KEY,
     nombre VARCHAR(150),
-    username VARCHAR(55) DEFAULT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    username VARCHAR(55) default(NULL),
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(username) 
     REFERENCES users(username)
     ON DELETE CASCADE
@@ -96,12 +100,12 @@ CREATE TABLE IF NOT EXISTS comments (
     comment VARCHAR(250) NOT NULL,
     date DATE default(CURRENT_DATE),
     hora TIME default(CURRENT_TIME),
-    username VARCHAR(55) DEFAULT NULL,
+    username VARCHAR(55) default(NULL),
     kind VARCHAR(255) NOT NULL,
     id_external VARCHAR(250) NOT NULL,
-    response_comment_id int4 DEFAULT 0,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    response_comment_id int4 default(0),
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(username) 
     REFERENCES users(username)
     ON DELETE CASCADE
@@ -110,9 +114,9 @@ CREATE TABLE IF NOT EXISTS comments (
 CREATE TABLE IF NOT EXISTS collections (
     id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    profile int4 DEFAULT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    profile int4 NOT NULL,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(profile) 
     REFERENCES profiles(id)
     ON DELETE CASCADE
@@ -155,7 +159,7 @@ CREATE TABLE IF NOT EXISTS anime_generes (
 
 CREATE TABLE IF NOT EXISTS anime_favorites (
     id SERIAL NOT NULL PRIMARY KEY,
-    favorite bool DEFAULT false,
+    favorite bool default(false),
     anime VARCHAR(250) NOT NULL,
     FOREIGN KEY(anime)
     REFERENCES animes(siglas)
@@ -164,10 +168,10 @@ CREATE TABLE IF NOT EXISTS anime_favorites (
 
 CREATE TABLE IF NOT EXISTS seasions (
     id VARCHAR(250) NOT NULL PRIMARY KEY,
-    tittle VARCHAR(50) DEFAULT NULL,
+    tittle VARCHAR(50) default(NULL),
     anime VARCHAR(250) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(anime) 
     REFERENCES animes(siglas)
     ON DELETE CASCADE
@@ -180,9 +184,9 @@ CREATE TABLE IF NOT EXISTS episodes (
     date_publication DATE default(CURRENT_DATE),
     date_finalization DATE default(CURRENT_DATE),
     anime VARCHAR(250) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
-    num int4 DEFAULT 1,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
+    num int4 default(1),
     FOREIGN KEY(anime)
     REFERENCES animes(siglas)
     ON DELETE CASCADE
@@ -191,7 +195,7 @@ CREATE TABLE IF NOT EXISTS episodes (
 CREATE TABLE IF NOT EXISTS seasions_episodes (
     id SERIAL NOT NULL PRIMARY KEY,
     episode VARCHAR(250) NOT NULL,
-    seasion VARCHAR(250) DEFAULT null,
+    seasion VARCHAR(250) default(NULL),
     FOREIGN KEY(episode)
     REFERENCES episodes(id)
     ON DELETE CASCADE,
@@ -214,11 +218,11 @@ CREATE TABLE IF NOT EXISTS clips (
     id SERIAL NOT NULL PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     episode VARCHAR(250) NOT NULL,
-    profile int4 DEFAULT NULL,
+    profile int4 NOT NULL,
     time_start VARCHAR(25) NOT NULL,
     time_end VARCHAR(25) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(episode)
     REFERENCES episodes(id)
     ON DELETE CASCADE,
@@ -246,9 +250,9 @@ CREATE TABLE IF NOT EXISTS openings (
     date_publication DATE default(CURRENT_DATE),
     date_finalization DATE default(CURRENT_DATE),
     anime VARCHAR(250) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
-    num int4 DEFAULT 1,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
+    num int4 default(1),
     FOREIGN KEY(anime) 
     REFERENCES animes(siglas)
     ON DELETE CASCADE
@@ -257,7 +261,7 @@ CREATE TABLE IF NOT EXISTS openings (
 CREATE TABLE IF NOT EXISTS seasions_openings (
     id SERIAL NOT NULL PRIMARY KEY,
     opening VARCHAR(250) NOT NULL,
-    seasion VARCHAR(250) DEFAULT null,
+    seasion VARCHAR(250) default(NULL),
     FOREIGN KEY(opening)
     REFERENCES openings(id)
     ON DELETE CASCADE,
@@ -283,9 +287,9 @@ CREATE TABLE IF NOT EXISTS endings (
     date_publication DATE default(CURRENT_DATE),
     date_finalization DATE default(CURRENT_DATE),
     anime VARCHAR(250) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
-    num int4 DEFAULT 1,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
+    num int4 default(1),
     FOREIGN KEY(anime) 
     REFERENCES animes(siglas)
     ON DELETE CASCADE
@@ -294,7 +298,7 @@ CREATE TABLE IF NOT EXISTS endings (
 CREATE TABLE IF NOT EXISTS seasions_endings (
     id SERIAL NOT NULL PRIMARY KEY,
     ending VARCHAR(250) NOT NULL,
-    seasion VARCHAR(250) DEFAULT null,
+    seasion VARCHAR(250) default(NULL),
     FOREIGN KEY(ending) 
     REFERENCES endings(id)
     ON DELETE CASCADE,
@@ -315,11 +319,11 @@ CREATE TABLE IF NOT EXISTS media_endings (
 
 CREATE TABLE IF NOT EXISTS config_user (
     id SERIAL NOT NULL PRIMARY KEY,
-    username VARCHAR(55) DEFAULT NULL,
-    limit_num_profiles int4 DEFAULT 5,
-    see_video_profiles_time bool DEFAULT false,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    username VARCHAR(55) default(NULL),
+    limit_num_profiles int4 default(5),
+    see_video_profiles_time bool default(false),
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(username) 
     REFERENCES users(username)
     ON DELETE CASCADE
@@ -327,22 +331,22 @@ CREATE TABLE IF NOT EXISTS config_user (
 
 CREATE TABLE IF NOT EXISTS config_profile (
     id SERIAL NOT NULL PRIMARY KEY,
-    profile int4 DEFAULT NULL,
-    theme VARCHAR(150) DEFAULT 'dark',
-    autoplay bool DEFAULT false,
-    columns int4 DEFAULT 2,
-    orden VARCHAR(150) DEFAULT 'asc',
-    volume Float DEFAULT 0.5,
+    profile int4 NOT NULL,
+    theme TEXT default('dark'),
+    autoplay bool default(false),
+    columns int4 default(2),
+    orden TEXT default('asc'),
+    volume Float default(0.5),
     video_velocity_default VARCHAR(150) NOT NULL,
-    default_view VARCHAR(150) DEFAULT 'grid',
-    avable_history bool DEFAULT true,
-    limit_elem_collection int4 DEFAULT 100,
-    offline_mode bool DEFAULT false,
-    avable_response_comment bool DEFAULT false,
-    option_paginator VARCHAR(150) DEFAULT 'new',
-    avable_notifications bool DEFAULT false,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    default_view TEXT default('grid'),
+    avable_history bool default(true),
+    limit_elem_collection int4 default(100),
+    offline_mode bool default(false),
+    avable_response_comment bool default(false),
+    option_paginator TEXT default('new'),
+    avable_notifications bool default(false),
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(profile)
     REFERENCES profiles(id)
     ON DELETE CASCADE
@@ -351,11 +355,11 @@ CREATE TABLE IF NOT EXISTS config_profile (
 CREATE TABLE IF NOT EXISTS notifications (
     id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
-    kind VARCHAR(25) DEFAULT NULL,
-    profile int4 DEFAULT NULL,
-    sound bool DEFAULT true,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
+    kind VARCHAR(25) default(NULL),
+    profile int4 NOT NULL,
+    sound bool default(true),
     FOREIGN KEY(profile) 
     REFERENCES profiles(id)
     ON DELETE CASCADE
@@ -363,7 +367,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 
 CREATE TABLE IF NOT EXISTS anime_avaible_notifications (
     id SERIAL NOT NULL PRIMARY KEY,
-    avaible bool DEFAULT false,
+    avaible bool default(false),
     anime VARCHAR(250) NOT NULL,
     notification int4 NOT NULL,
     FOREIGN KEY(anime) 
@@ -377,10 +381,10 @@ CREATE TABLE IF NOT EXISTS anime_avaible_notifications (
 CREATE TABLE IF NOT EXISTS history (
     id INT GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
     episode VARCHAR(250) NOT NULL,
-    profile int4 DEFAULT NULL,
+    profile int4 NOT NULL,
     time VARCHAR(25) NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP,
+    created timestamp default(CURRENT_TIMESTAMP),
+    updated timestamp default(CURRENT_TIMESTAMP),
     FOREIGN KEY(profile) 
     REFERENCES profiles(id)
     ON DELETE CASCADE,

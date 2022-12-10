@@ -1,5 +1,6 @@
 import 'dotenv/config';
 export const MEDIA_PATH = process.env.MEDIA_PATH;
+export const BACKUP_PATH = process.env.BACKUP_PATH;
 export const PORT: number = parseInt(`${process.env.PORT}`) || 0;
 export const HOSTNAME: string = process.env.HOSTNAME || "127.0.0.1";
 const EMAIL_HOSTNAME = String(process.env.EMAIL_HOSTNAME);
