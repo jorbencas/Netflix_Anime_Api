@@ -8,7 +8,12 @@ import { insertMedia } from "./media";
 const getlist = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
-      `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publicatio, a.date_finalization, a.state, a.kind,    a.valorations, a.temporada
+      `SELECT a.valorations, a.siglas, a.state,
+        (SELECT ma.name, ma.extension
+          FROM media_animes ma 
+          ON(ma.anime = a.siglas) 
+          WHERE ma.type = 'portada'
+        ) AS portada
       FROM animes a
       WHERE a.created IS NOT NULL `
     )
@@ -26,7 +31,12 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
   let {first, last} = req.params;
   postgress
     .query(
-      `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publicatio, a.date_finalization, a.state, a.kind,    a.valorations, a.temporada
+      `SELECT a.valorations, a.siglas, a.state,
+        (SELECT ma.name, ma.extension
+          FROM media_animes ma 
+          ON(ma.anime = a.siglas) 
+          WHERE ma.type = 'portada'
+        ) AS portada
       FROM animes a
       OFFSET ${first} LIMIT ${last}`
     )
@@ -41,41 +51,35 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getOne = (req: Request, res: Response, next: NextFunction) => {
-  let siglas = req.params.siglas;
+  let { siglas } = req.params;
   postgress
   .query(
-    `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publicatio, a.date_finalization, a.state, a.kind,    a.valorations, a.temporada
-    FROM animes a
+    `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.kind, a.valorations, a.kind, 
+    (
+      SELECT f.tittle, f.code 
+      FROM filters f inner join anime_generes ag
+      ON(ag.temporada = f.code) WHERE ag.anime = ${siglas}
+    ) as temporadas,
+    (
+      SELECT f.tittle, f.code 
+      FROM filters f inner join anime_generes ag
+      ON(ag.genere = f.code) WHERE ag.anime = ${siglas}
+    ) AS generes,
+    (
+      SELECT id, favorite 
+      FROM anime_favorites
+      WHERE anime = '${siglas}'
+    ) AS favorite,
+    (
+      SELECT type, name, ext FROM media_anime WHERE id_external = ${siglas}
+    ) AS media
+    FROM animes a 
     WHERE a.siglas = '${siglas}'`
   )
   .then((result: any) => {
     console.log(result);
     result = result.rows.shift();
     let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-
-  postgress
-    .query(
-      `SELECT type, name, ext FROM media_anime WHERE id_external = ${siglas}`
-    )
-    .then((r: QueryResult) => {
-        result.media = r.rows;
-    })
-    .catch((e: Error) => {
-      next(e);
-    });
-
- postgress
-    .query(
-      `SELECT f.tittle, f.code 
-    FROM filters f inner join anime_generes ag
-    ON(ag.genere = f.code) WHERE ag.anime = ${siglas}`
-    )
-    .then((r: QueryResult) => {
-        result.generes = r.rows;
-    })
-    .catch((e: Error) => {
-      next(e);
-    });
     res.json(responseCustome(msg, 200, result));
   })
   .catch((e: Error) => {
@@ -101,7 +105,12 @@ const getNum = (_req: Request, res: Response, next: NextFunction) => {
 const lastByGenere = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
-      `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publicatio, a.date_finalization, a.state, a.kind,    a.valorations, a.temporada
+    `SELECT a.valorations, a.siglas, a.state,
+      (SELECT ma.name, ma.extension
+        FROM media_animes ma 
+        ON(ma.anime = a.siglas) 
+        WHERE ma.type = 'portada'
+      ) AS portada
     FROM filters AS f INNER JOIN anime_generes
     ON ag.generes LIKE ('%' || f.code::text || '%') 
     INNER JOIN animes a on(a.siglas = ag.anime)
@@ -117,24 +126,10 @@ const lastByGenere = (_req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const last = (req: Request, res: Response, next: NextFunction) => {
-  let lang = req.params.lang;
+const last = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
       `SELECT a.valorations, a.siglas, a.state,
-        a.date_publication, a.date_finalization,
-        (SELECT ta.translation 
-          FROM translation_animes ta 
-          ON(ta.anime = a.siglas) 
-          WHERE ta.lang = ${lang} 
-          AND ta.kind = 'titulo'
-        ) AS titulo,
-        (SELECT ta.translation 
-          FROM translation_animes ta 
-          ON(ta.anime = a.siglas) 
-          WHERE ta.lang = ${lang} 
-          AND ta.kind = 'sinopsis'
-        ) AS sinopsis,
         (SELECT ma.name, ma.extension
           FROM media_animes ma 
           ON(ma.anime = a.siglas) 
@@ -158,7 +153,12 @@ const getFavorite = (req: Request, res: Response, next: NextFunction) => {
   let lang = req.params.lang;
   postgress
     .query(
-      `SELECT l.code, tf.translation, tf.id_external 
+      `SELECT a.valorations, a.siglas, a.state,
+        (SELECT ma.name, ma.extension
+          FROM media_animes ma 
+          ON(ma.anime = a.siglas) 
+          WHERE ma.type = 'portada'
+        ) AS portada
     FROM langs l inner join translation_filter tf
     ON(l.id = tf.id_external) 
     WHERE l.code = ${lang} AND tf.kind = 'langs'`
@@ -174,13 +174,10 @@ const getFavorite = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const addFavorite = (req: Request, res: Response, next: NextFunction) => {
-  let lang = req.params.lang;
+  let { anime } = req.params;
   postgress
     .query(
-      `SELECT l.code, tf.translation, tf.id_external 
-    FROM langs l inner join translation_filter tf
-    ON(l.id = tf.id_external) 
-    WHERE l.code = ${lang} AND tf.kind = 'langs'`
+      `UPDATE anime_favorites SET favorite WHERE anime = '${anime}';`
     )
     .then((result: QueryResult) => {
       console.log(result);
@@ -188,18 +185,27 @@ const addFavorite = (req: Request, res: Response, next: NextFunction) => {
       res.json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
-      next(e);
+      console.log(e);
+      postgress
+      .query(
+        `INSERT INTO anime_favorites(anime, favorite) VALUES('${anime}',true);`
+      )
+      .then((result: QueryResult) => {
+        console.log(result);
+        let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+        res.json(responseCustome(msg, 200, result.rows));
+      })
+      .catch((e: Error) => {
+        next(e);
+      });
     });
 };
 
 const removeFavorite = (req: Request, res: Response, next: NextFunction) => {
-  let lang = req.params.lang;
+  let {id} = req.params;
   postgress
     .query(
-      `SELECT l.code, tf.translation, tf.id_external 
-        FROM langs l inner join translation_filter tf
-        ON(l.id = tf.id_external) 
-        WHERE l.code = ${lang} AND tf.kind = 'langs'`
+      `UPDATE anime_favorites SET favorite WHERE id = '${id}';`
     )
     .then((result: QueryResult) => {
       console.log(result);
@@ -244,7 +250,6 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
       generes.forEach((genere: string) => {
         sql += `('${genere}', '${siglas}') RETURNING id;`;
       });
-
       postgress
         .query(sql)
         .then((r: QueryResult) => {
