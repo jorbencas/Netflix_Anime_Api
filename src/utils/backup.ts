@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { PathLike } from "node:fs";
 import path from "node:path";
-import { myQuery, readMyFile } from '.';
+import { readMyFile } from '.';
 import { QueryResult } from 'pg';
 import { postgress } from '../db/postgres';
 
@@ -32,17 +32,13 @@ async function doBackup(PATH_TO_FILES: PathLike, primary: any, obj: any){
     } else {
       content.push(obj);
     }
-    safeFile(PATH_TO_FILES,content);
   } else {
-    safeFile(PATH_TO_FILES,[obj]);
+    content = [obj];
   }
-}
-
-const safeFile = (path: PathLike,content: Array<any>) => {
-  writeFile(path,JSON.stringify(content)).then( (file) => {
-      console.log('====================================');
-      console.log(file);
-      console.log('====================================');
+  writeFile(PATH_TO_FILES,JSON.stringify(content)).then( (file) => {
+    console.log('====================================');
+    console.log(file);
+    console.log('====================================');
   });
 }
 
@@ -82,14 +78,20 @@ export const dropDeleteTables = async (isdrop = true) => {
     let sql = result?.rows?.map((r:any) => {
       return `${sqlAction} ${r.tablename};`;
     }).join("\n");
-    myQuery(sql);
+     postgress.query(sql)
+    .then((result: QueryResult) => {
+   console.log(result.rows);
+    })
+    .catch((err: Error) => {
+      nsole.log(err);
+    });
+
   } else {
     console.log('====================================');
     console.log("No hay tablas");
     console.log('====================================');
   }
 }
-
 
 export {
   saveBackupAnime,

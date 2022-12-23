@@ -19,7 +19,6 @@ const getSasion = (req: Request, res: Response) => {
     });
 };
 
-
 const insert = (req: Request, res: Response, next: NextFunction) => {
     const { tittle, siglas } = req.body;
     postgress

@@ -355,69 +355,6 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-
-// const handlefilters = (get:any) => {
-//   let where = "";
-//   if (get.f) {
-//       let f = get.f.split('')
-//       let filter = f[1];
-//       switch (f[0]) {
-//           case 'letters':
-//               let id_externals = [];
-//               $translations = $api->gettranslations([
-//                   array("kind" => "titulo"),
-//               ]);
-//               if ( count($translations) > 0 ) {
-//                   foreach ($translations as $lang) {
-//                       $titulo = $lang['translation'];
-//                       if ($filter == '0-9') {
-//                           for ($i=0; $i <= 9; $i++) { 
-//                               if (strchr($titulo,$i)) {
-//                                   array_push($id_externals,$lang['id_external']);
-//                               }
-//                           }
-//                       } else {
-//                           if (strchr($titulo,$filter)) {
-//                               array_push($id_externals,$lang['id_external']);
-//                           }
-//                       }
-//                   }
-//               }
-//               let ids = implode(",",$id_externals);
-//               where += `AND a.siglas IN(${ids})`;
-//               break;    
-//           case 'generes':
-//               where += `AND a.generes LIKE '%${filter}%'`;
-//               break;    
-//           case 'years':
-//               where += `AND a.date_publication LIKE '%${filter}%'`;
-//               break;    
-//           case 'languajes':
-//               where += `AND a.idiomas LIKE '${filter}'`;
-//               break;    
-//           case 'kinds':
-//               if (filter !== 'all')
-//                   where += `AND a.kind LIKE '${filter}'`;
-//               break;
-//           case 'temporadas':
-//               where += `AND a.temporada LIKE '%${filter}%'`;
-//               break;
-//       }
-//   }
-
-//   if (get.od) {
-//       where += ` ORDER BY a.${get.od} DESC`;
-//   } else if (get.oa) {
-//       where += ` ORDER BY a.${get.oa} ASC`;
-//   }
-
-//   if (get.as) {
-//       let limit = get.as.split("_");
-//       where += ` OFFSET $limit[0] LIMIT ${limit[1]}`;
-//   }
-//   return where;
-// }
-
 export {
   getlist,
   getslides,
