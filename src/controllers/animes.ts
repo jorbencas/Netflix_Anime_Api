@@ -7,73 +7,83 @@ import { insertMedia } from "./media";
 
 const getlist = (_req: Request, res: Response, next: NextFunction) => {
   postgress
-    .query(
-      `SELECT a.valorations, a.siglas, a.state,
-        (SELECT ma.name, ma.extension
-          FROM media_animes ma 
-          ON(ma.anime = a.siglas) 
-          WHERE ma.type = 'portada'
-        ) AS portada
-      FROM animes a
-      WHERE a.created IS NOT NULL `
-    )
-    .then((result: QueryResult) => {
-      console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
-    })
-    .catch((e: Error) => {
-      next(e);
-    });
+  .query(
+    `SELECT a.valorations, a.siglas, a.state,
+      (SELECT ma.name, ma.extension
+        FROM media_animes ma 
+        ON(ma.anime = a.siglas) 
+        WHERE ma.type = 'portada'
+      ) AS portada
+    FROM animes a
+    WHERE a.created IS NOT NULL`
+  )
+  .then((result: QueryResult) => {
+    console.log(result);
+    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    res.json(responseCustome(msg, 200, result.rows));
+  })
+  .catch((e: Error) => {
+    next(e);
+  });
 };
 
 const getslides = (req: Request, res: Response, next: NextFunction) => {
   let {first, last} = req.params;
   postgress
-    .query(
-      `SELECT a.valorations, a.siglas, a.state,
-        (SELECT ma.name, ma.extension
-          FROM media_animes ma 
-          ON(ma.anime = a.siglas) 
-          WHERE ma.type = 'portada'
-        ) AS portada
-      FROM animes a
-      OFFSET ${first} LIMIT ${last}`
-    )
-    .then((result: QueryResult) => {
-      console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
-    })
-    .catch((e: Error) => {
-      next(e);
-    });
+  .query(
+    `SELECT a.valorations, a.siglas, a.state,
+      (SELECT ma.name, ma.extension
+        FROM media_animes ma 
+        ON(ma.anime = a.siglas) 
+        WHERE ma.type = 'portada'
+      ) AS portada
+    FROM animes a
+    OFFSET ${first} LIMIT ${last}`
+  )
+  .then((result: QueryResult) => {
+    console.log(result);
+    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    res.json(responseCustome(msg, 200, result.rows));
+  })
+  .catch((e: Error) => {
+    next(e);
+  });
 };
 
 const getOne = (req: Request, res: Response, next: NextFunction) => {
   let { siglas } = req.params;
   postgress
   .query(
-    `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.kind, a.valorations, a.kind, 
-    (
-      SELECT f.tittle, f.code 
-      FROM filters f inner join anime_generes ag
-      ON(ag.temporada = f.code) WHERE ag.anime = ${siglas}
-    ) as temporadas,
-    (
-      SELECT f.tittle, f.code 
-      FROM filters f inner join anime_generes ag
-      ON(ag.genere = f.code) WHERE ag.anime = ${siglas}
-    ) AS generes,
-    (
-      SELECT id, favorite 
-      FROM anime_favorites
-      WHERE anime = '${siglas}'
-    ) AS favorite,
-    (
-      SELECT type, name, ext FROM media_anime WHERE id_external = ${siglas}
-    ) AS media
+    `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.valorations, a.kind, 
+    af.id as idFvorite, af.favorite as favorite,
+    temp.tittle, temp.code, gen.tittle, gen.code,
+    mb.type, mb.name, mb.ext, mp.type, mp.name, mp.ext
     FROM animes a 
+    INNER JOIN anime_favorite as af ON(af.anime = a.siglas)
+    LEFT JOIN (
+      SELECT f.tittle, f.code, ag.anime 
+      FROM filters f inner join anime_generes ag
+      ON(ag.temporada = f.code)
+    ) as temp
+    ON(temp.anime = a.siglas)
+    LEFT JOIN (
+      SELECT f.tittle, f.code, ag.anime 
+      FROM filters f inner join anime_generes ag
+      ON(ag.genere = f.code)
+    )  AS gen
+    ON(gen.anime = a.siglas)
+    LEFT JOIN (
+      SELECT type, name, ext, id_external 
+      FROM media_anime 
+      WHERE type = 'banner' 
+    ) AS mb
+    ON(mb.id_external = a.siglas)
+    LEFT JOIN (
+      SELECT type, name, ext, id_external 
+      FROM media_anime 
+      WHERE type = 'portada' 
+    ) AS mp
+    ON(mp.id_external = a.siglas)
     WHERE a.siglas = '${siglas}'`
   )
   .then((result: any) => {

@@ -74,8 +74,7 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     postgress.query(`INSERT INTO endings (id, tittle, sinopsis, anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6) RETURNNING *`, [ID, tittle, sinopsis, anime, num, seasion])
     .then((result: QueryResult) => {
       saveBackupAnime(anime,{id:ID},result.rows, 'endings');
-                insertMedia(req, res, next);
-
+      insertMedia(req, res, next);
       res.json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {

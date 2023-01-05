@@ -1,200 +1,57 @@
 
-  class Ending 
-  {
-    private id;
-    private nombre;
-    private descripcion;
-    private anime;
-    private num;
-    private seasion;
-    private madia_type;
-    private madia_name;
-    private madia_extension;
+ export default class Ending {
+    private id: number | undefined;
+    private nombre: string | undefined ;
+    private descripcion: string | undefined;
+    private anime : number | undefined;
+    private num: number| undefined;
 
-
-    public __construct()
-    {
-      
+    constructor(id:number, nombre: string, descripcion: string, anime : number, num: number) {
+      this.id = id;
+      this.nombre = nombre
+      this.descripcion = descripcion
+      this.anime = anime
+      this.num = num
     }
 
-
-    /**
-     * Get the value of id
-     */
-    public getId()
-    {
+    public getId () : number|undefined {
       return this.id;
     }
 
-    /**
-     * Set the value of id
-     *
-     * @return  self
-     */
-    public setId($id)
-    {
+    public aetId (id:number) {
       this.id = id;
-
-      return this;
     }
 
-    /**
-     * Get the value of nombre
-     */
-    public getNombre()
-    {
+    public getNombre () : string|undefined {
       return this.nombre;
     }
 
-    /**
-     * Set the value of nombre
-     *
-     * @return  self
-     */
-    public setNombre($nombre)
-    {
+    public setNombre (nombre:string) {
       this.nombre = nombre;
-
-      return this;
     }
 
-    /**
-     * Get the value of descripcion
-     */
-    public getDescripcion()
-    {
+    public getDescripcion () : string|undefined {
       return this.descripcion;
     }
 
-    /**
-     * Set the value of descripcion
-     *
-     * @return  self
-     */
-    public setDescripcion($descripcion)
-    {
+    public setDescripcion (descripcion:string) {
       this.descripcion = descripcion;
-
-      return this;
     }
 
-    /**
-     * Get the value of anime
-     */
-    public getAnime()
-    {
+    public getAnime () : number|undefined {
       return this.anime;
     }
 
-    /**
-     * Set the value of anime
-     *
-     * @return  self
-     */
-    public setAnime($anime)
-    {
+    public setAnime (anime: number) {
       this.anime = anime;
-
-      return this;
     }
 
-    /**
-     * Get the value of num
-     */
-    public getNum()
-    {
+    public getNum () : number|undefined {
       return this.num;
     }
 
-    /**
-     * Set the value of num
-     *
-     * @return  self
-     */
-    public setNum($num)
-    {
+    public setNum (num: number) {
       this.num = num;
-
-      return this;
     }
 
-    /**
-     * Get the value of madia_type
-     */
-    public getMadia_type()
-    {
-      return this.madia_type;
-    }
-
-    /**
-     * Set the value of madia_type
-     *
-     * @return  self
-     */
-    public setMadia_type($madia_type)
-    {
-      this.madia_type = madia_type;
-
-      return this;
-    }
-
-    /**
-     * Get the value of madia_extension
-     */
-    public getMadia_extension()
-    {
-      return this.madia_extension;
-    }
-
-    /**
-     * Set the value of madia_extension
-     *
-     * @return  self
-     */
-    public setMadia_extension($madia_extension)
-    {
-      this.madia_extension = madia_extension;
-
-      return this;
-    }
-
-    /**
-     * Get the value of madia_name
-     */
-    public getMadia_name()
-    {
-      return this.madia_name;
-    }
-
-    /**
-     * Set the value of madia_name
-     *
-     * @return  self
-     */
-    public setMadia_name($madia_name)
-    {
-      this.madia_name = madia_name;
-
-      return this;
-    }
-
-    /**
-     * Get the value of seasion
-     */
-    public getSeasion()
-    {
-      return this.seasion;
-    }
-
-    /**
-     * Set the value of seasion
-     *
-     * @return  self
-     */
-    public setSeasion($seasion)
-    {
-      this.seasion = seasion;
-
-      return this;
-    }
   }
