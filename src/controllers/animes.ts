@@ -32,12 +32,9 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
   postgress
   .query(
     `SELECT a.valorations, a.siglas, a.state,
-      (SELECT ma.name, ma.extension
-        FROM media_animes ma 
-        ON(ma.anime = a.siglas) 
-        WHERE ma.type = 'portada'
-      ) AS portada
-    FROM animes a
+    ma.name, ma.extension
+    FROM animes a INNER JOIN media_anime ma ON(a.siglas = ma.anime)
+    WHERE ma.type = 'portada'
     OFFSET ${first} LIMIT ${last}`
   )
   .then((result: QueryResult) => {
@@ -116,15 +113,12 @@ const lastByGenere = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
     `SELECT a.valorations, a.siglas, a.state,
-      (SELECT ma.name, ma.extension
-        FROM media_animes ma 
-        ON(ma.anime = a.siglas) 
-        WHERE ma.type = 'portada'
-      ) AS portada
+    ma.type, ma.name, ma.extension
     FROM filters AS f INNER JOIN anime_generes
     ON ag.generes LIKE ('%' || f.code::text || '%') 
     INNER JOIN animes a on(a.siglas = ag.anime)
-    WHERE f.kind = 'generes')`
+    INNER JOIN media_anime ON(ma.anime = a.siglas) 
+    WHERE ma.type = 'portada' AND f.kind = 'generes'`
     )
     .then((result: QueryResult) => {
       console.log(result);
@@ -140,14 +134,11 @@ const last = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
       `SELECT a.valorations, a.siglas, a.state,
-        (SELECT ma.name, ma.extension
-          FROM media_animes ma 
-          ON(ma.anime = a.siglas) 
-          WHERE ma.type = 'portada'
-        ) AS portada
+      ma.type, ma.name, ma.extension
       FROM animes a inner join anime_generes ag
       ON(a.siglas = ag.anime) 
-      WHERE a.created IS NOT NULL`
+      INNER JOIN media_anime ON(ma.anime = a.siglas) 
+      WHERE ma.type = 'portada'`
     )
     .then((result: QueryResult) => {
       console.log(result);
@@ -159,19 +150,13 @@ const last = (_req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const getFavorite = (req: Request, res: Response, next: NextFunction) => {
-  let lang = req.params.lang;
+const getFavorite = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
-      `SELECT a.valorations, a.siglas, a.state,
-        (SELECT ma.name, ma.extension
-          FROM media_animes ma 
-          ON(ma.anime = a.siglas) 
-          WHERE ma.type = 'portada'
-        ) AS portada
-    FROM langs l inner join translation_filter tf
-    ON(l.id = tf.id_external) 
-    WHERE l.code = ${lang} AND tf.kind = 'langs'`
+      `SELECTa.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.valorations, a.kind, 
+    af.id as idFvorite, af.favorite as favorite
+    FROM animes a 
+    INNER JOIN anime_favorite as af ON(af.anime = a.siglas)`
     )
     .then((result: QueryResult) => {
       console.log(result);
