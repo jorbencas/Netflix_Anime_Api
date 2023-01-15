@@ -1,5 +1,4 @@
-
- export default class Anime {
+export default class Anime {
     private id: number | undefined;
     private nombre: string | undefined ;
     private descripcion: string | undefined;

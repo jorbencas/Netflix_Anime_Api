@@ -1,15 +1,7 @@
 import { Router } from "express";
-import banner from "./banner";
-import episodes from "./episodes";
-import endings from "./endings";
-import openings from "./openings";
-import portada from "./portada";
+import media from "./media";
 import chat from "./chat";
 const router = Router();
-router.use("/banner", banner);
-router.use("/endings", endings);
-router.use("/episodes", episodes);
-router.use("/openings", openings);
-router.use("/portada", portada);
+router.use("/media", media);
 router.use("/chat", chat);
 export default router;

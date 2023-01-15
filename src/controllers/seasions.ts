@@ -24,10 +24,8 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     postgress
   .query(`INSERT INTO seasions(tittle,anime) VALUES('${tittle}', '${siglas}')`)
   .then((result: QueryResult) => {
-    let resultados = result.rows.map( (e: QueryResultRow) => {
-      e = handleMedia(e, siglas, req);
-    });
-    res.json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, resultados))
+    console.log(result);
+    res.json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))
   }).catch((err: Error) => {
     next(err);
   });

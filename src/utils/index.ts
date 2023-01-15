@@ -41,16 +41,22 @@ export const sendEmail = async () => {
   return response;
 }
 
-export const handleMedia = (e: QueryResultRow, siglas: string ,req: Request) => {
-  e.media = req.baseUrl+'/'+e.kind+'/'+siglas+'/'+e.name+'/'+e.extension;
-  let myObj = structuredClone(e);
-  let properties = ['kind', 'name', 'extension'];
-  properties.forEach((property) => {
-    if (Object.prototype.hasOwnProperty.call(myObj,property)) {
-      delete myObj[property];
-    }
-  });
-  return myObj;
+export const handleMedia = (result: QueryResult, siglas: string ,req: Request) => {
+  if (result.rows.length > 0) {
+    let conditional = siglas+'/';
+    let properties = ['kind', 'name', 'extension'];
+    return result.rows.map( (e: QueryResultRow) => {
+      if (Object.prototype.hasOwnProperty.call(e,"seasion")) {
+        conditional += e.seasion+ '/';
+      }
+      e.media = req.baseUrl+'/'+e.kind+'/'+conditional+e.name+'/'+e.extension;
+      properties.forEach((property) => {
+        if (Object.prototype.hasOwnProperty.call(e,property)) {
+          delete e[property];
+        }
+      });
+    });
+  } else return result;
 }
 
 export const createMyStreamFile = async (fileName:PathLike, res: Response, next: NextFunction) => {
