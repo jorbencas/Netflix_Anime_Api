@@ -65,7 +65,7 @@ export const updateIdAcumulative = (id: string, table: string, field: string) =>
 }
 
 export const dropDeleteTables = async (isdrop = true) => {
-  let result:QueryResult<any>|null = await myQuery(``);
+  /*let result:QueryResult<any>|null = await myQuery(``);
   if (result && result.rowCount > 0) {
       console.log('====================================');
   // console.log(result?.oid);
@@ -83,14 +83,14 @@ export const dropDeleteTables = async (isdrop = true) => {
    console.log(result.rows);
     })
     .catch((err: Error) => {
-      nsole.log(err);
+      console.log(err);
     });
 
   } else {
     console.log('====================================');
     console.log("No hay tablas");
     console.log('====================================');
-  }
+  }*/
 }
 
 export {
