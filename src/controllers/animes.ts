@@ -8,14 +8,9 @@ import { insertMedia } from "./media";
 const getlist = (_req: Request, res: Response, next: NextFunction) => {
   postgress
   .query(
-    `SELECT a.valorations, a.siglas, a.state,
-      (SELECT ma.name, ma.extension
-        FROM media_animes ma 
-        ON(ma.anime = a.siglas) 
-        WHERE ma.type = 'portada'
-      ) AS portada
-    FROM animes a
-    WHERE a.created IS NOT NULL`
+    `SELECT a.valorations, a.siglas, a.state, ma.type, ma.id
+    FROM animes a LEFT JOIN media_animes ma ON(ma.anime = a.siglas) 
+    WHERE ma.type = 'portada'`
   )
   .then((result: QueryResult) => {
     console.log(result);
@@ -32,7 +27,7 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
   postgress
   .query(
     `SELECT a.valorations, a.siglas, a.state,
-    ma.name, ma.extension
+    ma.id, ma.type
     FROM animes a INNER JOIN media_anime ma ON(a.siglas = ma.anime)
     WHERE ma.type = 'portada'
     OFFSET ${first} LIMIT ${last}`
@@ -54,7 +49,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
     `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.valorations, a.kind, 
     af.id as idFvorite, af.favorite as favorite,
     temp.tittle, temp.code, gen.tittle, gen.code,
-    mb.type, mb.name, mb.ext, mp.type, mp.name, mp.ext
+    mb.type, mb.id, mp.type, mp.id
     FROM animes a 
     INNER JOIN anime_favorite as af ON(af.anime = a.siglas)
     LEFT JOIN (

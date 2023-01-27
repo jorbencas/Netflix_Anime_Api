@@ -1,7 +1,7 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 
-export default class Media_anime 
+export default class Media_episodes 
   {
     private id: number|undefined;
     private type: string|undefined;
@@ -19,7 +19,7 @@ export default class Media_anime
        postgress
   .query(
     `SELECT ma.name, ma.extension, ma.type, ma.id
-    FROM  media_animes ma 
+    FROM media_episodes ma 
     WHERE ma.id = ${this.id}`
   )
   .then((result: QueryResult) => {
