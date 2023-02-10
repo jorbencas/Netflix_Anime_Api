@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import {myQuery, readMyFile, responseCustome, sendEmail} from "../../utils/index";
+import {readMyFile, responseCustome, sendEmail} from "../../utils/index";
 import { PathLike } from "node:fs";
 import path from "node:path";
 import { isLocalHost } from "../../utils/validators";
@@ -44,7 +44,7 @@ router.get('/sendEmail',async (req: Request, res: Response, next: NextFunction) 
 
 router.get("/insertAllGeneres", async (req: Request, res: Response, next: NextFunction) => {
     if(isLocalHost(req)){
-        myQuery(`DELETE FROM filters WHERE code IS NOT NULL;`);
+        /*myQuery(`DELETE FROM filters WHERE code IS NOT NULL;`);*/
         const PATH_TO_FILES : PathLike = path.join(
             __dirname,
             "../../"+BACKUP_PATH+"/filters.json"

@@ -1,13 +1,13 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 
-export default class Media_anime 
+export default class Media_ending
   {
     private id: number|undefined;
     private type: string|undefined;
     private name: string|undefined;
     private ext: string|undefined;
-    private anime:string|undefined;
+    private ending:string|undefined;
 
     constructor(id: number)
     {
@@ -19,8 +19,8 @@ export default class Media_anime
       try{
         let result: QueryResult = await postgress
         .query(
-        `SELECT ma.name, ma.extension, ma.type, ma.anime
-          FROM  media_animes ma INNER JOIN anime a ON(a.siglas = ma.anime) 
+          `SELECT ma.name, ma.ext, ma.type, ma.id, e.anime
+          FROM media_endings ma inner join endings e ON(e.id = ma.ending)
           WHERE ma.id = ${this.id}`
         );
         if(result.rowCount > 0){
@@ -32,9 +32,8 @@ export default class Media_anime
       };
       return content;
     }
-
     /**
-     * Get the value of ext
+     * Get the value of extension
      */
     public getExtension()
     {
@@ -46,7 +45,7 @@ export default class Media_anime
      *
      * @return  self
      */
-    public setExtension(extension:string)
+    public setExtension(extension: string)
     {
       this.ext = extension;
 
@@ -84,9 +83,11 @@ export default class Media_anime
      *
      * @return  self
      */
-    public setType(type:string)
+    public setType(type: string)
     {
       this.type = type;
+
+      return this;
     }
 
     /**
@@ -110,18 +111,18 @@ export default class Media_anime
     /**
      * Get the value of anime
      */
-    public getAnime()
+    public getEnding()
     {
-      return this.anime;
+      return this.ending;
     }
 
     /**
-     * Set the value of anime
+     * Set the value of ending
      *
      * @return  self
      */
-    public setAnime(anime:string)
+    public setEnding(ending:string)
     {
-      this.anime = anime;
+      this.ending = ending;
     }
   }

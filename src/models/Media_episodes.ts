@@ -1,42 +1,43 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 
-export default class Media_episodes 
+export default class Media_episode 
   {
     private id: number|undefined;
     private type: string|undefined;
     private name: string|undefined;
-    private extension: string|undefined;
-    private anime:number|undefined;
+    private ext: string|undefined;
+    private episode:string|undefined;
 
-    public __construct(id: number)
+    constructor(id: number)
     {
       this.id = id;
     }
 
-
-    public obtenrUnAnime(pathFile: string):string{
-       postgress
-  .query(
-    `SELECT ma.name, ma.extension, ma.type, ma.id
-    FROM media_episodes ma 
-    WHERE ma.id = ${this.id}`
-  )
-  .then((result: QueryResult) => {
-    pathFile = result;
-  })
-  .catch((e: Error) => {
-    console.log(e);
-  });
-
-  return pathFile;
+    public async obtenrUnAnime (pathFile:string):Promise<string>{     
+      let content:string = pathFile;
+      try{
+        let result: QueryResult = await postgress
+        .query(
+          `SELECT ma.name, ma.extension, ma.type, ma.id, e.anime
+          FROM media_episodes ma inner join episodes e ON(e.id = ma.episode)
+          WHERE ma.id = ${this.id}`
+        );
+        if(result.rowCount > 0){
+          var {name,extension,type,anime} = result.rows[0];
+          content = anime+"/"+type+ "/"+name+"."+extension;
+        }
+      }catch(e) {
+        console.log(e);
+      };
+      return content;
     }
     /**
      * Get the value of extension
      */
     public getExtension()
     {
-      return this.extension;
+      return this.ext;
     }
 
     /**
@@ -44,11 +45,9 @@ export default class Media_episodes
      *
      * @return  self
      */
-    public setExtension($extension)
+    public setExtension(extension:string)
     {
-      this.extension = extension;
-
-      return this;
+      this.ext = extension;
     }
 
     /**
@@ -64,11 +63,9 @@ export default class Media_episodes
      *
      * @return  self
      */
-    public setName($name)
+    public setName(name: string)
     {
       this.name = name;
-
-      return this;
     }
 
     /**
@@ -84,11 +81,9 @@ export default class Media_episodes
      *
      * @return  self
      */
-    public setType($type)
+    public setType(type:string)
     {
       this.type = type;
-
-      return this;
     }
 
     /**
@@ -104,19 +99,17 @@ export default class Media_episodes
      *
      * @return  self
      */
-    public setId($id)
+    public setId(id:number)
     {
       this.id = id;
-
-      return this;
     }
 
     /**
      * Get the value of anime
      */
-    public getAnime()
+    public getEpisode()
     {
-      return this.anime;
+      return this.episode;
     }
 
     /**
@@ -124,10 +117,8 @@ export default class Media_episodes
      *
      * @return  self
      */
-    public setAnime($anime)
+    public setEpisode(episode:string)
     {
-      this.anime = anime;
-
-      return this;
+      this.episode = episode;
     }
   }

@@ -1,26 +1,26 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 
-export default class Media_anime 
+export default class Media_opening
   {
     private id: number|undefined;
     private type: string|undefined;
     private name: string|undefined;
     private ext: string|undefined;
-    private anime:string|undefined;
+    private opening:string|undefined;
 
     constructor(id: number)
     {
       this.id = id;
     }
 
-    public async obtenrUnAnime (pathFile:string):Promise<string>{     
+    public async obtenrUnAnime(pathFile:string):Promise<string>{     
       let content:string = pathFile;
       try{
         let result: QueryResult = await postgress
         .query(
-        `SELECT ma.name, ma.extension, ma.type, ma.anime
-          FROM  media_animes ma INNER JOIN anime a ON(a.siglas = ma.anime) 
+          `SELECT ma.name, ma.ext, ma.type, ma.id, e.anime
+          FROM media_openings ma inner join openings e ON(e.id = ma.opening)
           WHERE ma.id = ${this.id}`
         );
         if(result.rowCount > 0){
@@ -32,9 +32,8 @@ export default class Media_anime
       };
       return content;
     }
-
     /**
-     * Get the value of ext
+     * Get the value of extension
      */
     public getExtension()
     {
@@ -46,7 +45,7 @@ export default class Media_anime
      *
      * @return  self
      */
-    public setExtension(extension:string)
+    public setExtension(extension: string)
     {
       this.ext = extension;
 
@@ -84,9 +83,11 @@ export default class Media_anime
      *
      * @return  self
      */
-    public setType(type:string)
+    public setType(type: string)
     {
       this.type = type;
+
+      return this;
     }
 
     /**
@@ -110,18 +111,18 @@ export default class Media_anime
     /**
      * Get the value of anime
      */
-    public getAnime()
+    public getOpening()
     {
-      return this.anime;
+      return this.opening;
     }
 
     /**
-     * Set the value of anime
+     * Set the value of opening
      *
      * @return  self
      */
-    public setAnime(anime:string)
+    public setOpening(opening:string)
     {
-      this.anime = anime;
+      this.opening = opening;
     }
   }

@@ -1,7 +1,7 @@
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
-import {myQuery, responseCustome  } from "../utils/index";
+import { responseCustome  } from "../utils/index";
 import { saveBackup } from "../utils/backup";
 import letters from '../db/letters.json';
 import years from '../db/years.json';

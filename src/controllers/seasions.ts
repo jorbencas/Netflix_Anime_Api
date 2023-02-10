@@ -1,7 +1,7 @@
-import {handleMedia, responseCustome  } from "../utils/index";
+import {responseCustome } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
-import { QueryResult, QueryResultRow } from "pg";
+import { QueryResult } from "pg";
 
 const getSasion = (req: Request, res: Response) => {
   let { id } = req.params;

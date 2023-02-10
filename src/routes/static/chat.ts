@@ -4,7 +4,6 @@ import {
   static as staticFiles,
   Request,
   Response,
-  NextFunction,
 } from "express";
 import { createMyStreamFile } from "../../utils";
 
@@ -14,31 +13,31 @@ router.use("/", staticFiles(path.join(__dirname, "../../static/chat.html")));
 
 router.get(
   "/chat-leat",
-  async (_req: Request, res: Response, next: NextFunction) => {
+  async (_req: Request, res: Response) => {
     let fileName = path.join(
       __dirname,
       "../../static/notifications/notification.mp3"
     );
-    await createMyStreamFile(fileName, res, next);
+    await createMyStreamFile(fileName, res);
   }
 );
 
 router.get(
   "/notify-send",
-  async (_req: Request, res: Response, next: NextFunction) => {
+  async (_req: Request, res: Response) => {
     let fileName = path.join(__dirname, "../../static/notifications/send.mp3");
-    await createMyStreamFile(fileName, res, next);
+    await createMyStreamFile(fileName, res);
   }
 );
 
 router.get(
   "/notify",
-  async (_req: Request, res: Response, next: NextFunction) => {
+  async (_req: Request, res: Response) => {
     let fileName = path.join(
       __dirname,
       "../../static/notifications/recibe.mp3"
     );
-    await createMyStreamFile(fileName, res, next);
+    await createMyStreamFile(fileName, res);
   }
 );
 

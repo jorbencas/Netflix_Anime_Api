@@ -43,13 +43,14 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getOne = (req: Request, res: Response, next: NextFunction) => {
-  let { siglas } = req.params;
+  let { siglas, edit } = req.params;
+  if(edit) console.log(edit);
   postgress
   .query(
     `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.valorations, a.kind, 
     af.id as idFvorite, af.favorite as favorite,
     temp.tittle, temp.code, gen.tittle, gen.code,
-    mb.type, mb.id, mp.type, mp.id
+    mb.type bannert, mb.idbanneri, mp.type portadat, mp.id portadat
     FROM animes a 
     INNER JOIN anime_favorite as af ON(af.anime = a.siglas)
     LEFT JOIN (
@@ -82,6 +83,8 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
     console.log(result);
     result = result.rows.shift();
     let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    /*result.banner = result.;
+    result.portada = ;*/
     res.json(responseCustome(msg, 200, result));
   })
   .catch((e: Error) => {
@@ -108,7 +111,7 @@ const lastByGenere = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
     `SELECT a.valorations, a.siglas, a.state,
-    ma.type, ma.name, ma.extension
+    ma.type, ma.id
     FROM filters AS f INNER JOIN anime_generes
     ON ag.generes LIKE ('%' || f.code::text || '%') 
     INNER JOIN animes a on(a.siglas = ag.anime)
@@ -129,7 +132,7 @@ const last = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
       `SELECT a.valorations, a.siglas, a.state,
-      ma.type, ma.name, ma.extension
+      ma.type, ma.id
       FROM animes a inner join anime_generes ag
       ON(a.siglas = ag.anime) 
       INNER JOIN media_anime ON(ma.anime = a.siglas) 
@@ -207,7 +210,7 @@ const removeFavorite = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const insert = (req: Request, res: Response, next: NextFunction) => {
+const insert = async (req: Request, res: Response, next: NextFunction) => {
   const {
     siglas,
     state,
@@ -220,7 +223,7 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     temporadas,
   } = req.body;
 
-  postgress
+  let result: QueryResult = await postgress
     .query(
       `INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
       [
@@ -232,48 +235,28 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
         date_finalization,
         idioma,
       ]
-    )
-    .then((result: QueryResult) => {
-      console.log(result);
-      saveBackupAnime(siglas,{'siglas':siglas}, result.rows, 'animes');
-      let sql = "INSERT INTO anime_generes (genere, anime) VALUES ";
-      generes.forEach((genere: string) => {
-        sql += `('${genere}', '${siglas}') RETURNING id;`;
-      });
-      postgress
-        .query(sql)
-        .then((r: QueryResult) => {
-          console.log(r);
-          insertMedia(req, res, next);
-          saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_generes');
-          let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-          res.json(responseCustome(msg, 200, r.rows));
-        })
-        .catch((e: Error) => {
-          next(e);
-        }).finally( () => {
-          let sql = "INSERT INTO anime_temporadas (genere, anime) VALUES ";
-          temporadas.forEach((temporada: string) => {
-            sql += `('${temporada}', '${siglas}') RETURNING id;`;
-          });
-
-          postgress
-          .query(sql)
-          .then((r: QueryResult) => {
-            console.log(r);
-            saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_temporadas');
-          })
-          .catch((e: Error) => {
-            next(e);
-          });
-      });
-    })
-    .catch((e: Error) => {
-      next(e);
-    }).finally( () => {
-      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, null));
+    );
+    console.log(result);
+    saveBackupAnime(siglas,{'siglas':siglas}, result.rows, 'animes');
+    let sql = "INSERT INTO anime_generes (genere, anime) VALUES ";
+    generes.forEach((genere: string) => {
+      sql += `('${genere}', '${siglas}') RETURNING id;`;
     });
+    let r: QueryResult = await postgress.query(sql);
+    console.log(r);
+    insertMedia(req, res, next);
+    saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_generes');
+    /*let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
+    res.json(responseCustome(msg, 200, r.rows));*/
+    sql = "INSERT INTO anime_temporadas (genere, anime) VALUES ";
+    temporadas.forEach((temporada: string) => {
+      sql += `('${temporada}', '${siglas}') RETURNING id;`;
+    });
+    r = await postgress.query(sql);
+    saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_temporadas');    
+    let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
+    res.json(responseCustome(msg, 200, null));
+    postgress.end();
 };
 
 const edit = (req: Request, res: Response, next: NextFunction) => {

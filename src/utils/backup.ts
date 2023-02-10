@@ -4,16 +4,18 @@ import path from "node:path";
 import { readMyFile } from '.';
 import { QueryResult } from 'pg';
 import { postgress } from '../db/postgres';
+import { BACKUP_PATH, MEDIA_PATH } from '../config';
 
 const saveBackup = (primary: any, obj: any, kind: string) => {
-  const PATH_TO_FILES : PathLike = path.join(
-    __dirname,
-    "/../media/.backup/"+kind+ '.json'
-  );
+  const PATH_TO_FILES : string = BACKUP_PATH+"/"+kind;
   doBackup(PATH_TO_FILES, primary, obj);
 }
 
-async function doBackup(PATH_TO_FILES: PathLike, primary: any, obj: any){
+async function doBackup(p: string, primary: any, obj: any){
+  const PATH_TO_FILES : PathLike = path.join(
+    __dirname,
+    "/../"+p+ '.json'
+  );
   const keyPrimary = Object.keys(primary)[0];
   const valuePrimary = Object.values(primary);
   let content = await readMyFile(PATH_TO_FILES);
@@ -41,30 +43,34 @@ async function doBackup(PATH_TO_FILES: PathLike, primary: any, obj: any){
     console.log('====================================');
   });
 }
-
+/**
+ * Gestiona los backup de las series
+ * @param siglas anime
+ * @param primary identificador del elemento (episodes, openings, endings animes)
+ * @param obj objeto con los nuevos valores
+ * @param kind tipo de elemento
+ * 
+ */
 const saveBackupAnime = (siglas: string, primary:Object, obj: any, kind: string) => {
-  let relativepath = siglas.length > 0 ? siglas+'/':'';
-  const PATH_TO_FILES : PathLike = path.join(
-    __dirname,
-    "/../media"+ '/'+relativepath+'/.backup/'+kind+ '.json'
-  );
-
+  const PATH_TO_FILES : string = MEDIA_PATH+'/'+siglas+'/.backup'+kind;
   doBackup(PATH_TO_FILES, primary, obj);
 }
 
-
-export const updateIdAcumulative = (id: string, table: string, field: string) => {
-  let num:string = id+'1';
+export const updateIdAcumulative = (siglas: string, table: string, field: string) => {
+  let num:string = siglas+'1';
  postgress.query(`SELECT ${field} AS id FROM ${table} WHERE ${field} = ${num}`)
   .then((r: QueryResult) => {
     if(r.rowCount > 0) {
       let actual_id : number = parseInt(r.rows.shift().replace(/[^0-9]/ig,''));
-      num = id +''+ actual_id + 1;
+      num = siglas.concat(''+(actual_id + 1));
     }
   }).finally( () => {return num});
 }
 
 export const dropDeleteTables = async (isdrop = true) => {
+  console.log('====================================');
+  console.log(isdrop);
+  console.log('====================================');
   /*let result:QueryResult<any>|null = await myQuery(``);
   if (result && result.rowCount > 0) {
       console.log('====================================');
