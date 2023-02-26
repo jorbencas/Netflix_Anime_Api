@@ -95,7 +95,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
 const getNum = (_req: Request, res: Response, next: NextFunction) => {
   postgress
     .query(
-      `SELECT count(a.siglas) FROM animes AS a WHERE a.created IS NOT NULL`
+      `SELECT count(siglas) FROM animes WHERE created IS NOT NULL`
     )
     .then((result: QueryResult) => {
       console.log(result);
