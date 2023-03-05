@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Prueba de subir un archivo al servidor con nodejs</title>
+    <style>
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+   
+    </style>
+  </head>
+  <body>
+      <input type="file" />
+      <button onclick="send()">Send</button>
+  
+<script>
+  function send() {
+     const APITOKEN =
+  "???123456789Azsxdcfvgnbhknljopimuhytgrfqew127364lpñokmni**/-++89¿juhvtcfdr65es123\\~~xza_qw";
+    let form = document.getElementById("input[type='file']");
+      console.log('====================================');
+    console.log(form);
+    console.log('====================================');
+    debugger;
+    fetch("http://localhost:3001/api/media",{
+        headers:{
+            "Content-Type": "application/json",
+            api_token: APITOKEN,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        method:"POST",
+        body:JSON.stringify({"id":1,"media":form})
+    }).then(function(response){
+      console.log('====================================');
+      console.log(response);
+      console.log('====================================');
+      let audio = new Audio();
+      audio.src = 'http://localhost:3001/chat/notify-send';
+      audio.play();
+    }).catch(function(err){
+        console.log(err);
+    });
+  };
+</script>
+  </body>
+</html>

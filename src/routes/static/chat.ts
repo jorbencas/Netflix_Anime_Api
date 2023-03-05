@@ -9,7 +9,7 @@ import { createMyStreamFile } from "../../utils";
 
 const router = Router();
 
-router.use("/", staticFiles(path.join(__dirname, "../../static/chat.html")));
+router.get("/", staticFiles(path.join(__dirname, "../../static/chat.html")));
 
 router.get(
   "/chat-leat",
