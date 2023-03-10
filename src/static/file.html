@@ -15,19 +15,15 @@
   function send() {
      const APITOKEN =
   "???123456789Azsxdcfvgnbhknljopimuhytgrfqew127364lpñokmni**/-++89¿juhvtcfdr65es123\\~~xza_qw";
-    let form = document.getElementById("input[type='file']");
-      console.log('====================================');
-    console.log(form);
-    console.log('====================================');
-    debugger;
+    let form = document.querySelector("input[type='file']");
+    let send = {"id":1,"media":form};
     fetch("http://localhost:3001/api/media",{
         headers:{
             "Content-Type": "application/json",
-            api_token: APITOKEN,
             "X-Requested-With": "XMLHttpRequest",
         },
         method:"POST",
-        body:JSON.stringify({"id":1,"media":form})
+        body:JSON.stringify(send)
     }).then(function(response){
       console.log('====================================');
       console.log(response);

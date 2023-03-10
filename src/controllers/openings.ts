@@ -36,7 +36,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
   LEFT JOIN seasions_openings se ON(se.opening = e.id)
   INNER JOIN animes AS a ON a.siglas = e.anime
   INNER JOIN media_openings ma ON(ma.opening = e.id) 
-  WHERE e.id = ${id} AND ma.type = 'openings'`)
+  WHERE e.id = ${id}`)
   .then((result) => {
   console.log(result);
   let msg = `Se ha podido obtener la traducion del idioma {lang}`;

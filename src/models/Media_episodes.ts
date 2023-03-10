@@ -19,7 +19,7 @@ export default class Media_episode
       try{
         let result: QueryResult = await postgress
         .query(
-          `SELECT ma.name, ma.extension, ma.type, ma.id, e.anime
+          `SELECT ma.name, ma.extension, ma.id, e.anime
           FROM media_episodes ma inner join episodes e ON(e.id = ma.episode)
           WHERE ma.id = ${this.id}`
         );

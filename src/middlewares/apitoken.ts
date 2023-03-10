@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { API_TOKEN } from '../config';
 import { responseCustome } from "../utils/index";
-import { isLocalHost } from '../utils/validators';
+// import { isLocalHost } from '../utils/validators';
 
 export default (req: Request, res: Response, next: NextFunction) => {
   if (
-    !isLocalHost(req) &&
+    // !isLocalHost(req) &&
     (typeof req.headers.api_token == "undefined" ||
       req.headers.api_token == API_TOKEN)
   ) {

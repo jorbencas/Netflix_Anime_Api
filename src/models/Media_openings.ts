@@ -19,7 +19,7 @@ export default class Media_opening
       try{
         let result: QueryResult = await postgress
         .query(
-          `SELECT ma.name, ma.ext, ma.type, ma.id, e.anime
+          `SELECT ma.name, ma.ext, ma.id, e.anime
           FROM media_openings ma inner join openings e ON(e.id = ma.opening)
           WHERE ma.id = ${this.id}`
         );

@@ -2,8 +2,8 @@ import { readMyDir, responseCustome } from "../utils/index";
 import { Request, Response, NextFunction } from "express";
 import { PathLike } from "node:fs";
 import path from "node:path";
-import fileUpload from 'express-fileupload';
-import express from "express";
+// import fileUpload from 'express-fileupload';
+// import express from "express";
 import { MEDIA_PATH } from "../config";
 
 const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) => {
@@ -18,8 +18,12 @@ const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) 
 };
 
 const insertMedia = (req: Request, res: Response, _next: NextFunction) => {
-const app = express();
-app.use(fileUpload);
+// const app = express();
+console.log('====================================');
+console.log(req.files);
+console.log('====================================');
+ res.json(responseCustome("FUFUFUFU", 200, req));
+// app.use(fileUpload);
   if(!req.files){
     console.log('====================================');
     console.log(req.body);
