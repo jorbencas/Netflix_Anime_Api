@@ -9,9 +9,9 @@ import { isAudio, isVideo } from "./validators";
 import { OPTIONS_EMAIL } from "../config";
 import normal from '../templates/normal/email';
 
-export const responseCustome = (message: string = "", code: number = 200, data: dataResponseCustome = null) => {
-  const CODESTATUS:StatusCode = statusTexts;
-  let text: string = CODESTATUS[code] ?? "";
+export const responseCustome = (message: string = "", code: number = 200, data: dataResponseCustome = null):ResponseCustomeData => {
+  const CODE_STATUS:StatusCode = statusTexts;
+  let text: string = CODE_STATUS[code] ?? "";
   let response: ResponseCustomeData = {
     data,
     status: { code, text, message },
@@ -44,7 +44,8 @@ export const createMyStreamFile = async (fileName:PathLike, res: Response) => {
     let head = "text/html";
     if(isVideo(String(fileName))){
       head = "video/mp4";
-    } else if(isAudio(String(fileName)) ){
+    } 
+    if(isAudio(String(fileName)) ){
       head = "audio/mp3";
     }
     res.writeHead(200, { 
@@ -59,29 +60,29 @@ export const createMyStreamFile = async (fileName:PathLike, res: Response) => {
 
 export async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
   let content = null;
-  const isValid = await isAccesible(PATH_TO_FILES);
-  if (isValid) {
     try {
-      const file = await readFile(PATH_TO_FILES, "utf-8");
-      let pathString = String(PATH_TO_FILES).toLowerCase();
-      content = pathString.includes('.json') ? JSON.parse(file) : file;
+      const isValid = await isAccesible(PATH_TO_FILES);
+      if (isValid) {
+        const file = await readFile(PATH_TO_FILES, "utf-8");
+        let pathString = String(PATH_TO_FILES).toLowerCase();
+        content = pathString.includes('.json') ? JSON.parse(file) : file;
+      }
     } catch (error) {
       console.log(error);
-    }
-  }
+    }  
   return content;
 }
 
 export async function readMyDir(PATH_TO_FILES: PathLike): Promise<string[] | null> {
   let content = null;
-  const isValid = await isAccesible(PATH_TO_FILES);
-  if (isValid) {
     try {
-      content = await readdir(PATH_TO_FILES);;
+        const isValid = await isAccesible(PATH_TO_FILES);
+        if (isValid) {
+          content = await readdir(PATH_TO_FILES);
+        }
     } catch (error) {
       console.log(error);
     }
-  }
   return content;
 }
 

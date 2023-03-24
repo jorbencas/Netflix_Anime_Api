@@ -15,7 +15,7 @@ const getlist = (_req: Request, res: Response, next: NextFunction) => {
   .then((result: QueryResult) => {
     console.log(result);
     let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-    res.json(responseCustome(msg, 200, result.rows));
+    res.status(200).json(responseCustome(msg, 200, result.rows));
   })
   .catch((e: Error) => {
     next(e);
@@ -35,7 +35,7 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
   .then((result: QueryResult) => {
     console.log(result);
     let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-    res.json(responseCustome(msg, 200, result.rows));
+    res.status(200).json(responseCustome(msg, 200, result.rows));
   })
   .catch((e: Error) => {
     next(e);
@@ -85,7 +85,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
     let msg = `Se ha podido obtener la traducion del idioma {lang}`;
     /*result.banner = result.;
     result.portada = ;*/
-    res.json(responseCustome(msg, 200, result));
+    res.status(200).json(responseCustome(msg, 200, result));
   })
   .catch((e: Error) => {
     next(e);
@@ -100,7 +100,7 @@ const getNum = (_req: Request, res: Response, next: NextFunction) => {
     .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows.shift()));
+      res.status(200).json(responseCustome(msg, 200, result.rows.shift()));
     })
     .catch((e: Error) => {
       next(e);
@@ -121,7 +121,7 @@ const lastByGenere = (_req: Request, res: Response, next: NextFunction) => {
     .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
+      res.status(200).json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
       next(e);
@@ -141,7 +141,7 @@ const last = (_req: Request, res: Response, next: NextFunction) => {
     .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
+      res.status(200).json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
       next(e);
@@ -159,7 +159,7 @@ const getFavorite = (_req: Request, res: Response, next: NextFunction) => {
     .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
+      res.status(200).json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
       next(e);
@@ -175,7 +175,7 @@ const addFavorite = (req: Request, res: Response, next: NextFunction) => {
     .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
+      res.status(200).json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
       console.log(e);
@@ -186,7 +186,7 @@ const addFavorite = (req: Request, res: Response, next: NextFunction) => {
       .then((result: QueryResult) => {
         console.log(result);
         let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-        res.json(responseCustome(msg, 200, result.rows));
+        res.status(200).json(responseCustome(msg, 200, result.rows));
       })
       .catch((e: Error) => {
         next(e);
@@ -203,7 +203,7 @@ const removeFavorite = (req: Request, res: Response, next: NextFunction) => {
     .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
+      res.status(200).json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
       next(e);
@@ -255,7 +255,7 @@ const insert = async (req: Request, res: Response, next: NextFunction) => {
     r = await postgress.query(sql);
     saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_temporadas');    
     let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
-    res.json(responseCustome(msg, 200, null));
+    res.status(200).json(responseCustome(msg, 200, null));
     postgress.end();
 };
 
@@ -299,7 +299,7 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
           console.log(r);
           saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_generes');
           let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-          res.json(responseCustome(msg, 200, r.rows));
+          res.status(200).json(responseCustome(msg, 200, r.rows));
         })
         .catch((e: Error) => {
           next(e);
@@ -316,7 +316,7 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
             insertMedia(req, res, next);
             saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_temporadas');
             let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-            res.json(responseCustome(msg, 200, r.rows));
+            res.status(200).json(responseCustome(msg, 200, r.rows));
           })
           .catch((e: Error) => {
             next(e);

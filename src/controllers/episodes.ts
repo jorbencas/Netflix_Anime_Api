@@ -18,7 +18,7 @@ const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
         .then((result) => {
         console.log(result);
         let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-        res.json(responseCustome(msg, 200, result.rows));
+        res.status(200).json(responseCustome(msg, 200, result.rows));
         })
         .catch((e: Error) => {
         // let msg = `No se ha podido obtener la traducion del idioma {lang}`;
@@ -40,7 +40,7 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
   .then((result) => {
   console.log(result);
   let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-  res.json(responseCustome(msg, 200, result.rows));
+  res.status(200).json(responseCustome(msg, 200, result.rows));
   })
   .catch((e: Error) => {
   // let msg = `No se ha podido obtener la traducion del idioma {lang}`;
@@ -72,7 +72,7 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     .query(`INSERT INTO episodes(id, tittle, sinopsis,date_publication, date_finalization anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6) RETURNNING *`, [ID, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion])
     .then((result: QueryResult) => {
       saveBackupAnime(anime,{'id':ID}, result.rows,'episodes');
-      res.json(responseCustome("", 200, result.rows))
+      res.status(200).json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {
       next(err);
@@ -85,7 +85,7 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
     .query(`UPDATE FROM episodes tittle=$2, sinopsis=$3, date_publication=$4, date_finalization=$5, num=$6, seasion=$7 WHERE id=$1 RETURNNING *;`, [id, tittle, sinopsis, date_publication, date_finalization, num, seasion])
     .then((result: QueryResult) => {
      saveBackupAnime(anime,{'id':id}, result.rows,'episodes');
-      res.json(responseCustome("", 200, result.rows))
+      res.status(200).json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {
       next(err);
@@ -99,7 +99,7 @@ const deleteOne = (req: Request, res: Response, next: NextFunction) => {
     .then((result: QueryResult) => {
       saveBackupAnime(anime,['id',id],result.rows, 'episodes');
       insertMedia(req, res, next);
-      res.json(responseCustome("", 200, result.rows))
+      res.status(200).json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {
       next(err);
@@ -113,7 +113,7 @@ const deletebyanime = (req: Request, res: Response, next: NextFunction) =>{
   .then((result: QueryResult) => {
     saveBackupAnime(anime,['anime',anime],result.rows, 'episodes');
     insertMedia(req, res, next);
-    res.json(responseCustome("", 200, result.rows))
+    res.status(200).json(responseCustome("", 200, result.rows))
   })
   .catch((err: Error) => {
     next(err);
@@ -125,7 +125,7 @@ const getListIds = (req: Request, res: Response, next: NextFunction) => {
      postgress
     .query(`SELECT id FROM episodes WHERE anime = ${siglas}`)
     .then((result: QueryResult) =>
-      res.json(responseCustome("", 200, result.rows))
+      res.status(200).json(responseCustome("", 200, result.rows))
     )
     .catch((err: Error) => {
       next(err);

@@ -18,7 +18,7 @@ const getFilters = (req: Request, res: Response, next: NextFunction) => {
     postgress.query(`SELECT code, tittle FROM filters WHERE kind = '${kind}' ORDER BY created ASC`)
     .then((result: QueryResult) => {
       let msg = `Se ha podido obtener las temporadas`;
-        res.json(responseCustome(msg, 200, result.rows));
+        res.status(200).json(responseCustome(msg, 200, result.rows));
     })
     .catch((e: Error) => {
         console.log(e);
@@ -57,7 +57,7 @@ const update = (req: Request, res: Response, next: NextFunction) => {
     return result.rows;
   })
   .then( (result) => {
-    res.json(responseCustome("", 200, result.shift()));
+    res.status(200).json(responseCustome("", 200, result.shift()));
   })
   .catch((err: Error) => {
     console.log(err);
@@ -69,7 +69,7 @@ const deleteAll = (_req: Request, res: Response, next: NextFunction) => {
   postgress.query("SELECT code FROM filters WHERE kind = 'generes'").then((result: QueryResult) => {
     result.rows.forEach((row) => {
       postgress.query("DELETE FROM filters WHERE code = $1 AND type = 'generes'", [row.code]).then((result: QueryResult) => {
-        res.json(responseCustome("", 200, result.rows));
+        res.status(200).json(responseCustome("", 200, result.rows));
       }).catch((err: Error) => {
         next(err);
       });

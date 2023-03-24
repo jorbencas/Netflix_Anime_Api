@@ -10,7 +10,7 @@ const getSasion = (req: Request, res: Response) => {
     .then((result: QueryResult) => {
       console.log(result);
       let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.json(responseCustome(msg, 200, result.rows));
+      res.status(200).json(responseCustome(msg, 200, result.rows));
     })
     .catch((e) => {
       console.error(e.stack);
@@ -25,7 +25,7 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
   .query(`INSERT INTO seasions(tittle,anime) VALUES('${tittle}', '${siglas}')`)
   .then((result: QueryResult) => {
     console.log(result);
-    res.json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))
+    res.status(200).json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))
   }).catch((err: Error) => {
     next(err);
   });

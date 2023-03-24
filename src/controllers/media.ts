@@ -14,7 +14,7 @@ const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) 
 
   let file = await readMyDir(PATH_TO_FILES);
   const siglas: string[] | undefined = file?.filter((stat: string) => stat.trim() !== 'nuevos');
-  res.json(responseCustome('La lista de siglas', 200, siglas));
+  res.status(200).json(responseCustome('La lista de siglas', 200, siglas));
 };
 
 const insertMedia = (req: Request, res: Response, _next: NextFunction) => {
@@ -22,7 +22,7 @@ const insertMedia = (req: Request, res: Response, _next: NextFunction) => {
 console.log('====================================');
 console.log(req.files);
 console.log('====================================');
- res.json(responseCustome("FUFUFUFU", 200, req));
+ res.status(200).json(responseCustome("FUFUFUFU", 200, req));
 // app.use(fileUpload);
   if(!req.files){
     console.log('====================================');
@@ -56,7 +56,7 @@ console.log('====================================');
     console.log(mediaFiles2);
     console.log(id_external);
     console.log(kind);
-    res.json(responseCustome("", 200, req.body));
+    res.status(200).json(responseCustome("", 200, req.body));
 }
 
 export { defaultSiglas, insertMedia };
