@@ -51,7 +51,7 @@ async function doBackup(p: string, primary: any, obj: any){
  * @param kind tipo de elemento
  * 
  */
-const saveBackupAnime = (siglas: string, primary:Object, obj: any, kind: string) => {
+const saveBackupAnime = (siglas: string|undefined, primary:Object, obj: any, kind: string) => {
   const PATH_TO_FILES : string = MEDIA_PATH+'/'+siglas+'/.backup'+kind;
   doBackup(PATH_TO_FILES, primary, obj);
 }

@@ -20,7 +20,7 @@ const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) 
 const insertMedia = (req: Request, res: Response, _next: NextFunction) => {
 // const app = express();
 console.log('====================================');
-console.log(req.files);
+console.log(req);
 console.log('====================================');
  res.status(200).json(responseCustome("FUFUFUFU", 200, req));
 // app.use(fileUpload);

@@ -7,12 +7,11 @@ import { getlist,
     lastByGenere,
     removeFavorite,
     addFavorite,
-    getFavorite, insert, edit } from "../../controllers/animes";
+    getFavorite, editinsert } from "../../controllers/animes";
 var router = Router();
-router.get("/", getlist)
+router.route("/").get(getlist).post(editinsert)
 router.get("/lastByGenere", lastByGenere)
 router.get("/:first/:last", getslides)
-router.route("/:siglas").post(edit).put(insert)
 router.get("/:siglas/:edit?",getOne)
 router.get("/:num", getNum)
 router.get("/lastanimes/:siglas", last)

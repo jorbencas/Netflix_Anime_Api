@@ -1,12 +1,14 @@
+import { postgress } from "../db/postgres";
+import { QueryResult } from "pg";
+import { saveBackupAnime } from "../utils/backup";
 
-  class Anime_genere 
+export default  class Anime_genere 
   {
     private id!: number;
     private genere!: number;
     private anime!: string;
 
-    public __construct(id: number, genere: number, anime: string) {
-      this.id = id;
+    public __construct(genere: number, anime: string) {
       this.genere = genere;
       this.anime = anime;
     }
@@ -69,5 +71,27 @@
       this.genere = genere;
 
       return this;
+    }
+
+    public async Obtener(){
+
+    }
+
+    public async insertar(){
+
+    }
+
+    public async Editar(){
+        let sql = `UPDATE anime_generes genere='${this.genere}' WHERE anime='${this.anime}';`;
+      console.log(sql);
+      postgress
+        .query(sql)
+        .then((r: QueryResult) => {
+          console.log(r);
+          saveBackupAnime(this.siglas,{'id':r.rows[0]}, r.rows[0], 'anime_generes');
+        })
+        .catch((e: Error) => {
+          next(e);
+        })
     }
   }

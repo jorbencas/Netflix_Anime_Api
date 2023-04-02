@@ -4,6 +4,8 @@ import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
 import { insertMedia } from "./media";
+import Anime from "../models/Anime";
+import Anime_genere from "../models/Anime_genere";
 
 const getlist = (_req: Request, res: Response, next: NextFunction) => {
   postgress
@@ -221,93 +223,77 @@ const insert = async (req: Request, res: Response, next: NextFunction) => {
     idioma,
     generes,
     temporadas,
+    kind,
   } = req.body;
+  console.log(req.body);
+//insertar anime usando la clase
 
-  let result: QueryResult = await postgress
-    .query(
-      `INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, temporadas) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;`,
-      [
-        tittle,
-        sinopsis,
-        siglas,
-        state,
-        date_publication,
-        date_finalization,
-        idioma,
-      ]
-    );
-    console.log(result);
-    saveBackupAnime(siglas,{'siglas':siglas}, result.rows, 'animes');
-    let sql = "INSERT INTO anime_generes (genere, anime) VALUES ";
-    generes.forEach((genere: string) => {
-      sql += `('${genere}', '${siglas}') RETURNING id;`;
-    });
+    let anime = new Anime(tittle, sinopsis, siglas, state, date_publication, date_finalization, idioma, kind);
+    let inserted = await anime.insert();
+    if (inserted) {
+          console.log(result);
+      console.log(anime);
+    generes.forEach(async(genere: string) => {
+      let sql = `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}') RETURNING id;`;
+          console.log(sql);
+
     let r: QueryResult = await postgress.query(sql);
     console.log(r);
+        saveBackupAnime(siglas,{'id':r.rows[0]}, r.rows[0], 'anime_generes');
+
+
+    });
+
+
+
     insertMedia(req, res, next);
-    saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_generes');
     /*let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
     res.json(responseCustome(msg, 200, r.rows));*/
-    sql = "INSERT INTO anime_temporadas (genere, anime) VALUES ";
-    temporadas.forEach((temporada: string) => {
-      sql += `('${temporada}', '${siglas}') RETURNING id;`;
+    temporadas.forEach(async(temporada: string) => {
+      sql = `INSERT INTO anime_temporadas (genere, anime) VALUES ('${temporada}', '${siglas}') RETURNING id;`;
+       let r = await postgress.query(sql);
+    saveBackupAnime(siglas,{'id':r.rows[0]}, r.rows[0], 'anime_temporadas');    
     });
-    r = await postgress.query(sql);
-    saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_temporadas');    
+   
     let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
     res.status(200).json(responseCustome(msg, 200, null));
-    postgress.end();
+    } else {
+      
+    }
 };
 
-const edit = (req: Request, res: Response, next: NextFunction) => {
+const editinsert = (req: Request, res: Response, next: NextFunction) => {
   const {
     siglas,
     state,
     date_publication,
     date_finalization,
-    titulo,
+    tittle,
     sinopsis,
-    idiomas,
+    idioma,
+    kind,
     generes,
     temporadas,
   } = req.body;
 
-  postgress
-    .query(
-      `UPDATE FROM animes SET tittle = $1, sinopsis = $2, state = $3, date_publication = $4, date_finalization = $5, idiomas = $6) WHERE siglas=$7`,
-      [
-        titulo,
-        sinopsis,
-        state,
-        date_publication,
-        date_finalization,
-        idiomas,
-        siglas
-      ]
-    )
-    .then((result: QueryResult) => {
-      console.log(result);
-      saveBackupAnime(siglas,{'siglas':siglas}, result.rows, 'animes');
-      let sql = "";
-      generes.forEach((genere: string) => {
-        sql += `UPDATE FROM anime_generes genere=${genere} WHERE anime=${siglas});`;
-      });
+   let anime = new Anime(tittle, sinopsis, siglas, state, date_publication, date_finalization, idioma, kind);
+   let obtenidoAnime = await anime.Obtener(); 
+   if (obtenidoAnime) {
+    let inserted = await anime.editar();
+    if (inserted) {
+      generes.forEach(async(genere: string) => {
+        let genereInserted = new Anime_genere(genere,siglas);
+        let genereEdited = await genereInserted.Editar();
+          if (!genereEdited) {
+            let genereInserted = await genereInserted.insertar()
 
-      postgress
-        .query(sql)
-        .then((r: QueryResult) => {
-          console.log(r);
-          saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_generes');
-          let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-          res.status(200).json(responseCustome(msg, 200, r.rows));
-        })
-        .catch((e: Error) => {
-          next(e);
-        }).finally( () => {
+          }
+      });
           let sql = "";
           temporadas.forEach((temporada: string) => {
-            sql += `UPDATE anime_temporadas SET genere = '${temporada}' WHERE anime = '${siglas}';`;
+            sql += `UPDATE anime_temporadas SET temporada = '${temporada}' WHERE anime = '${siglas}';`;
           });
+      console.log(sql);
 
           postgress
           .query(sql)
@@ -320,12 +306,38 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
           })
           .catch((e: Error) => {
             next(e);
-          });
-      });
-    })
-    .catch((e: Error) => {
-      next(e);
-    });
+          });  
+    } else {
+      let inserted = await anime.insert();
+    if (inserted) {
+          console.log(result);
+           let genereInserted = new Anime_genere(genere,siglas);
+        let genereEdited = await genereInserted.Editar();
+          if (!genereEdited) {
+            let genereInserted = await genereInserted.insertar()
+
+          }
+    } else {
+      
+    }
+    } else {
+       let inserted = await anime.insert();
+    if (inserted) {
+          console.log(result);
+ let genereInserted = new Anime_genere(genere,siglas);
+        let genereEdited = await genereInserted.Editar();
+          if (!genereEdited) {
+            let genereInserted = await genereInserted.insertar()
+
+          }
+    } else {
+      
+    }
+    }
+   }
+    
+
+      
 };
 
 export {
@@ -338,6 +350,5 @@ export {
   getFavorite,
   addFavorite,
   removeFavorite,
-  insert,
-  edit,
+  editinsert
 };
