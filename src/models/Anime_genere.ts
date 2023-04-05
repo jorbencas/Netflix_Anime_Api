@@ -79,6 +79,13 @@ export default  class Anime_genere
 
     public async insertar(){
 
+      let sql = `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}') RETURNING id;`;
+          console.log(sql);
+
+    let r: QueryResult = await postgress.query(sql);
+    console.log(r);
+        saveBackupAnime(siglas,{'id':r.rows[0]}, r.rows[0], 'anime_generes');
+
     }
 
     public async Editar(){

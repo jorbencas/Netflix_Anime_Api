@@ -6,6 +6,8 @@ import { saveBackupAnime } from "../utils/backup";
 import { insertMedia } from "./media";
 import Anime from "../models/Anime";
 import Anime_genere from "../models/Anime_genere";
+import Anime_temporada from "../models/Anime_temporada";
+import Media_anime from '../models/Media_anime';
 
 const getlist = (_req: Request, res: Response, next: NextFunction) => {
   postgress
@@ -212,57 +214,7 @@ const removeFavorite = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const insert = async (req: Request, res: Response, next: NextFunction) => {
-  const {
-    siglas,
-    state,
-    date_publication,
-    date_finalization,
-    tittle,
-    sinopsis,
-    idioma,
-    generes,
-    temporadas,
-    kind,
-  } = req.body;
-  console.log(req.body);
-//insertar anime usando la clase
-
-    let anime = new Anime(tittle, sinopsis, siglas, state, date_publication, date_finalization, idioma, kind);
-    let inserted = await anime.insert();
-    if (inserted) {
-          console.log(result);
-      console.log(anime);
-    generes.forEach(async(genere: string) => {
-      let sql = `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}') RETURNING id;`;
-          console.log(sql);
-
-    let r: QueryResult = await postgress.query(sql);
-    console.log(r);
-        saveBackupAnime(siglas,{'id':r.rows[0]}, r.rows[0], 'anime_generes');
-
-
-    });
-
-
-
-    insertMedia(req, res, next);
-    /*let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
-    res.json(responseCustome(msg, 200, r.rows));*/
-    temporadas.forEach(async(temporada: string) => {
-      sql = `INSERT INTO anime_temporadas (genere, anime) VALUES ('${temporada}', '${siglas}') RETURNING id;`;
-       let r = await postgress.query(sql);
-    saveBackupAnime(siglas,{'id':r.rows[0]}, r.rows[0], 'anime_temporadas');    
-    });
-   
-    let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
-    res.status(200).json(responseCustome(msg, 200, null));
-    } else {
-      
-    }
-};
-
-const editinsert = (req: Request, res: Response, next: NextFunction) => {
+const editinsert = async (req: Request, res: Response) => {
   const {
     siglas,
     state,
@@ -274,6 +226,7 @@ const editinsert = (req: Request, res: Response, next: NextFunction) => {
     kind,
     generes,
     temporadas,
+    media
   } = req.body;
 
    let anime = new Anime(tittle, sinopsis, siglas, state, date_publication, date_finalization, idioma, kind);
@@ -289,55 +242,32 @@ const editinsert = (req: Request, res: Response, next: NextFunction) => {
 
           }
       });
-          let sql = "";
-          temporadas.forEach((temporada: string) => {
-            sql += `UPDATE anime_temporadas SET temporada = '${temporada}' WHERE anime = '${siglas}';`;
-          });
-      console.log(sql);
+      temporadas.forEach((temporada: string) => {
+        let temporadaInstance = new Anime_temporada(temporada, siglas)
+        let temporadaEdited = await temporadaInstance.Editar();
+        if(!temporadaEdited){
+        let temporadaInserted = await temporadaInstance.insertar();
 
-          postgress
-          .query(sql)
-          .then((r: QueryResult) => {
-            console.log(r);
-            insertMedia(req, res, next);
-            saveBackupAnime(siglas,{'id':r.rows}, r.rows, 'anime_temporadas');
-            let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-            res.status(200).json(responseCustome(msg, 200, r.rows));
-          })
-          .catch((e: Error) => {
-            next(e);
-          });  
-    } else {
+        }
+      });
+      if(typeof media !=='undefined'){
+        let mediaInstance = new Media_anime();
+        let mediaEdited = await mediaInstance.Editar();
+      }
+    }
+  } else {
       let inserted = await anime.insert();
-    if (inserted) {
-          console.log(result);
-           let genereInserted = new Anime_genere(genere,siglas);
-        let genereEdited = await genereInserted.Editar();
-          if (!genereEdited) {
-            let genereInserted = await genereInserted.insertar()
-
-          }
-    } else {
-      
-    }
-    } else {
-       let inserted = await anime.insert();
-    if (inserted) {
-          console.log(result);
- let genereInserted = new Anime_genere(genere,siglas);
-        let genereEdited = await genereInserted.Editar();
-          if (!genereEdited) {
-            let genereInserted = await genereInserted.insertar()
-
-          }
-    } else {
-      
-    }
-    }
+      if (inserted) {
+        generes.forEach(async(genere: string) => {
+          let genereInserted = new Anime_genere(genere,siglas);
+          let genereInserted = await genereInserted.insertar()
+        });
+      } else {
+        
+      }
    }
-    
-
-      
+    let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
+    res.status(200).json(responseCustome(msg, 200, null));
 };
 
 export {

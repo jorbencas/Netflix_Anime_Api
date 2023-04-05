@@ -1,5 +1,6 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
+import { saveBackupAnime } from "../utils/backup";
 
 export default class Media_anime 
   {
@@ -124,4 +125,28 @@ export default class Media_anime
     {
       this.anime = anime;
     }
+
+
+     public async Obtener(){
+
+    }
+
+    public async insertar(){
+
+    }
+
+    public async Editar(){
+        let sql = `UPDATE anime_temporadas temporada='${this.temporada}' WHERE anime='${this.anime}';`;
+      console.log(sql);
+      postgress
+        .query(sql)
+        .then((r: QueryResult) => {
+          console.log(r);
+          saveBackupAnime(this.anime,{'id':r.rows[0]}, r.rows[0], 'anime_media');
+        })
+        .catch((e: Error) => {
+          next(e);
+        })
+    }
+
   }
