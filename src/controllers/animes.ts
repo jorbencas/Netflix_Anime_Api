@@ -2,8 +2,6 @@ import { responseCustome } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
-import { saveBackupAnime } from "../utils/backup";
-import { insertMedia } from "./media";
 import Anime from "../models/Anime";
 import Anime_genere from "../models/Anime_genere";
 import Anime_temporada from "../models/Anime_temporada";
@@ -229,46 +227,66 @@ const editinsert = async (req: Request, res: Response) => {
     media
   } = req.body;
 
-   let anime = new Anime(tittle, sinopsis, siglas, state, date_publication, date_finalization, idioma, kind);
-   let obtenidoAnime = await anime.Obtener(); 
-   if (obtenidoAnime) {
+  let anime = new Anime(tittle, sinopsis, siglas, state, date_publication, date_finalization, idioma, kind);
+  let obtenidoAnime = await anime.Obtener(); 
+  if (obtenidoAnime) {
     let inserted = await anime.editar();
     if (inserted) {
-      generes.forEach(async(genere: string) => {
-        let genereInserted = new Anime_genere(genere,siglas);
-        let genereEdited = await genereInserted.Editar();
-          if (!genereEdited) {
-            let genereInserted = await genereInserted.insertar()
-
-          }
-      });
-      temporadas.forEach((temporada: string) => {
-        let temporadaInstance = new Anime_temporada(temporada, siglas)
-        let temporadaEdited = await temporadaInstance.Editar();
-        if(!temporadaEdited){
-        let temporadaInserted = await temporadaInstance.insertar();
-
-        }
-      });
-      if(typeof media !=='undefined'){
-        let mediaInstance = new Media_anime();
-        let mediaEdited = await mediaInstance.Editar();
-      }
+      await processsGeneres(generes, siglas);
+      await processsTemporadas(temporadas, siglas);
+      await processMedia(media);      
     }
   } else {
-      let inserted = await anime.insert();
-      if (inserted) {
-        generes.forEach(async(genere: string) => {
-          let genereInserted = new Anime_genere(genere,siglas);
-          let genereInserted = await genereInserted.insertar()
-        });
-      } else {
-        
-      }
-   }
-    let msg:string = `Se ha podido obtener la traducion del idioma {lang}`;
-    res.status(200).json(responseCustome(msg, 200, null));
+    let inserted = await anime.insert();
+    if (inserted) {
+      await processsGeneres(generes, siglas);
+      await processsTemporadas(temporadas, siglas);
+      await processMedia(media);
+    } else {
+      console.log(inserted);
+    }
+  }    
+  let msg:string = `Se ha insertado/editado todo`;
+    res.status(200).json(responseCustome(msg, 200, req.body));
 };
+
+async function processsGeneres(generes: Array<string>, siglas:string){
+  generes.forEach(async(genere: string) => {
+    let genereInstance = new Anime_genere(genere,siglas);
+    let genereInserted = await genereInstance.insertar()
+    console.log("fin generes: " + genereInserted);
+  });
+}
+
+async function processsTemporadas(temporadas: Array<string>, siglas:string){
+  temporadas.forEach(async(temporada: string) => {
+    let temporadaInstance = new Anime_temporada(temporada, siglas);
+    let temporadaInserted = await temporadaInstance.insertar();
+    console.log("fin temporadas: " +temporadaInserted);
+  });
+}
+
+async function processMedia(media: Array<Object>){
+  if(typeof media !=='undefined'){
+    media.forEach(async (mediaElement:any) => {  
+      const {id_external, kind, file} = mediaElement;
+      const {nombre, extension} = file;
+      let mediaInstance = new Media_anime();
+      mediaInstance.setAnime(id_external);
+      mediaInstance.setName(nombre);
+      mediaInstance.setExt(extension);
+      mediaInstance.setType(kind);
+      let existe = await mediaInstance.Obtener();
+      if (existe) {
+        let mediaEdited = await mediaInstance.Editar();
+        console.log("fin media: " + mediaEdited);
+      } else {
+        let mediaInserted = await mediaInstance.insertar();
+        console.log("fin media: " + mediaInserted);
+      }
+    });
+  }
+}
 
 export {
   getlist,

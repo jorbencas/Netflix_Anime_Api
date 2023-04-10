@@ -1,47 +1,19 @@
 import { writeFile } from 'node:fs/promises';
 import { PathLike } from "node:fs";
 import path from "node:path";
-import { readMyFile } from '.';
+import { makeFile, readMyFile } from '.';
 import { QueryResult } from 'pg';
 import { postgress } from '../db/postgres';
 import { BACKUP_PATH, MEDIA_PATH } from '../config';
+import { estaVacio, isObject } from './validators';
 
-const saveBackup = (primary: any, obj: any, kind: string) => {
-  const PATH_TO_FILES : string = BACKUP_PATH+"/"+kind;
-  doBackup(PATH_TO_FILES, primary, obj);
-}
-
-async function doBackup(p: string, primary: any, obj: any){
+const moreElements = ["media_animes", "anime_generes", "anime_temporadas", "anime_favorites", "seasions", "episodes", "seasions_episodes", "media_episodes", "clips", "episode_collections", "openings", "seasions_openings", "media_openings", "endings", "seasions_endings", "media_endings"];
+const saveBackup = async (primary: any, obj: any, kind: string) => {
   const PATH_TO_FILES : PathLike = path.join(
     __dirname,
-    "/../"+p+ '.json'
+    "/../"+BACKUP_PATH+"/"+kind+ '.json'
   );
-  const keyPrimary = Object.keys(primary)[0];
-  const valuePrimary = Object.values(primary);
-  let content = await readMyFile(PATH_TO_FILES);
-  if(content){
-    let backupFile = content.filter( (e:any) => valuePrimary.includes(e[keyPrimary]));
-    if(backupFile.length > 0) {
-      content.forEach((elem:any) => {
-        if(valuePrimary.includes(elem[keyPrimary])){
-          Object.entries(elem).forEach(([key, value]:any) => {
-            if (value.toLocaleLowerCase() !== obj[key].toLocaleLowerCase()) {
-              elem[key] = obj[key];
-            }
-          });
-        }
-      });
-    } else {
-      content.push(obj);
-    }
-  } else {
-    content = [obj];
-  }
-  writeFile(PATH_TO_FILES,JSON.stringify(content)).then( (file) => {
-    console.log('====================================');
-    console.log(file);
-    console.log('====================================');
-  });
+  await doBackup(PATH_TO_FILES, primary, obj, kind);
 }
 /**
  * Gestiona los backup de las series
@@ -51,9 +23,71 @@ async function doBackup(p: string, primary: any, obj: any){
  * @param kind tipo de elemento
  * 
  */
-const saveBackupAnime = (siglas: string|undefined, primary:Object, obj: any, kind: string) => {
-  const PATH_TO_FILES : string = MEDIA_PATH+'/'+siglas+'/.backup'+kind;
-  doBackup(PATH_TO_FILES, primary, obj);
+const saveBackupAnime = async (siglas: string|undefined, primary:Object, obj: any, kind: string) => {
+    const PATH_TO_FILES : PathLike = path.join(
+    __dirname,
+    "/../"+MEDIA_PATH+'/'+siglas+'/.backup'
+  );
+  await makeFile(siglas+'/.backup'); 
+  await doBackup(`${PATH_TO_FILES}/${kind}.json`, primary, obj, kind);
+}
+async function doBackup(PATH_TO_FILES: string, primary: Object, obj: Object, kind: string){
+  let content:any = await readMyFile(PATH_TO_FILES);
+  if(!estaVacio(content)){
+    const keyPrimary:any = Object.keys(primary).shift();
+    const valuePrimary:any = Object.values(primary).shift();
+    if(isObject(content)){
+      if ("media_animes".includes(kind)) {
+        console.log('====================================');
+        console.log(keyPrimary, valuePrimary);
+        console.log('====================================');
+      }
+      await updateObj(obj,content, keyPrimary, valuePrimary, kind);
+      if (moreElements.includes(kind)) {
+        content = [content];
+      }
+    } else if(Array.isArray(content)){
+      let exist = content.some((elem:any) => valuePrimary.includes(elem[keyPrimary]));
+      if (exist) {
+        console.log('====================================');
+        console.log(keyPrimary, valuePrimary);
+        console.log('====================================');
+        content.forEach(async (elem:any) => {
+          await updateObj(obj,elem, keyPrimary, valuePrimary, kind);
+        });
+      } else {
+        content.push(obj);
+      }
+    }
+  } else if (moreElements.includes(kind)) {
+    content = [obj];
+  } else {
+    content = structuredClone(obj);
+  }
+  try {
+    await writeFile(PATH_TO_FILES,JSON.stringify(content, null, 2));
+  } catch (err) {
+    console.log("writed: "+err);
+  }
+}
+
+async function updateObj(obj:any,elem:any, keyPrimary:any, valuePrimary:any, kind:any){
+  try {
+    if(elem[keyPrimary] && valuePrimary.includes(elem[keyPrimary])){
+      Object.entries(elem).forEach(([key, value]:any) => {
+        if (value.toString().trim().toLocaleLowerCase() !== obj[key].toString().trim().toLocaleLowerCase()) {
+          elem[key] = obj[key];
+        }
+      });
+    } else {
+      elem = obj;
+    }
+  } catch (error) {
+    console.log('====================================');
+    console.log(elem);
+    console.log('====================================');
+    console.log("error updateting:" +keyPrimary+ " " + kind + " " + error);
+  } 
 }
 
 export const updateIdAcumulative = (siglas: string, table: string, field: string) => {

@@ -9,9 +9,8 @@ export default class Media_opening
     private ext: string|undefined;
     private opening:string|undefined;
 
-    constructor(id: number)
+    constructor()
     {
-      this.id = id;
     }
 
     public async obtenrUnAnime(pathFile:string):Promise<string>{     
@@ -125,4 +124,71 @@ export default class Media_opening
     {
       this.opening = opening;
     }
+
+//     public async Obtener(){
+//  let sql = `SELECT siglas FROM media_animes WHERE anime = $1;`
+//         console.log(sql);
+// let rest = false;
+// let result: QueryResult = await postgress
+//     .query(
+//       sql,
+//       [
+//         this.anime
+//       ]
+//     ).then(()=>{
+//       rest = true;
+//     }).catch((err)=>{
+//       console.log(err)
+//       rest = false;
+//     })
+//     return rest;
+//     }
+
+//     public async insertar(){
+//  let sql = `INSERT INTO media_animes (id, type, name, ext, anime) VALUES ($1, $2, $3, $4, $5) RETURNING *;`
+//         console.log(sql);
+// let rest = false;
+// let result: QueryResult = await postgress
+//     .query(
+//       sql,
+//       [
+//         this.id,
+//         this.type,
+//         this.name,
+//         this.ext,
+//         this.anime
+//       ]
+//     ).then(()=>{
+//       rest = true;
+//               saveBackupAnime(this.anime,{'id':r.rows[0]}, r.rows[0], 'anime_media');
+
+//     }).catch((err)=>{
+//       console.log(err)
+//       rest = false;
+//     })
+//     return rest;
+//     }
+
+//     public async Editar(){
+//       let sql = `UPDATE media_animes SET name = $2, ext = $3, WHERE id=$1`
+//         console.log(sql);
+//       let rest = false;
+//       let result: QueryResult = await postgress
+//       .query(
+//         sql,
+//         [
+//           this.id,
+//           this.name,
+//           this.ext
+//         ]
+//       ).then(()=>{
+//         rest = true;
+//         saveBackupAnime(this.anime,{'id':r.rows[0]}, r.rows[0], 'anime_media');
+//       }).catch((err)=>{
+//         console.log(err)
+//         rest = false;
+//       })
+//       return rest;
+//     }
+    
   }

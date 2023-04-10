@@ -1,18 +1,19 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
+import { makeFile } from "../utils";
 
 export default class Media_anime 
   {
-    private id: number|undefined;
+    private id: number;
     private type: string|undefined;
     private name: string|undefined;
     private ext: string|undefined;
     private anime:string|undefined;
 
-    constructor(id: number)
+    constructor()
     {
-      this.id = id;
+      this.id = 0;
     }
 
     public async obtenrUnAnime (pathFile:string):Promise<string>{     
@@ -20,13 +21,13 @@ export default class Media_anime
       try{
         let result: QueryResult = await postgress
         .query(
-        `SELECT ma.name, ma.extension, ma.type, ma.anime
+        `SELECT ma.name, ma.ext, ma.type, ma.anime
           FROM  media_animes ma INNER JOIN anime a ON(a.siglas = ma.anime) 
           WHERE ma.id = ${this.id}`
         );
         if(result.rowCount > 0){
-          var {name,extension,type,anime} = result.rows[0];
-          content = anime+"/"+type+ "/"+name+"."+extension;
+          var {name,ext,type,anime} = result.rows.shift();
+          content = anime+"/"+type+ "/"+name+"."+ext;
         }
       }catch(e) {
         console.log(e);
@@ -37,19 +38,19 @@ export default class Media_anime
     /**
      * Get the value of ext
      */
-    public getExtension()
+    public getExt()
     {
       return this.ext;
     }
 
     /**
-     * Set the value of extension
+     * Set the value of ext
      *
      * @return  self
      */
-    public setExtension(extension:string)
+    public setExt(ext:string)
     {
-      this.ext = extension;
+      this.ext = ext;
 
       return this;
     }
@@ -126,27 +127,84 @@ export default class Media_anime
       this.anime = anime;
     }
 
-
-     public async Obtener(){
-
-    }
-
-    public async insertar(){
-
-    }
-
-    public async Editar(){
-        let sql = `UPDATE anime_temporadas temporada='${this.temporada}' WHERE anime='${this.anime}';`;
+    public async Obtener():Promise<Boolean>{
+      let sql = `SELECT id, anime, type FROM media_animes WHERE anime = $1 And type = $2;`
       console.log(sql);
-      postgress
-        .query(sql)
-        .then((r: QueryResult) => {
-          console.log(r);
-          saveBackupAnime(this.anime,{'id':r.rows[0]}, r.rows[0], 'anime_media');
-        })
-        .catch((e: Error) => {
-          next(e);
-        })
+      let rest = false;
+      try {
+        let result: QueryResult = await postgress.query(sql,[this.anime, this.type]);
+        if(result.rowCount > 0){
+          rest = true;
+          this.setId(result.rows.shift().id);
+        }
+      } catch (err) {
+        console.log("media" + err)
+      }
+      return rest;
     }
 
+    public async insertar():Promise<Boolean>{
+      let sql = `INSERT INTO media_animes (type, name, ext, anime) VALUES ($1, $2, $3, $4) RETURNING *;`
+      let rest = false;
+      try {
+        let result: QueryResult = await postgress
+        .query(
+          sql,
+          [
+            this.type,
+            this.name,
+            this.ext,
+            this.anime
+          ]
+        );
+        if(result.rowCount > 0){
+          try {
+            console.log(sql);              
+            let path = `${this.anime}/${this.type}`;
+            await makeFile(path);
+            this.setId(result.rows.shift().id);
+            await saveBackupAnime(this.anime, {'id':this.getId().toString()}, result.rows[0], 'media_animes');
+            rest = true;
+          } catch (err) {
+            console.log("media backup:"+err)
+          }
+        }
+      } catch (err) {
+        console.log("media" + err)
+      }
+      return rest;
+    }
+
+    public async Editar():Promise<Boolean>{
+      let sql = `UPDATE media_animes SET name = $2, ext = $3 WHERE id=$1 RETURNING *;`;    
+      let rest = false;
+      try {
+        let result: QueryResult = await postgress
+        .query(
+          sql,
+          [
+            this.id,
+            this.name,
+            this.ext
+          ]
+        );
+
+        if(result.rowCount > 0){
+          try {
+            this.setId(result.rows.shift().id);   
+            let path = `${this.anime}/${this.type}`;
+            await makeFile(path);
+            console.log(sql);
+            console.log(this.getId());
+            await saveBackupAnime(this.anime,{'id':this.getId().toString()}, result.rows[0], 'media_animes');
+            rest = true;
+          } catch (err) {
+            console.log("media backup:"+err)
+          }
+        }
+      } catch (err) {
+        console.log("media" + err)
+      }
+      return rest;
+    }
   }

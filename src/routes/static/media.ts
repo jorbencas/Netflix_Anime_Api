@@ -15,19 +15,23 @@ router.get("/:type/:id?", async (req: Request, res: Response) => {
       switch (type) {
         case 'banner':
         case 'portada':
-          let m = new Media_anime(parseInt(id));
+          let m = new Media_anime();
+          m.setId(parseInt(id));
           pathFile = await m.obtenrUnAnime(pathFile);
           break;
         case 'openings':
-          let o = new Media_opening(parseInt(id));
+          let o = new Media_opening();
+          o.setId(parseInt(id));
           pathFile = await o.obtenrUnAnime(pathFile);
           break;
         case 'endings':
-          let ed = new Media_ending(parseInt(id));
+          let ed = new Media_ending();
+          ed.setId(parseInt(id));
           pathFile = await ed.obtenrUnAnime(pathFile);
           break;
         case 'episodes':
-          let e = new Media_episode(parseInt(id));
+          let e = new Media_episode();
+          e.setId(parseInt(id));
           pathFile = await e.obtenrUnAnime(pathFile);
           break;
         default:

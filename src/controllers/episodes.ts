@@ -3,7 +3,6 @@ import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
 import { saveBackupAnime, updateIdAcumulative } from "../utils/backup";
-import { insertMedia } from "./media";
 
 const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
     let siglas = req.params.siglas;
@@ -92,32 +91,32 @@ const edit = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const deleteOne = (req: Request, res: Response, next: NextFunction) => {
-    const { id, anime } = req.body;
-    postgress
-    .query(`DELETE FROM episodes WHERE id=$1;`, [id ])
-    .then((result: QueryResult) => {
-      saveBackupAnime(anime,['id',id],result.rows, 'episodes');
-      insertMedia(req, res, next);
-      res.status(200).json(responseCustome("", 200, result.rows))
-    })
-    .catch((err: Error) => {
-      next(err);
-    });
+const deleteOne = () => {
+    // const { id, anime } = req.body;
+    // postgress
+    // .query(`DELETE FROM episodes WHERE id=$1;`, [id ])
+    // .then((result: QueryResult) => {
+    //   saveBackupAnime(anime,['id',id],result.rows, 'episodes');
+    //   insertMedia(req, res, next);
+    //   res.status(200).json(responseCustome("", 200, result.rows))
+    // })
+    // .catch((err: Error) => {
+    //   next(err);
+    // });
 };
 
-const deletebyanime = (req: Request, res: Response, next: NextFunction) =>{
-  const { anime } = req.body;
-  postgress
-  .query(`DELETE FROM episodes WHERE anime=$1;`, [anime ])
-  .then((result: QueryResult) => {
-    saveBackupAnime(anime,['anime',anime],result.rows, 'episodes');
-    insertMedia(req, res, next);
-    res.status(200).json(responseCustome("", 200, result.rows))
-  })
-  .catch((err: Error) => {
-    next(err);
-  });
+const deletebyanime = () =>{
+  // const { anime } = req.body;
+  // postgress
+  // .query(`DELETE FROM episodes WHERE anime=$1;`, [anime ])
+  // .then((result: QueryResult) => {
+  //   saveBackupAnime(anime,['anime',anime],result.rows, 'episodes');
+  //   insertMedia(req, res, next);
+  //   res.status(200).json(responseCustome("", 200, result.rows))
+  // })
+  // .catch((err: Error) => {
+  //   next(err);
+  // });
 }
 
 const getListIds = (req: Request, res: Response, next: NextFunction) => {

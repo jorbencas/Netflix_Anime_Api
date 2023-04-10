@@ -1,4 +1,4 @@
-import { access, readFile, readdir } from 'node:fs/promises';
+import { access, mkdir, readFile, readdir } from 'node:fs/promises';
 import { PathLike, existsSync, constants, createReadStream, ReadStream } from 'node:fs';
 import { makerMail } from './sendMail';
 import { createTransport } from "nodemailer";
@@ -6,8 +6,9 @@ import statusTexts from '../static/statusCodes';
 import { dataResponseCustome, ResponseCustomeData, StatusCode } from "../types/StatusCode";
 import { Response } from 'express';
 import { isAudio, isVideo } from "./validators";
-import { OPTIONS_EMAIL } from "../config";
+import { OPTIONS_EMAIL, MEDIA_PATH } from "../config";
 import normal from '../templates/normal/email';
+import path from 'node:path';
 
 export const responseCustome = (message: string = "", code: number = 200, data: dataResponseCustome = null):ResponseCustomeData => {
   const CODE_STATUS:StatusCode = statusTexts;
@@ -97,4 +98,36 @@ async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
     }
   }
   return isAccesible;
+}
+
+
+export async function makeFile(pathFile:string){
+  if (pathFile.includes("/")) {
+    let pathJAOIN = "";
+    let pathSplited = pathFile.split("/");
+    pathSplited.forEach(async (pathFile:string) =>{
+      if(pathFile.startsWith(".") || !pathFile.includes(".")){
+        pathJAOIN += `/${pathFile}`
+        await doMagicFolder(pathJAOIN);
+      }
+    });
+  } else if(pathFile.startsWith(".") || !pathFile.includes(".")){
+    await doMagicFolder(pathFile);
+  }
+}
+
+async function doMagicFolder(pathFile: string){
+  const PATH_TO_FILES : PathLike = path.join(
+    __dirname,
+    "/../" + MEDIA_PATH + pathFile
+  );
+
+  let exists = await isAccesible(PATH_TO_FILES);
+  if(!exists){
+    try {
+      await mkdir(PATH_TO_FILES);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

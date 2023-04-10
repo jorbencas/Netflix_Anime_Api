@@ -11,8 +11,9 @@ export default class Anime {
   private _date_finalization: Date | undefined;
   private _idioma: string | undefined;
   private _kind: string | undefined;
+  private _valorations: number | undefined;
 
-  constructor(tittle:string, sinopsis: string, siglas: string, state : string, date_publication: Date, date_finalization: Date, idioma: string, kind: string) {
+  constructor(tittle:string, sinopsis: string, siglas: string, state : string, date_publication: Date, date_finalization: Date, idioma: string, kind: string, valorations: number = 0) {
     this._tittle = tittle;
     this._sinopsis = sinopsis
     this._siglas = siglas
@@ -21,6 +22,7 @@ export default class Anime {
     this._date_finalization = date_finalization
     this._idioma = idioma
     this._kind = kind
+    this._valorations = valorations
   }
 
 
@@ -31,7 +33,7 @@ export default class Anime {
     this._tittle = value;
   }
 
-   public get sinopsis(): string | undefined {
+  public get sinopsis(): string | undefined {
     return this._sinopsis;
   }
   public set sinopsis(value: string | undefined) {
@@ -81,76 +83,92 @@ export default class Anime {
     this._kind = value;
   }
 
-  public async Obtener() :Promise<Boolean> {
-     let sql = `SELECT siglas FROM animes WHERE siglas = $1;`
-        console.log(sql);
-let rest = false;
-let result: QueryResult = await postgress
-    .query(
-      sql,
-      [
-        this._siglas
-      ]
-    ).then(()=>{
+    public get valorations(): number | undefined {
+    return this._valorations;
+  }
+  public set valorations(value: number | undefined) {
+    this._valorations = value;
+  }
+
+  public async Obtener():Promise<Boolean> {
+    let sql = `SELECT siglas FROM animes WHERE siglas = $1;`
+    console.log(sql);
+    let rest = false;
+    try {
+      let result: QueryResult = await postgress.query(sql,[this._siglas]);
+      if(result.rowCount > 0){
       rest = true;
-    }).catch((err)=>{
+      }
+    } catch (err) {
       console.log(err)
-      rest = false;
-    })
+    }
     return rest;
   }
 
   public async insert():Promise<Boolean>{
     let sql = `INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, kind) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`
-        console.log(sql);
-let rest = false;
-let result: QueryResult = await postgress
-    .query(
-      sql,
-      [
-        this._tittle,
-        this._sinopsis,
-        this._siglas,
-        this._state,
-        this._date_publication,
-        this._date_finalization,
-        this._idioma,
-        this._kind
-      ]
-    ).then(()=>{
-      rest = true;
-          saveBackupAnime(this._siglas,{'siglas':this._siglas}, result.rows, 'animes');
-    }).catch((err)=>{
+    
+    let rest = false;
+    try {
+      let result: QueryResult = await postgress
+      .query(
+        sql,
+        [
+          this._tittle,
+          this._sinopsis,
+          this._siglas,
+          this._state,
+          this._date_publication,
+          this._date_finalization,
+          this._idioma,
+          this._kind
+        ]
+      );
+      if(result.rowCount > 0){
+        try {     
+          console.log(sql);     
+          await saveBackupAnime(this._siglas,{'siglas':this._siglas}, result.rows.shift(), 'animes');
+          rest = true;
+        } catch (err) {
+          console.log("anime backup:"+err)
+        }
+      }
+    } catch (err) {
       console.log(err)
-      rest = false;
-    })
+    }
     return rest;
   }
 
   public async editar(){
-    let sql = `UPDATE animes SET tittle = $1, sinopsis = $2, state = $3, date_publication = $4, date_finalization = $5, idiomas = $6, kind=$8 WHERE siglas=$7`
-        console.log(sql);
-let rest = false;
-let result: QueryResult = await postgress
-    .query(
-      sql,
-      [
-        this._tittle,
-        this._sinopsis,
-        this._siglas,
-        this._state,
-        this._date_publication,
-        this._date_finalization,
-        this._idioma,
-        this._kind
-      ]
-    ).then(()=>{
-      rest = true;
-          saveBackupAnime(this._siglas,{'siglas':this._siglas}, result.rows, 'animes');
-    }).catch((err)=>{
+    let sql = `UPDATE animes SET tittle = $1, sinopsis = $2, state = $3, date_publication = $4, date_finalization = $5, idiomas = $6, kind = $7, valorations =$8 WHERE siglas = $9 RETURNING *;`
+    let rest = false;
+    try {
+      let result: QueryResult = await postgress
+        .query(
+          sql,
+          [
+            this._tittle,
+            this._sinopsis,            
+            this._state,
+            this._date_publication,
+            this._date_finalization,
+            this._idioma,
+            this._kind,
+            this._valorations,
+            this._siglas
+          ]
+        );
+      if(result.rowCount > 0){
+        try {
+          await saveBackupAnime(this._siglas,{'siglas':this._siglas}, result.rows.shift(), 'animes');
+          rest = true;
+        } catch (err) {
+          console.log("anime backup:"+err)
+        }
+      }
+    } catch (err) {
       console.log(err)
-      rest = false;
-    })
+    }
     return rest;
   }
 }

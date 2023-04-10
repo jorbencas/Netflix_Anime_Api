@@ -2,13 +2,13 @@ import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
 
-export default  class Anime_genere 
+export default class Anime_genere 
   {
     private id!: number;
-    private genere!: number;
+    private genere!: string;
     private anime!: string;
 
-    public __construct(genere: number, anime: string) {
+    constructor(genere: string, anime: string) {
       this.genere = genere;
       this.anime = anime;
     }
@@ -29,8 +29,6 @@ export default  class Anime_genere
     public setId(id: number)
     {
       this.id = id;
-
-      return this;
     }
 
     /**
@@ -49,8 +47,6 @@ export default  class Anime_genere
     public setAnime(anime : string)
     {
       this.anime = anime;
-
-      return this;
     }
 
     /**
@@ -66,39 +62,60 @@ export default  class Anime_genere
      *
      * @return  self
      */
-    public setGenere(genere : number)
+    public setGenere(genere : string)
     {
       this.genere = genere;
-
-      return this;
     }
 
-    public async Obtener(){
-
+    public async Obtener():Promise<Boolean>{
+      let sql = `SELECT id, anime, genere FROM anime_generes WHERE anime = $1 And genere = $2;`
+      let rest = false;
+      try {
+        let result: QueryResult = await postgress.query(sql,[this.anime, this.genere]);
+        console.log(sql);
+        if(result.rowCount > 0){
+          rest = true;
+          this.setId(result.rows.shift().id);
+        }
+      } catch (err) {
+        console.log("genere obtener:"+err)
+      }
+      return rest;
     }
 
-    public async insertar(){
-
-      let sql = `INSERT INTO anime_generes (genere, anime) VALUES ('${genere}', '${siglas}') RETURNING id;`;
-          console.log(sql);
-
-    let r: QueryResult = await postgress.query(sql);
-    console.log(r);
-        saveBackupAnime(siglas,{'id':r.rows[0]}, r.rows[0], 'anime_generes');
-
-    }
-
-    public async Editar(){
-        let sql = `UPDATE anime_generes genere='${this.genere}' WHERE anime='${this.anime}';`;
-      console.log(sql);
-      postgress
-        .query(sql)
-        .then((r: QueryResult) => {
-          console.log(r);
-          saveBackupAnime(this.siglas,{'id':r.rows[0]}, r.rows[0], 'anime_generes');
-        })
-        .catch((e: Error) => {
-          next(e);
-        })
+    public async insertar():Promise<Boolean>{
+      let sql = `INSERT INTO anime_generes (genere, anime) VALUES ('${this.genere}', '${this.anime}') RETURNING *;`;
+      let rest = false;
+      try {
+        let existe = await this.Obtener();
+        if (!existe) {    
+          let result: QueryResult = await postgress.query(sql);
+          if(result.rowCount > 0){
+            try {
+              console.log(sql);
+              this.setId(result.rows.shift().id);
+              await saveBackupAnime(this.anime,{'id':this.getId().toString()}, result.rows[0], 'anime_generes'); 
+              rest = true;
+            } catch (err) {
+              console.log("generes backup:"+err)
+            }
+          }
+        } else {
+            try {              
+              let data = {
+                id:this.getId(),
+                genere:this.getGenere(),
+                anime:this.getAnime()
+              };
+              await saveBackupAnime(this.getAnime(),{'id':this.getId().toString()}, data, 'anime_generes'); 
+              rest = true;
+            } catch (err) {
+              console.log("generes backup:"+err)
+            }
+        }
+      } catch (err) {
+        console.log("genere insert:"+err)
+      }
+      return rest;
     }
   }

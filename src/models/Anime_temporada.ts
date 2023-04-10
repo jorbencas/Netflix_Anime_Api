@@ -5,10 +5,10 @@ import { saveBackupAnime } from "../utils/backup";
 export default  class Anime_temporada 
   {
     private id!: number;
-    private temporada!: number;
+    private temporada!: string;
     private anime!: string;
 
-    public __construct(temporada: number, anime: string) {
+    constructor(temporada: string, anime: string) {
       this.temporada = temporada;
       this.anime = anime;
     }
@@ -66,7 +66,7 @@ export default  class Anime_temporada
      *
      * @return  self
      */
-    public setTemporada(temporada : number)
+    public setTemporada(temporada : string)
     {
       this.temporada = temporada;
 
@@ -74,35 +74,56 @@ export default  class Anime_temporada
     }
 
     public async Obtener():Promise<Boolean> {
-
+      let sql = `SELECT id, temporada, anime FROM anime_temporadas WHERE anime = $1 And temporada = $2;`
+      let rest = false;
+      try {
+        let result: QueryResult = await postgress.query(sql,[this.anime, this.temporada]);
+      console.log(sql);
+        if(result.rowCount > 0){
+          rest = true;
+          this.setId(result.rows.shift().id);
+        }
+      } catch (err) {
+        console.log("temporadas obtener:"+err)
+      }
+      return rest;
     }
 
     public async insertar():Promise<Boolean> {
-      let sql = `INSERT INTO anime_temporadas (genere, anime) VALUES ('${temporada}', '${siglas}') RETURNING id;`;
-
-
-             let r = await postgress.query(sql);
-    saveBackupAnime(siglas,{'id':r.rows[0]}, r.rows[0], 'anime_temporadas');   
-    
-    }
-
-    public async Editar():Promise<Boolean> {
-        let sql = `UPDATE anime_temporadas temporada='${this.temporada}' WHERE anime='${this.anime}';`;
-      console.log(sql);
+      let sql = `INSERT INTO anime_temporadas (temporada, anime) VALUES ('${this.temporada}', '${this.anime}') RETURNING *;`;
       let rest = false;
-
-      postgress
-        .query(sql)
-        .then((r: QueryResult) => {
-          console.log(r);
-          saveBackupAnime(this.anime,{'id':r.rows[0]}, r.rows[0], 'anime_temporadas');
-                rest = true;
-
-        })
-        .catch((e: Error) => {
-          console.log(e)
-      rest = false;
-    })
-    return rest;
+      try {
+        let existe = await this.Obtener();
+        if (!existe) {
+          let result: QueryResult = await postgress.query(sql);
+          if(result.rowCount > 0){
+            try {
+              console.log(sql);
+              this.setId(result.rows.shift().id);
+              await saveBackupAnime(this.anime,{'id':this.getId().toString()}, result.rows[0], 'anime_temporadas');
+              console.log(result.rows.shift());
+              rest = true;
+            } catch (err) {
+              console.log("temporadas backup:"+err)
+            }
+          }
+        } else {
+          rest = true;
+          try {
+            let data = {
+              id:this.getId(),
+              anime:this.getAnime(),
+              temporada:this.getTemporada()
+            };
+            await saveBackupAnime(this.getAnime(),{'id':this.getId().toString()}, data, 'anime_temporadas');
+            rest = true;
+          } catch (err) {
+            console.log("temporadas backup:"+err)
+          }
+        }
+      } catch (err) {
+        console.log("temporadas insertar:"+err)
+      }
+      return rest;
     }
   }

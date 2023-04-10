@@ -2,8 +2,7 @@ import {responseCustome } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
-import { saveBackupAnime, updateIdAcumulative } from "../utils/backup";
-import { insertMedia } from "./media";
+
 
 const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
     let siglas = req.params.siglas;
@@ -48,60 +47,60 @@ const getOne = (req: Request, res: Response, next: NextFunction) => {
   });
 }
 
-const insert = (req: Request, res: Response, next: NextFunction) => {
-  const { id, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion } = req.body;
-  let ID = updateIdAcumulative(id,'endings', 'id');
-    postgress.query(`INSERT INTO endings (id, tittle, sinopsis,date_publication, date_finalization anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6) RETURNNING *`, [ID, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion])
-    .then((result: QueryResult) => {
-      saveBackupAnime(anime,{id:ID},result.rows, 'endings');
-      insertMedia(req, res, next);
-      res.status(200).json(responseCustome("", 200, result.rows))
-    })
-    .catch((err: Error) => {
-      next(err);
-    });
+const insert = () => {
+  // const { id, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion } = req.body;
+  // let ID = updateIdAcumulative(id,'endings', 'id');
+  //   postgress.query(`INSERT INTO endings (id, tittle, sinopsis,date_publication, date_finalization anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6) RETURNNING *`, [ID, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion])
+  //   .then((result: QueryResult) => {
+  //     saveBackupAnime(anime,{id:ID},result.rows, 'endings');
+  //     insertMedia(req, res, next);
+  //     res.status(200).json(responseCustome("", 200, result.rows))
+  //   })
+  //   .catch((err: Error) => {
+  //     next(err);
+  //   });
 };
 
-const edit = (req: Request, res: Response, next: NextFunction) => {
-    const { id, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion  } = req.body;
-    postgress
-    .query(`UPDATE FROM endings tittle=$2, sinopsis=$3, date_publication=$4, date_finalization=$5, num=$6, seasion=$7 WHERE id=$1 RETURNNING *;`, [id, tittle, sinopsis, date_publication, date_finalization, num, seasion])
-    .then((result: QueryResult) => {
-      saveBackupAnime(anime,['id',id],result.rows, 'endings');
-      insertMedia(req, res, next);
-      res.status(200).json(responseCustome("", 200, result.rows))
-    })
-    .catch((err: Error) => {
-      next(err);
-    });
+const edit = () => {
+    // const { id, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion  } = req.body;
+    // postgress
+    // .query(`UPDATE FROM endings tittle=$2, sinopsis=$3, date_publication=$4, date_finalization=$5, num=$6, seasion=$7 WHERE id=$1 RETURNNING *;`, [id, tittle, sinopsis, date_publication, date_finalization, num, seasion])
+    // .then((result: QueryResult) => {
+    //   saveBackupAnime(anime,['id',id],result.rows, 'endings');
+    //   insertMedia(req, res, next);
+    //   res.status(200).json(responseCustome("", 200, result.rows))
+    // })
+    // .catch((err: Error) => {
+    //   next(err);
+    // });
 };
 
-const deleteOne = (req: Request, res: Response, next: NextFunction) => {
-    const { id, anime } = req.body;
-    postgress
-    .query(`DELETE FROM endings WHERE id=$1;`, [id ])
-    .then((result: QueryResult) => {
-      saveBackupAnime(anime,['id',id],result.rows, 'endings');
-      insertMedia(req, res, next);
-      res.status(200).json(responseCustome("", 200, result.rows))
-    })
-    .catch((err: Error) => {
-      next(err);
-    });
+const deleteOne = () => {
+    // const { id, anime } = req.body;
+    // postgress
+    // .query(`DELETE FROM endings WHERE id=$1;`, [id ])
+    // .then((result: QueryResult) => {
+    //   saveBackupAnime(anime,['id',id],result.rows, 'endings');
+    //   insertMedia(req, res, next);
+    //   res.status(200).json(responseCustome("", 200, result.rows))
+    // })
+    // .catch((err: Error) => {
+    //   next(err);
+    // });
 };
 
-const deletebyanime = (req: Request, res: Response, next: NextFunction) =>{
-  const { anime } = req.body;
-  postgress
-  .query(`DELETE FROM endings WHERE anime=$1;`, [anime ])
-  .then((result: QueryResult) => {
-    saveBackupAnime(anime,['anime',anime],result.rows, 'endings');
-    insertMedia(req, res, next);
-    res.status(200).json(responseCustome("", 200, result.rows))
-  })
-  .catch((err: Error) => {
-    next(err);
-  });
+const deletebyanime = () =>{
+  // const { anime } = req.body;
+  // postgress
+  // .query(`DELETE FROM endings WHERE anime=$1;`, [anime ])
+  // .then((result: QueryResult) => {
+  //   saveBackupAnime(anime,['anime',anime],result.rows, 'endings');
+  //   insertMedia(req, res, next);
+  //   res.status(200).json(responseCustome("", 200, result.rows))
+  // })
+  // .catch((err: Error) => {
+  //   next(err);
+  // });
 }
 
 const getListIds = (req: Request, res: Response, next: NextFunction) => {
