@@ -13,80 +13,73 @@ export default class Anime {
   private _kind: string | undefined;
   private _valorations: number | undefined;
 
-  constructor(tittle:string, sinopsis: string, siglas: string, state : string, date_publication: Date, date_finalization: Date, idioma: string, kind: string, valorations: number = 0) {
-    this._tittle = tittle;
-    this._sinopsis = sinopsis
-    this._siglas = siglas
-    this._state = state
-    this._date_publication = date_publication
-    this._date_finalization = date_finalization
-    this._idioma = idioma
-    this._kind = kind
-    this._valorations = valorations
+
+  constructor(){
+
   }
 
 
-    public get tittle(): string | undefined {
+  public getTittle(): string | undefined {
     return this._tittle;
   }
-  public set tittle(value: string | undefined) {
+  public setTittle(value: string | undefined) {
     this._tittle = value;
   }
 
-  public get sinopsis(): string | undefined {
+  public getSinopsis(): string | undefined {
     return this._sinopsis;
   }
-  public set sinopsis(value: string | undefined) {
+  public setSinopsis(value: string | undefined) {
     this._sinopsis = value;
   }
 
-    public get siglas(): string | undefined {
+    public getSiglas(): string | undefined {
     return this._siglas;
   }
-  public set siglas(value: string | undefined) {
+  public setSiglas(value: string | undefined) {
     this._siglas = value;
   }
 
-  public get state(): string | undefined {
+  public getState(): string | undefined {
     return this._state;
   }
-  public set state(value: string | undefined) {
+  public setState(value: string | undefined) {
     this._state = value;
   }
 
-  public get date_publication(): Date | undefined {
+  public getDate_publication(): Date | undefined {
     return this._date_publication;
   }
-  public set date_publication(value: Date | undefined) {
+  public setDate_publication(value: Date | undefined) {
     this._date_publication = value;
   }
 
-  public get date_finalization(): Date | undefined {
+  public getDate_finalization(): Date | undefined {
     return this._date_finalization;
   }
-  public set date_finalization(value: Date | undefined) {
+  public setDate_finalization(value: Date | undefined) {
     this._date_finalization = value;
   }
 
-    public get idioma(): string | undefined {
+  public getIdioma(): string | undefined {
     return this._idioma;
   }
-  public set idioma(value: string | undefined) {
+  public setIdioma(value: string | undefined) {
     this._idioma = value;
   }
 
-  public get kind(): string | undefined {
+  public getKind(): string | undefined {
     return this._kind;
   }
 
-  public set kind(value: string | undefined) {
+  public setKind(value: string | undefined) {
     this._kind = value;
   }
 
-    public get valorations(): number | undefined {
+  public getValorations(): number | undefined {
     return this._valorations;
   }
-  public set valorations(value: number | undefined) {
+  public setValorations(value: number | undefined) {
     this._valorations = value;
   }
 
@@ -104,6 +97,57 @@ export default class Anime {
     }
     return rest;
   }
+
+
+  public async getOne(){
+      postgress
+  .query(
+    `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.valorations, a.kind, 
+    af.id as idFvorite, af.favorite as favorite,
+    temp.tittle, temp.code, gen.tittle, gen.code,
+    mb.type bannert, mb.idbanneri, mp.type portadat, mp.id portadat
+    FROM animes a 
+    INNER JOIN anime_favorite as af ON(af.anime = a.siglas)
+    LEFT JOIN (
+      SELECT f.tittle, f.code, ag.anime 
+      FROM filters f inner join anime_generes ag
+      ON(ag.temporada = f.code)
+    ) as temp
+    ON(temp.anime = a.siglas)
+    LEFT JOIN (
+      SELECT f.tittle, f.code, ag.anime 
+      FROM filters f inner join anime_generes ag
+      ON(ag.genere = f.code)
+    )  AS gen
+    ON(gen.anime = a.siglas)
+    LEFT JOIN (
+      SELECT type, name, ext, id_external 
+      FROM media_anime 
+      WHERE type = 'banner' 
+    ) AS mb
+    ON(mb.id_external = a.siglas)
+    LEFT JOIN (
+      SELECT type, name, ext, id_external 
+      FROM media_anime 
+      WHERE type = 'portada' 
+    ) AS mp
+    ON(mp.id_external = a.siglas)
+    WHERE a.siglas = '${this.getSiglas}'`
+  )
+  .then((result: any) => {
+    console.log(result);
+    result = result.rows.shift();
+    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    /*result.banner = result.;
+    result.portada = ;*/
+    res.status(200).json(responseCustome(msg, 200, result));
+  })
+  .catch((e: Error) => {
+    next(e);
+  });
+  }
+
+
 
   public async insert():Promise<Boolean>{
     let sql = `INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, kind) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`

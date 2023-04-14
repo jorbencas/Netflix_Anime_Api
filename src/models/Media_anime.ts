@@ -127,6 +127,13 @@ export default class Media_anime
       this.anime = anime;
     }
 
+    public async getMediaByType(){
+      `SELECT type, name, ext, id_external 
+      FROM media_anime 
+      WHERE type = '${this.getType}' AND id_external = '${this.getAnime}' `
+    }
+
+
     public async Obtener():Promise<Boolean>{
       let sql = `SELECT id, anime, type FROM media_animes WHERE anime = $1 And type = $2;`
       console.log(sql);

@@ -44,50 +44,28 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const getOne = (req: Request, res: Response, next: NextFunction) => {
-  let { siglas, edit } = req.params;
-  if(edit) console.log(edit);
-  postgress
-  .query(
-    `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.valorations, a.kind, 
-    af.id as idFvorite, af.favorite as favorite,
-    temp.tittle, temp.code, gen.tittle, gen.code,
-    mb.type bannert, mb.idbanneri, mp.type portadat, mp.id portadat
-    FROM animes a 
-    INNER JOIN anime_favorite as af ON(af.anime = a.siglas)
-    LEFT JOIN (
-      SELECT f.tittle, f.code, ag.anime 
-      FROM filters f inner join anime_generes ag
-      ON(ag.temporada = f.code)
-    ) as temp
-    ON(temp.anime = a.siglas)
-    LEFT JOIN (
-      SELECT f.tittle, f.code, ag.anime 
-      FROM filters f inner join anime_generes ag
-      ON(ag.genere = f.code)
-    )  AS gen
-    ON(gen.anime = a.siglas)
-    LEFT JOIN (
-      SELECT type, name, ext, id_external 
-      FROM media_anime 
-      WHERE type = 'banner' 
-    ) AS mb
-    ON(mb.id_external = a.siglas)
-    LEFT JOIN (
-      SELECT type, name, ext, id_external 
-      FROM media_anime 
-      WHERE type = 'portada' 
-    ) AS mp
-    ON(mp.id_external = a.siglas)
-    WHERE a.siglas = '${siglas}'`
-  )
-  .then((result: any) => {
-    console.log(result);
-    result = result.rows.shift();
-    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+const getOne = async (req: Request, res: Response, next: NextFunction) => {
+  let { siglas } = req.params;
+
+  let animeInstanced = new Anime();
+  animeInstanced.setSiglas(siglas);
+  let anime = await animeInstanced.getOne(); 
+  if(anime) {
+    let instance = new Media_anime();
+    instance.setAnime(siglas);
+    instance.setType("banner");
+    let banner = await instance.getMediaByType();
+    instance.setType("portada");
+    let portada = await instance.getMediaByType();
+  let msg = `Se ha podido obtener la traducion del idioma {lang}`;
     /*result.banner = result.;
     result.portada = ;*/
-    res.status(200).json(responseCustome(msg, 200, result));
+    res.status(200).json(responseCustome(msg, 200,     ));
+  } else {
+
+  }
+  
+   
   })
   .catch((e: Error) => {
     next(e);
@@ -226,43 +204,45 @@ const editinsert = async (req: Request, res: Response) => {
     temporadas,
     media
   } = req.body;
-
-  let anime = new Anime(tittle, sinopsis, siglas, state, date_publication, date_finalization, idioma, kind);
+  let inserted: Boolean = false;
+  let anime = new Anime();
+  anime.setTittle(tittle);
+  anime.setSinopsis(sinopsis); 
+  anime.setSiglas(siglas); 
+  anime.setState(state); 
+  anime.setDate_publication(date_publication); 
+  anime.setDate_finalization(date_finalization); 
+  anime.setIdioma(idioma); 
+  anime.setKind(kind);
   let obtenidoAnime = await anime.Obtener(); 
   if (obtenidoAnime) {
-    let inserted = await anime.editar();
-    if (inserted) {
-      await processsGeneres(generes, siglas);
-      await processsTemporadas(temporadas, siglas);
-      await processMedia(media);      
-    }
+    inserted = await anime.editar();
   } else {
-    let inserted = await anime.insert();
-    if (inserted) {
-      await processsGeneres(generes, siglas);
-      await processsTemporadas(temporadas, siglas);
-      await processMedia(media);
-    } else {
-      console.log(inserted);
-    }
-  }    
+    inserted = await anime.insert();
+  }
+  if (inserted) {
+    await processsGeneres(generes, siglas);
+    await processsTemporadas(temporadas, siglas);
+    await processMedia(media);      
+  }
+
   let msg:string = `Se ha insertado/editado todo`;
     res.status(200).json(responseCustome(msg, 200, req.body));
 };
 
 async function processsGeneres(generes: Array<string>, siglas:string){
   generes.forEach(async(genere: string) => {
-    let genereInstance = new Anime_genere(genere,siglas);
-    let genereInserted = await genereInstance.insertar()
-    console.log("fin generes: " + genereInserted);
+    let instance = new Anime_genere(genere,siglas);
+    let inserted = await instance.insertar()
+    console.log("fin generes: " + inserted);
   });
 }
 
 async function processsTemporadas(temporadas: Array<string>, siglas:string){
   temporadas.forEach(async(temporada: string) => {
-    let temporadaInstance = new Anime_temporada(temporada, siglas);
-    let temporadaInserted = await temporadaInstance.insertar();
-    console.log("fin temporadas: " +temporadaInserted);
+    let instance = new Anime_temporada(temporada, siglas);
+    let inserted = await instance.insertar();
+    console.log("fin temporadas: " +inserted);
   });
 }
 
@@ -271,18 +251,18 @@ async function processMedia(media: Array<Object>){
     media.forEach(async (mediaElement:any) => {  
       const {id_external, kind, file} = mediaElement;
       const {nombre, extension} = file;
-      let mediaInstance = new Media_anime();
-      mediaInstance.setAnime(id_external);
-      mediaInstance.setName(nombre);
-      mediaInstance.setExt(extension);
-      mediaInstance.setType(kind);
-      let existe = await mediaInstance.Obtener();
+      let instance = new Media_anime();
+      instance.setAnime(id_external);
+      instance.setName(nombre);
+      instance.setExt(extension);
+      instance.setType(kind);
+      let existe = await instance.Obtener();
       if (existe) {
-        let mediaEdited = await mediaInstance.Editar();
-        console.log("fin media: " + mediaEdited);
+        let edited = await instance.Editar();
+        console.log("fin media: " + edited);
       } else {
-        let mediaInserted = await mediaInstance.insertar();
-        console.log("fin media: " + mediaInserted);
+        let inserted = await instance.insertar();
+        console.log("fin media: " + inserted);
       }
     });
   }
