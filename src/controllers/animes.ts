@@ -44,32 +44,32 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const getOne = async (req: Request, res: Response, next: NextFunction) => {
-  let { siglas } = req.params;
+const getOne = async (_req: Request, _res: Response, _next: NextFunction) => {
+  //let { siglas } = req.params;
 
-  let animeInstanced = new Anime();
-  animeInstanced.setSiglas(siglas);
-  let anime = await animeInstanced.getOne(); 
-  if(anime) {
-    let instance = new Media_anime();
-    instance.setAnime(siglas);
-    instance.setType("banner");
-    let banner = await instance.getMediaByType();
-    instance.setType("portada");
-    let portada = await instance.getMediaByType();
-  let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-    /*result.banner = result.;
-    result.portada = ;*/
-    res.status(200).json(responseCustome(msg, 200,     ));
-  } else {
+  // let animeInstanced = new Anime();
+  // animeInstanced.setSiglas(siglas);
+  // let anime = await animeInstanced.getOne(); 
+  // if(anime) {
+  //   let instance = new Media_anime();
+  //   instance.setAnime(siglas);
+  //   instance.setType("banner");
+  //   let banner = await instance.getMediaByType();
+  //   instance.setType("portada");
+  //   let portada = await instance.getMediaByType();
+  // let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+  //   /*result.banner = result.;
+  //   result.portada = ;*/
+  //   res.status(200).json(responseCustome(msg, 200,     ));
+  // } else {
 
-  }
+  // }
   
    
-  })
-  .catch((e: Error) => {
-    next(e);
-  });
+  // })
+  // .catch((e: Error) => {
+  //   next(e);
+  // });
 };
 
 const getNum = (_req: Request, res: Response, next: NextFunction) => {
