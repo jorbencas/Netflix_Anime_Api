@@ -1,34 +1,35 @@
 import {responseCustome } from "../utils/index";
-import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
-import { QueryResult } from "pg";
+import Season from "../models/Season";
 
-const getSasion = (req: Request, res: Response) => {
+const getSasion = async (req: Request, res: Response) => {
   let { id } = req.params;
-  postgress
-    .query(`SELECT tittle FROM seasions WHERE id = ${id}`)
-    .then((result: QueryResult) => {
-      console.log(result);
-      let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-      res.status(200).json(responseCustome(msg, 200, result.rows));
-    })
-    .catch((e) => {
-      console.error(e.stack);
-      let msg = `No se ha podido obtener la traducion del idioma {lang}`;
-      res.status(500).json(responseCustome(msg, 500));
-    });
+  let seasionInstanced = new Season();
+  seasionInstanced.setId(parseInt(id));
+  let seasionSelected = await seasionInstanced.getOne();
+  if(seasionSelected){
+    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    res.status(200).json(responseCustome(msg, 200, seasionInstanced));
+  } else {
+    let msg = `No se ha podido obtener la traducion del idioma {lang}`;
+    res.status(500).json(responseCustome(msg, 500));
+  }
 };
 
-const insert = (req: Request, res: Response, next: NextFunction) => {
-    const { tittle, siglas } = req.body;
-    postgress
-  .query(`INSERT INTO seasions(tittle,anime) VALUES('${tittle}', '${siglas}')`)
-  .then((result: QueryResult) => {
-    console.log(result);
-    res.status(200).json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))
-  }).catch((err: Error) => {
-    next(err);
-  });
+const insert = async (req: Request, res: Response, _next: NextFunction) => {
+  const { id, tittle, siglas } = req.body;
+  let seasionInstanced = new Season();
+  seasionInstanced.setId(parseInt(id));
+  seasionInstanced.setTitle(tittle);
+  seasionInstanced.setAnime(siglas);
+  let seasionSelected = await seasionInstanced.getOne();
+  if(seasionSelected){
+    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    res.status(200).json(responseCustome(msg, 200, seasionInstanced));
+  } else {
+    let msg = `No se ha podido obtener la traducion del idioma {lang}`;
+    res.status(500).json(responseCustome(msg, 500));
+  }
 }
 
 export { getSasion, insert };

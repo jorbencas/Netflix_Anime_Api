@@ -1,20 +1,19 @@
 
   class Filter 
   {
-    private id: number;
-    private code:string;
-    private kind:string;
+    private id: number | undefined;
+    private code:string | undefined;
+    private kind:string | undefined;
 
-    public  __construct()
-    {
-      
-    }
+    constructor() {
+  
+    } 
 
 
     /**
      * Get the value of id
      */
-    public getId()
+    public getId(): number  | undefined 
     {
       return this.id;
     }
@@ -24,17 +23,19 @@
      *
      * @return  self
      */
+<<<<<<< HEAD
     public setId(id)
+=======
+    public setId(id:number):void
+>>>>>>> b0d2a5507b35452b5ce69552e26babbc9b43b10c
     {
       this.id = id;
-
-      return this;
     }
 
     /**
      * Get the value of code
      */
-    public getCode()
+    public getCode():string | undefined 
     {
       return this.code;
     }
@@ -44,17 +45,19 @@
      *
      * @return  self
      */
+<<<<<<< HEAD
     public setCode(code)
+=======
+    public setCode(code:string):void
+>>>>>>> b0d2a5507b35452b5ce69552e26babbc9b43b10c
     {
       this.code = code;
-
-      return this;
     }
 
     /**
      * Get the value of kind
      */
-    public getKind()
+    public getKind():string | undefined 
     {
       return this.kind;
     }
@@ -64,10 +67,12 @@
      *
      * @return  self
      */
+<<<<<<< HEAD
     public setKind(kind)
+=======
+    public setKind(kind:string):void
+>>>>>>> b0d2a5507b35452b5ce69552e26babbc9b43b10c
     {
       this.kind = kind;
-
-      return this;
     }
   }

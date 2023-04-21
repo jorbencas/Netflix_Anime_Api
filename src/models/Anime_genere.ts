@@ -16,7 +16,7 @@ export default class Anime_genere
     /**
      * Get the value of id
      */
-    public getId()
+    public getId(): number
     {
       return this.id;
     }
@@ -34,7 +34,7 @@ export default class Anime_genere
     /**
      * Get the value of anime
      */
-    public getAnime()
+    public getAnime(): string
     {
       return this.anime;
     }
@@ -52,7 +52,7 @@ export default class Anime_genere
     /**
      * Get the value of genere
      */
-    public getGenere()
+    public getGenere():string
     {
       return this.genere;
     }
@@ -65,6 +65,10 @@ export default class Anime_genere
     public setGenere(genere : string)
     {
       this.genere = genere;
+    }
+
+    public async obtenerPorAnime():Promise<void>{
+      
     }
 
     public async Obtener():Promise<Boolean>{
