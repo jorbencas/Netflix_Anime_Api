@@ -46,7 +46,6 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
 
 const getOne = async (req: Request, res: Response, next: NextFunction) => {
   let { siglas } = req.params;
-
   let animeInstanced = new Anime();
   animeInstanced.setSiglas(siglas);
   let anime = await animeInstanced.getOne(); 
@@ -57,10 +56,9 @@ const getOne = async (req: Request, res: Response, next: NextFunction) => {
     let banner = await instance.getMediaByType();
     instance.setType("portada");
     let portada = await instance.getMediaByType();
-  let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-    /*result.banner = result.;
-    result.portada = ;*/
-    res.status(200).json(responseCustome(msg, 200,     ));
+    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
+    let result = {...anime, banner, portada};
+    res.status(200).json(responseCustome(msg, 200, result ));
   } else {
 
   }

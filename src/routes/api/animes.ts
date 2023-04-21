@@ -15,5 +15,5 @@ router.get("/:first/:last", getslides)
 router.get("/:siglas/:edit?",getOne)
 router.get("/:num", getNum)
 router.get("/lastanimes/:siglas", last)
-router.get("/favorites", getFavorite).post("/favorites", addFavorite).delete("/favorites", removeFavorite);
+router.route("/favorites").get(getFavorite).post(addFavorite).delete(removeFavorite);
 export default router;

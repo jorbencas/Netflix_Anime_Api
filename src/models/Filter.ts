@@ -24,7 +24,7 @@
      *
      * @return  self
      */
-    public setId($id)
+    public setId(id)
     {
       this.id = id;
 
@@ -44,7 +44,7 @@
      *
      * @return  self
      */
-    public setCode($code)
+    public setCode(code)
     {
       this.code = code;
 
@@ -64,7 +64,7 @@
      *
      * @return  self
      */
-    public setKind($kind)
+    public setKind(kind)
     {
       this.kind = kind;
 

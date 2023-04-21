@@ -9,28 +9,26 @@ import { postgress } from "../../db/postgres";
 var router = Router();
 
 router.get('/createAllTables',async (req: Request, res: Response, next: NextFunction) => {
-    if(isLocalHost(req)){
-        let sqlFile : PathLike = path.join(
-            __dirname,
-           '../../../docker/db/init.sql'
-        );
-        const CREATE_QUERY = await readMyFile(sqlFile);
-        if (CREATE_QUERY) {
-            postgress
-            .query(`${CREATE_QUERY}`)
-            .then((r: QueryResult) => {
-                console.log(r);
-                res.send(responseCustome('DOIT',200, "DOIT"));
-            })
-            .catch((err: Error) => {
-                next(responseCustome('Error',400, err.message));
-            });
-        }else {
-            next(responseCustome('Error',400));
-        }
-    } else {
+
+    if(!isLocalHost(req)){
         next(responseCustome('Error',400));
     }
+
+    let sqlFile : PathLike = path.join(
+        __dirname,
+        '../../../docker/db/init.sql'
+    );
+    const CREATE_QUERY = await readMyFile(sqlFile);
+    if (!CREATE_QUERY) {
+        next(responseCustome('Error',400));
+    }
+    try {
+        let r = await postgress.query(CREATE_QUERY);
+        console.log(r);
+        res.send(responseCustome('DOIT',200, "DOIT"));
+    } catch (err) {
+        next(responseCustome('Error',400));
+    };    
 });
 
 router.get('/sendEmail',async (req: Request, res: Response, next: NextFunction) => {

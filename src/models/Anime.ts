@@ -1,6 +1,7 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
+import { resourceLimits } from "node:worker_threads";
 
 export default class Anime {
   private _tittle: string | undefined;
@@ -99,7 +100,15 @@ export default class Anime {
   }
 
 
-  public async getOne(){
+  public async getOne(): Promise<Anime>{
+    try {
+      
+    } catch (err: Error) {
+        console.log(err);
+    }
+
+
+
       postgress
   .query(
     `SELECT a.siglas, a.tittle, a.sinopsis, a.idiomas, a.date_publication, a.date_finalization, a.state, a.valorations, a.kind, 
@@ -137,14 +146,14 @@ export default class Anime {
   .then((result: any) => {
     console.log(result);
     result = result.rows.shift();
-    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-    /*result.banner = result.;
-    result.portada = ;*/
-    res.status(200).json(responseCustome(msg, 200, result));
+
   })
   .catch((e: Error) => {
     next(e);
   });
+
+
+  return resourceLimits;
   }
 
 
