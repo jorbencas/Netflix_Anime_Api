@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS animes (
     state VARCHAR(250) default(NULL),
     kind VARCHAR(25) default(NULL),
     valorations int4 default(0),
+    saga VARCHAR(250) DEFAULT '',
     created timestamp default(CURRENT_TIMESTAMP),
     updated timestamp default(CURRENT_TIMESTAMP)
 );

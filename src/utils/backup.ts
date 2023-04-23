@@ -17,18 +17,23 @@ const saveBackup = async (primary: any, obj: any, kind: string) => {
 }
 /**
  * Gestiona los backup de las series
+ * @param saga saga a la que pertenece el anime
  * @param siglas anime
  * @param primary identificador del elemento (episodes, openings, endings animes)
  * @param obj objeto con los nuevos valores
  * @param kind tipo de elemento
  * 
  */
-const saveBackupAnime = async (siglas: string|undefined, primary:Object, obj: any, kind: string) => {
-    const PATH_TO_FILES : PathLike = path.join(
+const saveBackupAnime = async (saga:string|undefined, siglas: string|undefined, primary:Object, obj: any, kind: string) => {
+  let pathString = `${siglas}/.backup`;
+  if(saga){
+    pathString = `${saga}/${pathString}`;  
+  }
+  const PATH_TO_FILES : PathLike = path.join(
     __dirname,
-    "/../"+MEDIA_PATH+'/'+siglas+'/.backup'
+    "/../"+MEDIA_PATH+'/'+pathString
   );
-  await makeFile(siglas+'/.backup'); 
+  await makeFile(pathString);
   await doBackup(`${PATH_TO_FILES}/${kind}.json`, primary, obj, kind);
 }
 async function doBackup(PATH_TO_FILES: string, primary: Object, obj: Object, kind: string){

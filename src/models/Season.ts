@@ -72,21 +72,19 @@ export default class Season
     }
 
     public async insert(){
-       const { tittle, siglas } = req.body;
     postgress
-  .query(`INSERT INTO seasions(tittle,anime) VALUES('${tittle}', '${siglas}')`)
+  .query(`INSERT INTO seasions(tittle,anime) VALUES('${this.getTitle}', '${this.getAnime}')`)
   .then((result: QueryResult) => {
     console.log(result);
-    res.status(200).json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))
+    
   }).catch((err: Error) => {
     next(err);
   });
     }
 
     public async edit(){
-       const { tittle, siglas } = req.body;
     postgress
-  .query(`INSERT INTO seasions(tittle,anime) VALUES('${tittle}', '${siglas}')`)
+  .query(`UPDATE seasions SET = '${this.getTitle}' WHERE id = ${this.getId()}`)
   .then((result: QueryResult) => {
     console.log(result);
     res.status(200).json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))

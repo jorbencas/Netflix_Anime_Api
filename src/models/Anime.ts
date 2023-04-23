@@ -13,7 +13,7 @@ export default class Anime {
   private _idioma: string | undefined;
   private _kind: string | undefined;
   private _valorations: number | undefined;
-
+  private _saga: string | undefined; 
 
   constructor(){
 
@@ -84,14 +84,23 @@ export default class Anime {
     this._valorations = value;
   }
 
+  public getSaga(): string | undefined {
+    return this._saga;
+  }
+  public setSaga(value: string | undefined) {
+    this._saga = value;
+  }
+
+
   public async Obtener():Promise<Boolean> {
-    let sql = `SELECT siglas FROM animes WHERE siglas = $1;`
-    console.log(sql);
+    let sql = `SELECT siglas, saga FROM animes WHERE siglas = $1;`
     let rest = false;
     try {
       let result: QueryResult = await postgress.query(sql,[this._siglas]);
       if(result.rowCount > 0){
-      rest = true;
+        let {saga} = result.rows.shift();
+        this.setSaga(saga);
+        rest = true;
       }
     } catch (err) {
       console.log(err)
@@ -106,7 +115,7 @@ export default class Anime {
     } catch (err: Error) {
         console.log(err);
     }
-
+    let anime:Anime = new Anime();
 
 
       postgress
@@ -145,7 +154,7 @@ export default class Anime {
   )
   .then((result: any) => {
     console.log(result);
-    result = result.rows.shift();
+    anime = result.rows.shift();
 
   })
   .catch((e: Error) => {
@@ -153,13 +162,13 @@ export default class Anime {
   });
 
 
-  return resourceLimits;
+  return anime;
   }
 
 
 
   public async insert():Promise<Boolean>{
-    let sql = `INSERT INTO animes (tittle, sinopsis, siglas, state, date_publication, date_finalization, idiomas, kind) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;`
+    let sql = `INSERT INTO animes (tittle, sinopsis, siglas, saga, state, date_publication, date_finalization, idiomas, kind) VALUES ($1, $2, $3, $9, $4, $5, $6, $7, $8) RETURNING *;`
     
     let rest = false;
     try {
@@ -174,13 +183,13 @@ export default class Anime {
           this._date_publication,
           this._date_finalization,
           this._idioma,
-          this._kind
+          this._kind,
+          this._saga
         ]
       );
       if(result.rowCount > 0){
-        try {     
-          console.log(sql);     
-          await saveBackupAnime(this._siglas,{'siglas':this._siglas}, result.rows.shift(), 'animes');
+        try {
+          await saveBackupAnime(this._saga, this._siglas,{'siglas':this._siglas}, result.rows.shift(), 'animes');
           rest = true;
         } catch (err) {
           console.log("anime backup:"+err)
@@ -213,7 +222,7 @@ export default class Anime {
         );
       if(result.rowCount > 0){
         try {
-          await saveBackupAnime(this._siglas,{'siglas':this._siglas}, result.rows.shift(), 'animes');
+          await saveBackupAnime(this._saga, this._siglas,{'siglas':this._siglas}, result.rows.shift(), 'animes');
           rest = true;
         } catch (err) {
           console.log("anime backup:"+err)

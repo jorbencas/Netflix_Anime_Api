@@ -2,6 +2,7 @@ import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
 import { makeFile } from "../utils";
+import Anime from "./Anime";
 
 export default class Media_anime 
   {
@@ -166,11 +167,14 @@ export default class Media_anime
         );
         if(result.rowCount > 0){
           try {
-            console.log(sql);              
-            let path = `${this.anime}/${this.type}`;
-            await makeFile(path);
+            console.log(sql);
             this.setId(result.rows.shift().id);
-            await saveBackupAnime(this.anime, {'id':this.getId().toString()}, result.rows[0], 'media_animes');
+            let anime = new Anime();
+            anime.setSiglas(this.getAnime());
+            let saga = await anime.Obtener() ? anime.getSaga()+'/' : '';
+            let path = `${saga}${this.anime}/${this.type}`;
+            await makeFile(path);
+            await saveBackupAnime(saga, this.anime, {'id':this.getId().toString()}, result.rows[0], 'media_animes');
             rest = true;
           } catch (err) {
             console.log("media backup:"+err)
@@ -199,11 +203,12 @@ export default class Media_anime
         if(result.rowCount > 0){
           try {
             this.setId(result.rows.shift().id);   
-            let path = `${this.anime}/${this.type}`;
+            let anime = new Anime();
+            anime.setSiglas(this.getAnime());
+            let saga = await anime.Obtener() ? anime.getSaga() : '';
+            let path = `${saga}/${this.anime}/${this.type}`;
             await makeFile(path);
-            console.log(sql);
-            console.log(this.getId());
-            await saveBackupAnime(this.anime,{'id':this.getId().toString()}, result.rows[0], 'media_animes');
+            await saveBackupAnime(saga,this.anime,{'id':this.getId().toString()}, result.rows[0], 'media_animes');
             rest = true;
           } catch (err) {
             console.log("media backup:"+err)

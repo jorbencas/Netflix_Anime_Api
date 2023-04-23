@@ -221,7 +221,8 @@ const editinsert = async (req: Request, res: Response) => {
     kind,
     generes,
     temporadas,
-    media
+    media,
+    saga
   } = req.body;
   let inserted: Boolean = false;
   let anime = new Anime();
@@ -233,6 +234,7 @@ const editinsert = async (req: Request, res: Response) => {
   anime.setDate_finalization(date_finalization); 
   anime.setIdioma(idioma); 
   anime.setKind(kind);
+  anime.setSaga(saga);
   let obtenidoAnime = await anime.Obtener(); 
   if (obtenidoAnime) {
     inserted = await anime.editar();

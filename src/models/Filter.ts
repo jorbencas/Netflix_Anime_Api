@@ -23,11 +23,7 @@
      *
      * @return  self
      */
-<<<<<<< HEAD
-    public setId(id)
-=======
     public setId(id:number):void
->>>>>>> b0d2a5507b35452b5ce69552e26babbc9b43b10c
     {
       this.id = id;
     }
@@ -45,11 +41,7 @@
      *
      * @return  self
      */
-<<<<<<< HEAD
-    public setCode(code)
-=======
     public setCode(code:string):void
->>>>>>> b0d2a5507b35452b5ce69552e26babbc9b43b10c
     {
       this.code = code;
     }
@@ -67,11 +59,7 @@
      *
      * @return  self
      */
-<<<<<<< HEAD
-    public setKind(kind)
-=======
     public setKind(kind:string):void
->>>>>>> b0d2a5507b35452b5ce69552e26babbc9b43b10c
     {
       this.kind = kind;
     }
