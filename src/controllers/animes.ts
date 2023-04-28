@@ -1,4 +1,4 @@
-import { responseCustome } from "../utils/index";
+import { responseCustome, saveFile } from "../utils/index";
 import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
@@ -44,24 +44,6 @@ const getslides = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-<<<<<<< HEAD
-const getOne = async (req: Request, res: Response, next: NextFunction) => {
-  let { siglas } = req.params;
-  let animeInstanced = new Anime();
-  animeInstanced.setSiglas(siglas);
-  let anime = await animeInstanced.getOne(); 
-  if(anime) {
-    let instance = new Media_anime();
-    instance.setAnime(siglas);
-    instance.setType("banner");
-    let banner = await instance.getMediaByType();
-    instance.setType("portada");
-    let portada = await instance.getMediaByType();
-    let msg = `Se ha podido obtener la traducion del idioma {lang}`;
-    let result = {...anime, banner, portada};
-    res.status(200).json(responseCustome(msg, 200, result ));
-  } else {
-=======
 const getOne = async (_req: Request, _res: Response, _next: NextFunction) => {
   //let { siglas } = req.params;
 
@@ -80,7 +62,6 @@ const getOne = async (_req: Request, _res: Response, _next: NextFunction) => {
   //   result.portada = ;*/
   //   res.status(200).json(responseCustome(msg, 200,     ));
   // } else {
->>>>>>> b0d2a5507b35452b5ce69552e26babbc9b43b10c
 
   // }
   
@@ -277,6 +258,11 @@ async function processMedia(media: Array<Object>){
       instance.setName(nombre);
       instance.setExt(extension);
       instance.setType(kind);
+      let anime = new Anime();
+      anime.setSiglas(instance.getAnime());
+      let saga = await anime.Obtener() ? anime.getSaga(): '';
+      let path = `${saga}'/'${instance.getAnime}/${instance.getType()}/${instance.getName()}.${instance.getExt()}`;
+      saveFile(path,URL.createObjectURL(file));
       let existe = await instance.Obtener();
       if (existe) {
         let edited = await instance.Editar();

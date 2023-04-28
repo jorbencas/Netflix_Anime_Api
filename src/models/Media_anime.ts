@@ -171,8 +171,8 @@ export default class Media_anime
             this.setId(result.rows.shift().id);
             let anime = new Anime();
             anime.setSiglas(this.getAnime());
-            let saga = await anime.Obtener() ? anime.getSaga()+'/' : '';
-            let path = `${saga}${this.anime}/${this.type}`;
+            let saga = await anime.Obtener() ? anime.getSaga(): '';
+            let path = `${saga}'/'${this.anime}/${this.type}`;
             await makeFile(path);
             await saveBackupAnime(saga, this.anime, {'id':this.getId().toString()}, result.rows[0], 'media_animes');
             rest = true;

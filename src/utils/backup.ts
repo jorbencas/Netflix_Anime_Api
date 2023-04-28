@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { PathLike } from "node:fs";
 import path from "node:path";
-import { makeFile, readMyFile } from '.';
+import { contentPath, makeFile, readMyFile } from '.';
 import { QueryResult } from 'pg';
 import { postgress } from '../db/postgres';
 import { BACKUP_PATH, MEDIA_PATH } from '../config';
@@ -9,10 +9,7 @@ import { estaVacio, isObject } from './validators';
 
 const moreElements = ["media_animes", "anime_generes", "anime_temporadas", "anime_favorites", "seasions", "episodes", "seasions_episodes", "media_episodes", "clips", "episode_collections", "openings", "seasions_openings", "media_openings", "endings", "seasions_endings", "media_endings"];
 const saveBackup = async (primary: any, obj: any, kind: string) => {
-  const PATH_TO_FILES : PathLike = path.join(
-    __dirname,
-    "/../"+BACKUP_PATH+"/"+kind+ '.json'
-  );
+  const PATH_TO_FILES : PathLike = contentPath(kind+ '.json', BACKUP_PATH);
   await doBackup(PATH_TO_FILES, primary, obj, kind);
 }
 /**
@@ -26,7 +23,7 @@ const saveBackup = async (primary: any, obj: any, kind: string) => {
  */
 const saveBackupAnime = async (saga:string|undefined, siglas: string|undefined, primary:Object, obj: any, kind: string) => {
   let pathString = `${siglas}/.backup`;
-  if(saga){
+  if(saga && saga?.length > 0){
     pathString = `${saga}/${pathString}`;  
   }
   const PATH_TO_FILES : PathLike = path.join(

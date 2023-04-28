@@ -1,5 +1,5 @@
 import { access, mkdir, readFile, readdir } from 'node:fs/promises';
-import { PathLike, existsSync, constants, createReadStream, ReadStream } from 'node:fs';
+import { PathLike, existsSync, constants, createReadStream, ReadStream,  writeFileSync } from 'node:fs';
 import { makerMail } from './sendMail';
 import { createTransport } from "nodemailer";
 import statusTexts from '../static/statusCodes';
@@ -100,7 +100,6 @@ async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
   return isAccesible;
 }
 
-
 export async function makeFile(pathFile:string){
   if (pathFile.includes("/")) {
     let pathJAOIN = "";
@@ -117,15 +116,28 @@ export async function makeFile(pathFile:string){
 }
 
 async function doMagicFolder(pathFile: string){
-  const PATH_TO_FILES : PathLike = path.join(
-    __dirname,
-    "/../" + MEDIA_PATH + pathFile
-  );
-
+  const PATH_TO_FILES : PathLike = contentPath(pathFile);
   let exists = await isAccesible(PATH_TO_FILES);
   if(!exists){
     try {
       await mkdir(PATH_TO_FILES);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export function contentPath( pathFile: string, kind: string|undefined = MEDIA_PATH): PathLike{
+  return path.join(__dirname,"/../" +  kind + pathFile);
+}
+
+export async function saveFile(pathFile: string, fileContents: string|any){
+  const PATH_TO_FILES : PathLike = contentPath(pathFile);
+  let exists = await isAccesible(PATH_TO_FILES);
+  if(!exists){
+    try {
+      const buffer: Buffer = Buffer.from(fileContents);
+      await writeFileSync(PATH_TO_FILES, buffer);
     } catch (error) {
       console.log(error);
     }
