@@ -25,3 +25,17 @@ export const OPTIONS_EMAIL = {
         pass: EMAIL_PASSWD
     }
 };
+export const backupJSONFiles = ["media_animes", "anime_generes", "anime_temporadas", "anime_favorites", "seasions", "episodes", "seasions_episodes", "media_episodes", "clips", "episode_collections", "openings", "seasions_openings", "media_openings", "endings", "seasions_endings", "media_endings"];
+
+export const KIND_VALIDS = Object.freeze({
+    animebackup:'animebackup',
+    banner:'banner',
+    portada:'portada',
+    openings:'openings',
+    endings:'endings',
+    episodes:'episodes',
+    personages:'personages',
+    profiles:'profiles',
+    new_post:'new_post',
+    chat:'chat'
+});

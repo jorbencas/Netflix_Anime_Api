@@ -1,13 +1,11 @@
 import { writeFile } from 'node:fs/promises';
 import { PathLike } from "node:fs";
-import path from "node:path";
-import { contentPath, makeFile, readMyFile } from '.';
+import { contentPath, handleMedia, makeFile, readMyFile } from '.';
 import { QueryResult } from 'pg';
 import { postgress } from '../db/postgres';
-import { BACKUP_PATH, MEDIA_PATH } from '../config';
+import { BACKUP_PATH, MEDIA_PATH, backupJSONFiles } from '../config';
 import { estaVacio, isObject } from './validators';
 
-const moreElements = ["media_animes", "anime_generes", "anime_temporadas", "anime_favorites", "seasions", "episodes", "seasions_episodes", "media_episodes", "clips", "episode_collections", "openings", "seasions_openings", "media_openings", "endings", "seasions_endings", "media_endings"];
 const saveBackup = async (primary: any, obj: any, kind: string) => {
   const PATH_TO_FILES : PathLike = contentPath(kind+ '.json', BACKUP_PATH);
   await doBackup(PATH_TO_FILES, primary, obj, kind);
@@ -22,18 +20,11 @@ const saveBackup = async (primary: any, obj: any, kind: string) => {
  * 
  */
 const saveBackupAnime = async (saga:string|undefined, siglas: string|undefined, primary:Object, obj: any, kind: string) => {
-  let pathString = `${siglas}/.backup`;
-  if(saga && saga?.length > 0){
-    pathString = `${saga}/${pathString}`;  
-  }
-  const PATH_TO_FILES : PathLike = path.join(
-    __dirname,
-    "/../"+MEDIA_PATH+'/'+pathString
-  );
-  await makeFile(pathString);
-  await doBackup(`${PATH_TO_FILES}/${kind}.json`, primary, obj, kind);
+  const PATH_TO_FILES : PathLike =  await handleMedia('backup', kind, 'json',siglas,saga);
+  await makeFile(PATH_TO_FILES.toLocaleString());
+  await doBackup(`${contentPath(`${PATH_TO_FILES}`)}`, primary, obj, kind);
 }
-async function doBackup(PATH_TO_FILES: string, primary: Object, obj: Object, kind: string){
+async function doBackup(PATH_TO_FILES: PathLike, primary: Object, obj: Object, kind: string){
   let content:any = await readMyFile(PATH_TO_FILES);
   if(!estaVacio(content)){
     const keyPrimary:any = Object.keys(primary).shift();
@@ -45,7 +36,7 @@ async function doBackup(PATH_TO_FILES: string, primary: Object, obj: Object, kin
         console.log('====================================');
       }
       await updateObj(obj,content, keyPrimary, valuePrimary, kind);
-      if (moreElements.includes(kind)) {
+      if (backupJSONFiles.includes(kind)) {
         content = [content];
       }
     } else if(Array.isArray(content)){
@@ -61,7 +52,7 @@ async function doBackup(PATH_TO_FILES: string, primary: Object, obj: Object, kin
         content.push(obj);
       }
     }
-  } else if (moreElements.includes(kind)) {
+  } else if (backupJSONFiles.includes(kind)) {
     content = [obj];
   } else {
     content = structuredClone(obj);
