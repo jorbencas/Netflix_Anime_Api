@@ -57,10 +57,10 @@ export const createMyStreamFile = async (fileName: PathLike, res: Response) => {
   let content = await isAccesible(fileName);
   if (content) {
     let head = "text/html";
-    if (isVideo(String(fileName))) {
+    let file_name = String(fileName);
+    if (isVideo(file_name)) {
       head = "video/mp4";
-    }
-    if (isAudio(String(fileName))) {
+    }else if (isAudio(file_name)) {
       head = "audio/mp3";
     }
     res.writeHead(200, {
@@ -116,19 +116,32 @@ async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
   return isAccesible;
 }
 
-export async function makeFile(pathFile: string) {
-  if (pathFile.includes("/")) {
-    let pathJAOIN = "";
-    let pathSplited = pathFile.split("/");
-    pathSplited.forEach(async (pathFile: string) => {
-      if (pathFile.startsWith(".") || !pathFile.includes(".")) {
-        pathJAOIN += `/${pathFile}`;
-        await doMagicFolder(pathJAOIN);
-      }
-    });
-  } else if (pathFile.startsWith(".") || !pathFile.includes(".")) {
-    await doMagicFolder(pathFile);
+export async function makeFile(pathFile: string): Promise<void> {
+if (pathFile.includes("/") || /^\.[^\.]*$/.test(pathFile)) {
+  const pathSplited = pathFile.split("/");
+  let pathJAOIN = "";
+  for (const path of pathSplited) {
+    if (/^\.[^\.]*$/.test(path)) {
+      pathJAOIN += `/${path}`;
+      await doMagicFolder(pathJAOIN);
+    }
   }
+} else {
+  await doMagicFolder(pathFile);
+}
+
+  // if (pathFile.includes("/")) {
+  //   let pathJAOIN = "";
+  //   let pathSplited = pathFile.split("/");
+  //   pathSplited.forEach(async (pathFile: string) => {
+  //     if (pathFile.startsWith(".") || !pathFile.includes(".")) {
+  //       pathJAOIN += `/${pathFile}`;
+  //       await doMagicFolder(pathJAOIN);
+  //     }
+  //   });
+  // } else if (pathFile.startsWith(".") || !pathFile.includes(".")) {
+  //   await doMagicFolder(pathFile);
+  // }
 }
 
 async function doMagicFolder(pathFile: string) {
@@ -195,7 +208,7 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
   switch (tipo) {
     case KIND_VALIDS.animebackup:
       if(saga && saga?.length > 0){
-        mediaSrc = `${saga}/`;  
+        mediaSrc = `${saga}/`;
       }
       mediaSrc = `${mediaSrc}${id_anime}/.backup/${name}.${ext}`;
       break;
@@ -214,15 +227,15 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
       break;
     case KIND_VALIDS.personages:
       if(saga && saga?.length > 0){
-        mediaSrc = `${saga}/`;  
+        mediaSrc = `${saga}/`;
       }
       mediaSrc = `${mediaSrc}${id_anime}/${tipo}/${name}/${name}.${ext}`;
       break;
-    case KIND_VALIDS.profiles:
-    case KIND_VALIDS.new_post:
-    case KIND_VALIDS.chat:
-      mediaSrc = `${tipo}/${id_anime}/${name}.${ext}`;
-      break;
+    // case KIND_VALIDS.profiles:
+    // case KIND_VALIDS.new_post:
+    // case KIND_VALIDS.chat:
+    //   mediaSrc = `${tipo}/${id_anime}/${name}.${ext}`;
+    //   break;
     default:
       mediaSrc = "";
       break;
@@ -239,7 +252,8 @@ export function contentPath(
   kind: string | undefined = MEDIA_PATH
 ): PathLike {
   //no es correcto hacer ell ../ (se debe hacer de forma recursiva, independiente mente desde donde se invoque la función)
-  return join(__dirname, "/../" + kind + pathFile);
+  const absPath = path.resolve(__dirname, '..'+ kind);
+  return path.relative(process.cwd(), path.join(absPath, pathFile));
 }
 
 export async function saveFile(pathFile: string, fileContents: string | any) {
