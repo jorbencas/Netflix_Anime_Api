@@ -1,7 +1,6 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
-import { resourceLimits } from "node:worker_threads";
 
 export default class Anime {
   private _tittle: string | undefined;
@@ -110,11 +109,11 @@ export default class Anime {
 
 
   public async getOne(): Promise<Anime>{
-    try {
+    // try {
       
-    } catch (err: Error) {
-        console.log(err);
-    }
+    // } catch (err: Error) {
+    //     console.log(err);
+    // }
     let anime:Anime = new Anime();
 
 

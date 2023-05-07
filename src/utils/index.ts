@@ -1,28 +1,28 @@
-import { access, mkdir, readFile, readdir } from "node:fs/promises";
+import { Response } from "express";
 import {
+  Dirent,
   PathLike,
-  existsSync,
+  ReadStream,
   constants,
   createReadStream,
-  ReadStream,
-  writeFileSync,
+  existsSync,
   readdirSync,
-  Dirent,
   statSync,
+  writeFileSync,
 } from "node:fs";
-import { makerMail } from "./sendMail";
+import { access, mkdir, readFile } from "node:fs/promises";
+import path, { basename, join } from "node:path";
 import { createTransport } from "nodemailer";
+import { KIND_VALIDS, MEDIA_PATH, OPTIONS_EMAIL } from "../config";
 import statusTexts from "../static/statusCodes";
+import normal from "../templates/normal/email";
 import {
-  dataResponseCustome,
   ResponseCustomeData,
   StatusCode,
+  dataResponseCustome,
 } from "../types/StatusCode";
-import { Response } from "express";
+import { makerMail } from "./sendMail";
 import { isAudio, isVideo } from "./validators";
-import { OPTIONS_EMAIL, MEDIA_PATH, KIND_VALIDS } from "../config";
-import normal from "../templates/normal/email";
-import path, { basename, join } from "node:path";
 
 export const responseCustome = (
   message: string = "",
@@ -251,6 +251,30 @@ export function contentPath(
   pathFile: string,
   kind: string | undefined = MEDIA_PATH
 ): PathLike {
+
+function obtenerRutaArchivo(nombreArchivo) {
+  // __dirname es una variable global que contiene la ruta del directorio del archivo actual
+  let rutaActual = __dirname;
+
+  // Revisa si el archivo está en la ruta actual
+  const rutaArchivo = path.join(rutaActual, nombreArchivo);
+
+  // Si el archivo no se encuentra en la ruta actual, sube un nivel
+  while (!existsSync(rutaArchivo)) {
+    const parentDir = path.dirname(rutaActual);
+    if (parentDir === rutaActual) {
+      throw new Error(`No se pudo encontrar el archivo \${nombreArchivo}`);
+    }
+    rutaActual = parentDir;
+  }
+
+  return rutaArchivo;
+}
+
+
+
+
+
   //no es correcto hacer ell ../ (se debe hacer de forma recursiva, independiente mente desde donde se invoque la función)
   const absPath = path.resolve(__dirname, '..'+ kind);
   return path.relative(process.cwd(), path.join(absPath, pathFile));
