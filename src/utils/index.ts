@@ -117,31 +117,18 @@ async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
 }
 
 export async function makeFile(pathFile: string): Promise<void> {
-if (pathFile.includes("/") || /^\.[^\.]*$/.test(pathFile)) {
-  const pathSplited = pathFile.split("/");
-  let pathJAOIN = "";
-  for (const path of pathSplited) {
-    if (/^\.[^\.]*$/.test(path)) {
-      pathJAOIN += `/${path}`;
-      await doMagicFolder(pathJAOIN);
+ const pathSplited = pathFile.split("/");
+  if(pathSplited.length > 0){
+    let pathJAOIN = "";
+    for (const path of pathSplited) {
+      if (/^\.[^\.]*$/.test(path)) {
+        pathJAOIN += `/${path}`;
+        await doMagicFolder(pathJAOIN);
+      }
     }
-  }
-} else {
+  }else {
   await doMagicFolder(pathFile);
-}
-
-  // if (pathFile.includes("/")) {
-  //   let pathJAOIN = "";
-  //   let pathSplited = pathFile.split("/");
-  //   pathSplited.forEach(async (pathFile: string) => {
-  //     if (pathFile.startsWith(".") || !pathFile.includes(".")) {
-  //       pathJAOIN += `/${pathFile}`;
-  //       await doMagicFolder(pathJAOIN);
-  //     }
-  //   });
-  // } else if (pathFile.startsWith(".") || !pathFile.includes(".")) {
-  //   await doMagicFolder(pathFile);
-  // }
+  }
 }
 
 async function doMagicFolder(pathFile: string) {
@@ -251,8 +238,7 @@ export function contentPath(
   pathFile: string,
   kind: string | undefined = MEDIA_PATH
 ): PathLike {
-
-function obtenerRutaArchivo(nombreArchivo) {
+let nombreArchivo = path.basename(pathFile);
   // __dirname es una variable global que contiene la ruta del directorio del archivo actual
   let rutaActual = __dirname;
 
@@ -260,23 +246,15 @@ function obtenerRutaArchivo(nombreArchivo) {
   const rutaArchivo = path.join(rutaActual, nombreArchivo);
 
   // Si el archivo no se encuentra en la ruta actual, sube un nivel
-  while (!existsSync(rutaArchivo)) {
+  while (!isAccesible(rutaArchivo)) {
     const parentDir = path.dirname(rutaActual);
     if (parentDir === rutaActual) {
       throw new Error(`No se pudo encontrar el archivo \${nombreArchivo}`);
     }
     rutaActual = parentDir;
   }
-
-  return rutaArchivo;
-}
-
-
-
-
-
   //no es correcto hacer ell ../ (se debe hacer de forma recursiva, independiente mente desde donde se invoque la función)
-  const absPath = path.resolve(__dirname, '..'+ kind);
+  const absPath = path.resolve(rutaActual, '..'+ kind);
   return path.relative(process.cwd(), path.join(absPath, pathFile));
 }
 

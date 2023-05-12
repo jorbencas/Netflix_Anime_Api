@@ -1,6 +1,7 @@
 import { postgress } from "../db/postgres";
 import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
+import Anime from "./Anime";
 
 export default  class Anime_temporada 
   {
@@ -100,7 +101,10 @@ export default  class Anime_temporada
             try {
               console.log(sql);
               this.setId(result.rows.shift().id);
-              await saveBackupAnime(this.anime,{'id':this.getId().toString()}, result.rows[0], 'anime_temporadas');
+              let anime = new Anime();
+              anime.setSiglas(this.getAnime());
+              let saga = await anime.Obtener() ? anime.getSaga(): '';
+              await saveBackupAnime(saga,this.anime,{'id':this.getId().toString()}, result.rows[0], 'anime_temporadas');
               console.log(result.rows.shift());
               rest = true;
             } catch (err) {
@@ -115,7 +119,10 @@ export default  class Anime_temporada
               anime:this.getAnime(),
               temporada:this.getTemporada()
             };
-            await saveBackupAnime(this.getAnime(),{'id':this.getId().toString()}, data, 'anime_temporadas');
+                        let anime = new Anime();
+            anime.setSiglas(this.getAnime());
+            let saga = await anime.Obtener() ? anime.getSaga(): '';
+            await saveBackupAnime(saga,this.getAnime(),{'id':this.getId().toString()}, data, 'anime_temporadas');
             rest = true;
           } catch (err) {
             console.log("temporadas backup:"+err)

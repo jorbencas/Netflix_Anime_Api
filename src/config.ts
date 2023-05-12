@@ -13,7 +13,7 @@ export const POSTGRES_HOST = String(process.env.POSTGRES_HOST);
 export const POSTGRES_USER = String(process.env.POSTGRES_USER);
 export const POSTGRES_PASSWORD = String(process.env.POSTGRES_PASSWORD);
 export const POSTGRES_PORT: number = parseInt(`${process.env.POSTGRES_PORT}`);
-export const OPTIONS_EMAIL = {
+export const OPTIONS_EMAIL = Object.freeze({
     host:EMAIL_HOSTNAME, // hostname
     secureConnection: false, // TLS requires secureConnection to be false
     port: 587, // port for secure SMTP
@@ -24,7 +24,7 @@ export const OPTIONS_EMAIL = {
         user: EMAIL,
         pass: EMAIL_PASSWD
     }
-};
+});
 export const backupJSONFiles = ["media_animes", "anime_generes", "anime_temporadas", "anime_favorites", "seasions", "episodes", "seasions_episodes", "media_episodes", "clips", "episode_collections", "openings", "seasions_openings", "media_openings", "endings", "seasions_endings", "media_endings"];
 
 export const KIND_VALIDS = Object.freeze({

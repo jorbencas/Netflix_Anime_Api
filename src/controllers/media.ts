@@ -12,8 +12,8 @@ const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) 
     "/../" + MEDIA_PATH
   );
 
-  let file = await readMyDir(PATH_TO_FILES);
-  const siglas: string[] | undefined = file?.filter((stat: string) => stat.trim() !== 'nuevos');
+  let file:any = await readMyDir(PATH_TO_FILES);
+  const siglas: string[] | undefined = file.filter((stat: string) => stat.trim() !== 'nuevos');
   res.status(200).json(responseCustome('La lista de siglas', 200, siglas));
 };
 

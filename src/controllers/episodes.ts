@@ -3,6 +3,7 @@ import { postgress } from "../db/postgres";
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
 import { saveBackupAnime, updateIdAcumulative } from "../utils/backup";
+import Anime from "../models/Anime";
 
 const getbyAnime = (req: Request, res: Response, next: NextFunction) => {
     let siglas = req.params.siglas;
@@ -64,13 +65,16 @@ const getidrand = (_req: Request, _res: Response, _next: NextFunction) => {
 
 }
 
-const insert = (req: Request, res: Response, next: NextFunction) => {
+const insert = async (req: Request, res: Response, next: NextFunction) => {
     const { id, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion  } = req.body;
     let ID = updateIdAcumulative(id,'episodes', 'id');
     postgress
     .query(`INSERT INTO episodes(id, tittle, sinopsis,date_publication, date_finalization anime, num, seasion) VALUES($1, $2, $3, $4, $5, $6) RETURNNING *`, [ID, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion])
-    .then((result: QueryResult) => {
-      saveBackupAnime(anime,{'id':ID}, result.rows,'episodes');
+    .then(async (result: QueryResult) => {
+                  let anim = new Anime();
+            anim.setSiglas(anime);
+            let saga = await anime.Obtener() ? anime.getSaga(): '';
+      saveBackupAnime(saga,anime,{'id':ID}, result.rows,'episodes');
       res.status(200).json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {
@@ -78,12 +82,15 @@ const insert = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const edit = (req: Request, res: Response, next: NextFunction) => {
+const edit = async (req: Request, res: Response, next: NextFunction) => {
     const { id, tittle, sinopsis, date_publication, date_finalization, anime, num, seasion  } = req.body;
     postgress
     .query(`UPDATE FROM episodes tittle=$2, sinopsis=$3, date_publication=$4, date_finalization=$5, num=$6, seasion=$7 WHERE id=$1 RETURNNING *;`, [id, tittle, sinopsis, date_publication, date_finalization, num, seasion])
-    .then((result: QueryResult) => {
-     saveBackupAnime(anime,{'id':id}, result.rows,'episodes');
+    .then(async (result: QueryResult) => {
+                  let anim = new Anime();
+            anim.setSiglas(anime);
+            let saga = await anime.Obtener() ? anime.getSaga(): '';
+     saveBackupAnime(saga, anime,{'id':id}, result.rows,'episodes');
       res.status(200).json(responseCustome("", 200, result.rows))
     })
     .catch((err: Error) => {

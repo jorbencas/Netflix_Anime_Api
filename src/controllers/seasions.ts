@@ -24,17 +24,17 @@ const insert = async (req: Request, res: Response, _next: NextFunction) => {
   seasionInstanced.setAnime(siglas);
   let seasionSelected = await seasionInstanced.getOne();
   if(!seasionSelected){
-    let seasionEdited = await seasionInstanced.edit();
+    //let seasionEdited = await seasionInstanced.edit();
     let msg = `Se ha podido obtener la traducion del idioma {lang}`;
     res.status(200).json(responseCustome(msg, 200, seasionInstanced));
   } else {
-  let seasionInserted = await seasionInstanced.insert();
-  if(seasionInserted){
-
-  } else{
+  // let seasionInserted = await seasionInstanced.insert();
+  // if(seasionInserted){
+  //   console.log(seasionInserted);
+  // } else{
     let msg = `No se ha podido obtener la traducion del idioma {lang}`;
     res.status(500).json(responseCustome(msg, 500));
-  }
+  // }
 
 
   }

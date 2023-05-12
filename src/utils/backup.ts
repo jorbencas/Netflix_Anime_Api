@@ -3,7 +3,7 @@ import { PathLike } from "node:fs";
 import { contentPath, handleMedia, makeFile, readMyFile } from '.';
 import { QueryResult } from 'pg';
 import { postgress } from '../db/postgres';
-import { BACKUP_PATH, MEDIA_PATH, backupJSONFiles } from '../config';
+import { BACKUP_PATH, backupJSONFiles } from '../config';
 import { estaVacio, isObject } from './validators';
 
 const saveBackup = async (primary: any, obj: any, kind: string) => {

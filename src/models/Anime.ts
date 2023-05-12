@@ -157,7 +157,7 @@ export default class Anime {
 
   })
   .catch((e: Error) => {
-    next(e);
+    console.log(e);
   });
 
 

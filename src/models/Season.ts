@@ -1,6 +1,7 @@
 import { postgress } from "../db/postgres";
 
 import { QueryResult } from "pg";
+
 export default class Season 
   {
     private id:number|undefined;
@@ -65,9 +66,9 @@ export default class Season
         this.setTitle(tittle);
         this.setAnime(anime);
         obtenido = true;
-      } catch ((e: Error)=> {
-        console.error(e.message);
-      });
+      } catch (e) {
+        console.error(e);
+      };
       return obtenido; 
     }
 
@@ -78,7 +79,7 @@ export default class Season
     console.log(result);
     
   }).catch((err: Error) => {
-    next(err);
+    console.log(err);
   });
     }
 
@@ -87,9 +88,9 @@ export default class Season
   .query(`UPDATE seasions SET = '${this.getTitle}' WHERE id = ${this.getId()}`)
   .then((result: QueryResult) => {
     console.log(result);
-    res.status(200).json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))
+    // res.status(200).json(responseCustome("Se han obtenido la lista de ids de las seasions", 200, result))
   }).catch((err: Error) => {
-    next(err);
+    console.log(err);
   });
     }
 
