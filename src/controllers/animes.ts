@@ -229,7 +229,7 @@ const editinsert = async (req: Request, res: Response) => {
   }
 
   let msg:string = `Se ha insertado/editado todo`;
-    res.status(200).json(responseCustome(msg, 200, req.body));
+  res.status(200).json(responseCustome(msg, 200, req.body));
 };
 
 async function processsGeneres(generes: Array<string>, siglas:string){

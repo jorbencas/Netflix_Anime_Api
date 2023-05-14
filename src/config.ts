@@ -1,8 +1,8 @@
 import 'dotenv/config';
-export const MEDIA_PATH = process.env.MEDIA_PATH;
-export const BACKUP_PATH = process.env.BACKUP_PATH;
-export const PORT: number = parseInt(`${process.env.PORT}`) || 0;
-export const HOSTNAME: string = process.env.HOSTNAME || "127.0.0.1";
+export const MEDIA_PATH = process.env.MEDIA_PATH || "media/animes/";
+export const BACKUP_PATH = process.env.BACKUP_PATH || "media/backup/";
+export const PORT: number = parseInt(`${process.env.PORT}`) || 3000;
+export const HOSTNAME: string = process.env.HOSTNAME || "localhost";
 const EMAIL_HOSTNAME = String(process.env.EMAIL_HOSTNAME);
 export const EMAIL = String(process.env.EMAIL);
 const EMAIL_PASSWD = String(process.env.EMAIL_PASSWD);
@@ -18,7 +18,7 @@ export const OPTIONS_EMAIL = Object.freeze({
     secureConnection: false, // TLS requires secureConnection to be false
     port: 587, // port for secure SMTP
     tls: {
-       ciphers:'SSLv3'
+        ciphers:'SSLv3'
     },
     auth: {
         user: EMAIL,

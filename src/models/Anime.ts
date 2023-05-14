@@ -3,16 +3,16 @@ import { QueryResult } from "pg";
 import { saveBackupAnime } from "../utils/backup";
 
 export default class Anime {
-  private _tittle: string | undefined;
-  private _sinopsis: string | undefined;
-  private _siglas: string | undefined;
-  private _state: string | undefined;
-  private _date_publication: Date | undefined;
-  private _date_finalization: Date | undefined;
-  private _idioma: string | undefined;
-  private _kind: string | undefined;
-  private _valorations: number | undefined;
-  private _saga: string | undefined; 
+  private _tittle?: string;
+  private _sinopsis?: string;
+  private _siglas?: string;
+  private _state?: string;
+  private _date_publication?: Date;
+  private _date_finalization?: Date;
+  private _idioma?: string;
+  private _kind?: string;
+  private _valorations?: number;
+  private _saga?: string; 
 
   constructor(){
 

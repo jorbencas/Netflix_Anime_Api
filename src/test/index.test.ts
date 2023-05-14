@@ -1,8 +1,19 @@
 import { describe, it, test } from "node:test";
 import { strict as assert } from "node:assert";
-test("synchronous failing test", () => {
+import { contentPath, handleMedia } from "../utils";
+import { PathLike } from "node:fs";
+test("make file path test", async () => {
   // This test fails because it throws an exception.
-  assert.strictEqual(1, 2);
+  let saga = "JOJO";
+  let siglas = "JOJODIU";
+  let kind = "episodes";
+  const PATH_TO_FILES : PathLike =  await handleMedia('anime', kind, '01.MP4',siglas,saga);
+  let result = `${contentPath(`${PATH_TO_FILES}`)}`;
+  let expected = 'media/animes/JOJO/JOJODIU/episodes/01.mp4';
+  console.log('====================================');
+  console.log(result + " " + expected);
+  console.log('====================================');
+  assert.strictEqual(result, expected);
 });
 
 // The skip option is used, but no message is provided.
