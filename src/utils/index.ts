@@ -132,7 +132,7 @@ export async function makeFile(pathFile: string): Promise<void> {
 }
 
 async function doMagicFolder(pathFile: string) {
-  const PATH_TO_FILES: PathLike = contentPath(pathFile);
+  const PATH_TO_FILES: PathLike = await contentPath(pathFile);
   let exists = await isAccesible(PATH_TO_FILES);
   if (!exists) {
     try {
@@ -190,7 +190,7 @@ export async function scanFolders(pathFile: string, recursive = true, endelement
  * @return The path to the media file.
  */
 export async function handleMedia(tipo: string, name: string, ext: string, id_anime?: string | null, saga?:string |undefined, id_element?: string | null): Promise<string> {
-  //const nomedia = "img/no_img.jpg";
+  const nomedia = "img/no_img.jpg";
   let mediaSrc = "";
   switch (tipo) {
     case KIND_VALIDS.animebackup:
@@ -209,8 +209,9 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
       }
       mediaSrc = `${mediaSrc}${id_anime}/${tipo}/`;
       if (id_element !== undefined && id_element !== null) {
-        mediaSrc = mediaSrc.concat(`${id_element}/${name}.${ext}`);
+        mediaSrc = mediaSrc.concat(`${id_element}/`);
       }
+      mediaSrc = mediaSrc.concat(`${name}.${ext}`);
       break;
     case KIND_VALIDS.personages:
       if(saga && saga?.length > 0){
@@ -224,7 +225,7 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
     //   mediaSrc = `${tipo}/${id_anime}/${name}.${ext}`;
     //   break;
     default:
-      mediaSrc = "";
+      mediaSrc = nomedia;
       break;
   }
   /*let exists = await isAccesible(mediaSrc);
@@ -234,32 +235,39 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
   return mediaSrc;
 }
 
-export function contentPath(
+export async function contentPath(
   pathFile: string,
   kind: string | undefined = MEDIA_PATH
-): PathLike {
-let nombreArchivo = path.basename(pathFile);
+): Promise<PathLike>{
   // __dirname es una variable global que contiene la ruta del directorio del archivo actual
   let rutaActual = __dirname;
-
+  let subir = "/";
   // Revisa si el archivo está en la ruta actual
-  const rutaArchivo = path.join(rutaActual, nombreArchivo);
-
+  const rutaArchivo = path.join(__dirname+"/", kind +pathFile);
+  console.log('====================================');
+  console.log(rutaArchivo);
+  console.log('====================================');
   // Si el archivo no se encuentra en la ruta actual, sube un nivel
-  while (!isAccesible(rutaArchivo)) {
-    const parentDir = path.dirname(rutaActual);
-    if (parentDir === rutaActual) {
-      throw new Error(`No se pudo encontrar el archivo \${nombreArchivo}`);
-    }
-    rutaActual = parentDir;
-  }
+  let existe = await isAccesible(rutaArchivo);
+  do {
+ const parentDir = __dirname;
+    console.log('====================================');
+    console.log(rutaActual);
+    console.log('====================================');
+    // if (parentDir === rutaActual) {
+    //   throw new Error(`No se pudo encontrar el archivo \${nombreArchivo}`);
+    // }
+    subir += '../' 
+    rutaActual = parentDir + subir + kind +pathFile;
+    existe = await isAccesible(rutaActual);
+  }while (!existe);
   //no es correcto hacer ell ../ (se debe hacer de forma recursiva, independiente mente desde donde se invoque la función)
-  const absPath = path.resolve(rutaActual, '..'+ kind);
+  const absPath = path.resolve(rutaActual, subir + kind);
   return path.relative(process.cwd(), path.join(absPath, pathFile));
 }
 
 export async function saveFile(pathFile: string, fileContents: string | any) {
-  const PATH_TO_FILES: PathLike = contentPath(pathFile);
+  const PATH_TO_FILES: PathLike = await contentPath(pathFile);
   let exists = await isAccesible(PATH_TO_FILES);
   if (!exists) {
     try {
