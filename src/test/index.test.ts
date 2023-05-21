@@ -11,7 +11,11 @@ test("make file path test", async () => {
   let content = await contentPath(`${PATH_TO_FILES}`);
   let result = `${content}`;
   let expected = 'media/animes/JOJO/JOJODIU/episodes/01.mp4';
-
+  console.log("--------------------------------");
+console.log(content);
+console.log("----------------------------------");
+console.log(expected);
+console.log("-----------------------------------");
   assert.strictEqual(result, expected);
 });
 

@@ -239,31 +239,7 @@ export async function contentPath(
   pathFile: string,
   kind: string | undefined = MEDIA_PATH
 ): Promise<PathLike>{
-  // __dirname es una variable global que contiene la ruta del directorio del archivo actual
-  let rutaActual = __dirname;
-  let subir = "/";
-  // Revisa si el archivo está en la ruta actual
-  const rutaArchivo = path.join(__dirname+"/", kind +pathFile);
-  console.log('====================================');
-  console.log(rutaArchivo);
-  console.log('====================================');
-  // Si el archivo no se encuentra en la ruta actual, sube un nivel
-  let existe = await isAccesible(rutaArchivo);
-  do {
- const parentDir = __dirname;
-    console.log('====================================');
-    console.log(rutaActual);
-    console.log('====================================');
-    // if (parentDir === rutaActual) {
-    //   throw new Error(`No se pudo encontrar el archivo \${nombreArchivo}`);
-    // }
-    subir += '../' 
-    rutaActual = parentDir + subir + kind +pathFile;
-    existe = await isAccesible(rutaActual);
-  }while (!existe);
-  //no es correcto hacer ell ../ (se debe hacer de forma recursiva, independiente mente desde donde se invoque la función)
-  const absPath = path.resolve(rutaActual, subir + kind);
-  return path.relative(process.cwd(), path.join(absPath, pathFile));
+  return path.join(process.cwd(), "../"+kind +pathFile);
 }
 
 export async function saveFile(pathFile: string, fileContents: string | any) {
