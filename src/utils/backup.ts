@@ -7,7 +7,7 @@ import { BACKUP_PATH, backupJSONFiles } from '../config';
 import { estaVacio, isObject } from './validators';
 
 const saveBackup = async (primary: any, obj: any, kind: string) => {
-  const PATH_TO_FILES : PathLike = contentPath(kind+ '.json', BACKUP_PATH);
+  const PATH_TO_FILES : PathLike = await contentPath(kind+ '.json', BACKUP_PATH);
   await doBackup(PATH_TO_FILES, primary, obj, kind);
 }
 /**

@@ -103,7 +103,7 @@ export async function readMyDir(
   return content;
 }
 
-async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
+export async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
   let isAccesible = false;
   if (existsSync(PATH_TO_FILES)) {
     try {
@@ -117,7 +117,7 @@ async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
 }
 
 export async function makeFile(pathFile: string): Promise<void> {
- const pathSplited = pathFile.split("/");
+  const pathSplited = pathFile.split("/");
   if(pathSplited.length > 0){
     let pathJAOIN = "";
     for (const path of pathSplited) {
@@ -239,7 +239,7 @@ export async function contentPath(
   pathFile: string,
   kind: string | undefined = MEDIA_PATH
 ): Promise<PathLike>{
-  return path.join(process.cwd(), "../"+kind +pathFile);
+  return path.join(__dirname, "../"+kind +pathFile);
 }
 
 export async function saveFile(pathFile: string, fileContents: string | any) {
