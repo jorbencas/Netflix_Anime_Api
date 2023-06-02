@@ -1,28 +1,14 @@
 import { Response } from "express";
-import {
-  Dirent,
-  PathLike,
-  ReadStream,
-  constants,
-  createReadStream,
-  existsSync,
-  readdirSync,
-  statSync,
-  writeFileSync,
-} from "node:fs";
-import { access, mkdir, readFile } from "node:fs/promises";
-import path, { basename, join } from "node:path";
+import { mkdir, readdir, readFile, access } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { createTransport } from "nodemailer";
 import { KIND_VALIDS, MEDIA_PATH, OPTIONS_EMAIL } from "../config";
 import statusTexts from "../static/statusCodes";
 import normal from "../templates/normal/email";
-import {
-  ResponseCustomeData,
-  StatusCode,
-  dataResponseCustome,
-} from "../types/StatusCode";
+import { ResponseCustomeData, StatusCode, dataResponseCustome } from "../types/StatusCode";
 import { makerMail } from "./sendMail";
 import { isAudio, isVideo } from "./validators";
+import { PathLike, ReadStream, createReadStream, existsSync, statSync, writeFileSync } from "node:fs";
 
 export const responseCustome = (
   message: string = "",
@@ -30,37 +16,41 @@ export const responseCustome = (
   data: dataResponseCustome = null
 ): ResponseCustomeData => {
   const CODE_STATUS: StatusCode = statusTexts;
-  let text: string = CODE_STATUS[code] ?? "";
-  let response: ResponseCustomeData = {
+  const text: string = CODE_STATUS[code] ?? "";
+  const response: ResponseCustomeData = {
     data,
     status: { code, text, message },
   };
   return response;
 };
 
-export const sendEmail = async () => {
-  let subject: string = "Cosas de Anime Sending Email using Node.js";
-  let text: string = "Prueba de email";
-  let html: string = normal();
-  const transporter = await createTransport(OPTIONS_EMAIL);
-  const response: string | Error = await transporter
-    .sendMail(makerMail(subject, text, html))
-    .then((res) => {
-      console.log(res?.response);
-      return "send";
-    })
-    .catch((err: Error) => err);
-  return response;
+export const sendEmail = async (): Promise<string | Error> => {
+  const subject: string = "Cosas de Anime Sending Email using Node.js";
+  const text: string = "Prueba de email";
+  const html: string = normal();
+  const transporter = createTransport(OPTIONS_EMAIL);
+  try {
+    const res = await transporter.sendMail(makerMail(subject, text, html));
+    console.log(res?.response);
+    return "send";
+  } catch (error) {
+    console.error(error);
+    if (typeof error === "string") {
+      return new Error(error);
+    } else {
+      return new Error("An unknown error occurred");
+    }
+  }
 };
 
-export const createMyStreamFile = async (fileName: PathLike, res: Response) => {
-  let content = await isAccesible(fileName);
+export const createMyStreamFile = async (fileName: PathLike, res: Response): Promise<void> => {
+  const content = await isAccessible(fileName);
   if (content) {
     let head = "text/html";
-    let file_name = String(fileName);
+    const file_name = String(fileName);
     if (isVideo(file_name)) {
       head = "video/mp4";
-    }else if (isAudio(file_name)) {
+    } else if (isAudio(file_name)) {
       head = "audio/mp3";
     }
     res.writeHead(200, {
@@ -76,69 +66,68 @@ export const createMyStreamFile = async (fileName: PathLike, res: Response) => {
 export async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
   let content = null;
   try {
-    const isValid = await isAccesible(PATH_TO_FILES);
+    const isValid = await isAccessible(PATH_TO_FILES);
     if (isValid) {
       const file = await readFile(PATH_TO_FILES, "utf-8");
-      let pathString = String(PATH_TO_FILES).toLowerCase();
+      const pathString = String(PATH_TO_FILES).toLowerCase();
       content = pathString.includes(".json") ? JSON.parse(file) : file;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   return content;
 }
 
-export async function readMyDir(
-  PATH_TO_FILES: PathLike
-): Promise<PathLike[] | Dirent[]> {
-  let content: Dirent[] |PathLike[]= [];
+export async function readMyDir(PATH_TO_FILES: PathLike): Promise<string[]> {
+  let content: string[] = [];
   try {
-    const isValid = await isAccesible(PATH_TO_FILES);
+    const isValid = await isAccessible(PATH_TO_FILES);
     if (isValid) {
-      content = await readdirSync(PATH_TO_FILES,{ withFileTypes: true });
+      const contentFolder = await readdir(PATH_TO_FILES, { withFileTypes: true });
+      content = contentFolder.map(e => e.name);
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   return content;
 }
 
-export async function isAccesible(PATH_TO_FILES: PathLike): Promise<boolean> {
-  let isAccesible = false;
+export async function isAccessible(PATH_TO_FILES: PathLike): Promise<boolean> {
+  let isAccessible = false;
   if (existsSync(PATH_TO_FILES)) {
     try {
-      await access(PATH_TO_FILES, constants.R_OK);
-      isAccesible = true;
+      await access(PATH_TO_FILES);
+      isAccessible = true;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
-  return isAccesible;
+  return isAccessible;
 }
 
 export async function makeFile(pathFile: string): Promise<void> {
-  const pathSplited = pathFile.split("/");
-  if(pathSplited.length > 0){
-    let pathJAOIN = "";
-    for (const path of pathSplited) {
+  const pathSplitted = pathFile.split("/");
+  if (pathSplitted.length > 0) {
+    let pathJoin = "";
+    for (const path of pathSplitted) {
       if (/^\.[^\.]*$/.test(path)) {
-        pathJAOIN += `/${path}`;
-        await doMagicFolder(pathJAOIN);
+        pathJoin += `/${path}`;
+        await doMagicFolder(pathJoin);
       }
     }
-  }else {
-  await doMagicFolder(pathFile);
+  } else {
+    await doMagicFolder(pathFile);
   }
 }
 
 async function doMagicFolder(pathFile: string) {
   const PATH_TO_FILES: PathLike = await contentPath(pathFile);
-  let exists = await isAccesible(PATH_TO_FILES);
+  let exists = await isAccessible(PATH_TO_FILES);
   if (!exists) {
     try {
       await mkdir(PATH_TO_FILES);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 }
@@ -154,27 +143,28 @@ async function doMagicFolder(pathFile: string) {
  */
 export async function scanFolders(pathFile: string, recursive = true, endelement = false): Promise<string[]> {
   let scan: string[] = [];
-    let folders = await readMyDir(pathFile);
+  try {
+    const folders = await readMyDir(pathFile);
     if (folders.length > 0) {
       for (const value of folders) {
-        const rutaArchivo = join(pathFile, value.toLocaleString());
-        const stats = statSync(rutaArchivo);
-        let folder = rutaArchivo.concat('/' + rutaArchivo);
+        const rutaArchivo = join(pathFile, value);
+        const stats = await statSync(rutaArchivo);
+        const folder = endelement ? basename(rutaArchivo) : rutaArchivo;
         if (recursive && stats.isDirectory()) {
           try {
-            let folders = await scanFolders(folder, recursive, endelement);
-            scan.push(...folders);
+            const nestedFolders = await scanFolders(folder, recursive, endelement);
+            scan.push(...nestedFolders);
           } catch (error) {
             console.error(error);
           }
         } else {
-          if (endelement) {
-            folder = basename(folder);
-          }
           scan.push(folder);
         }
       }
     }
+  } catch (error) {
+    console.error(error);
+  }
   return scan;
 }
 
@@ -189,12 +179,12 @@ export async function scanFolders(pathFile: string, recursive = true, endelement
  * 
  * @return The path to the media file.
  */
-export async function handleMedia(tipo: string, name: string, ext: string, id_anime?: string | null, saga?:string |undefined, id_element?: string | null): Promise<string> {
+export async function handleMedia(tipo: string, name: string, ext: string, id_anime?: string | null, saga?: string | undefined, id_element?: string | null): Promise<string> {
   const nomedia = "img/no_img.jpg";
   let mediaSrc = "";
   switch (tipo) {
     case KIND_VALIDS.animebackup:
-      if(saga && saga?.length > 0){
+      if (saga && saga?.length > 0) {
         mediaSrc = `${saga}/`;
       }
       mediaSrc = `${mediaSrc}${id_anime}/.backup/${name}.${ext}`;
@@ -204,8 +194,8 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
     case KIND_VALIDS.openings:
     case KIND_VALIDS.endings:
     case KIND_VALIDS.episodes:
-      if(saga && saga?.length > 0){
-        mediaSrc = `${saga}/`;  
+      if (saga && saga?.length > 0) {
+        mediaSrc = `${saga}/`;
       }
       mediaSrc = `${mediaSrc}${id_anime}/${tipo}/`;
       if (id_element !== undefined && id_element !== null) {
@@ -214,43 +204,31 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
       mediaSrc = mediaSrc.concat(`${name}.${ext}`);
       break;
     case KIND_VALIDS.personages:
-      if(saga && saga?.length > 0){
+      if (saga && saga?.length > 0) {
         mediaSrc = `${saga}/`;
       }
       mediaSrc = `${mediaSrc}${id_anime}/${tipo}/${name}/${name}.${ext}`;
       break;
-    // case KIND_VALIDS.profiles:
-    // case KIND_VALIDS.new_post:
-    // case KIND_VALIDS.chat:
-    //   mediaSrc = `${tipo}/${id_anime}/${name}.${ext}`;
-    //   break;
     default:
       mediaSrc = nomedia;
       break;
   }
-  /*let exists = await isAccesible(mediaSrc);
-  if (!exists) {
-    mediaSrc = nomedia;
-  }*/
   return mediaSrc;
 }
 
-export async function contentPath(
-  pathFile: string,
-  kind: string | undefined = MEDIA_PATH
-): Promise<PathLike>{
-  return path.join(__dirname, "../"+kind +pathFile);
+export async function contentPath(pathFile: string, kind: string | undefined = MEDIA_PATH): Promise<PathLike> {
+  return join(__dirname, "../" + kind + pathFile);
 }
 
 export async function saveFile(pathFile: string, fileContents: string | any) {
   const PATH_TO_FILES: PathLike = await contentPath(pathFile);
-  let exists = await isAccesible(PATH_TO_FILES);
+  let exists = await isAccessible(PATH_TO_FILES);
   if (!exists) {
     try {
       const buffer: Buffer = Buffer.from(fileContents);
       await writeFileSync(PATH_TO_FILES, buffer);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 }

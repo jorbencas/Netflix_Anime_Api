@@ -1,6 +1,6 @@
 import { describe, it, test } from "node:test";
 import { strict as assert } from "node:assert";
-import { contentPath, handleMedia, isAccesible } from "../utils";
+import { contentPath, handleMedia, isAccessible } from "../utils";
 import { PathLike } from "node:fs";
 test("make file path test", async () => {
   // This test fails because it throws an exception.
@@ -9,7 +9,7 @@ test("make file path test", async () => {
   let kind = "episodes";
   const PATH_TO_FILES : PathLike = await handleMedia(kind, '01',"MP4",siglas,saga);
   let content = await contentPath(PATH_TO_FILES);
-  let result = await isAccesible(content);
+  let result = await isAccessible(content);
   assert.strictEqual(result, true, `no existe la ruta ${result} !== true`);
 });
 

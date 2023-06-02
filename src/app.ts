@@ -14,6 +14,7 @@ import fileStatic from './routes/static/file';
 const app = express();
 app.use(
     cors({ 
+        methods: ['GET', 'PUT', 'POST', 'DELETE'],
         origin:[
             'http://localhost:3000', 'http://localhost:3001'
         ]

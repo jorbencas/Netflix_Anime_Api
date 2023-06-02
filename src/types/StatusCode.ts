@@ -9,7 +9,7 @@ export type propsEmail = QueryResult<any> | object | string | Array<any> | null;
 export type dataResponseCustome = QueryResult<any> | object | string | Array<any> | null;
 
 export type ResponseCustomeData = {
-     data: dataResponseCustome;
+    data: dataResponseCustome;
     status : {
         code: number;
         text: string;
