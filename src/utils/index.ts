@@ -217,7 +217,7 @@ export async function handleMedia(tipo: string, name: string, ext: string, id_an
   return mediaSrc;
 }
 
-export async function contentPath(pathFile: string, kind: string | undefined = MEDIA_PATH): Promise<PathLike> {
+export async function contentPath(pathFile: string = "", kind: string | undefined = MEDIA_PATH): Promise<PathLike> {
   return join(__dirname, "../" + kind + pathFile);
 }
 
