@@ -138,10 +138,10 @@ async function doMagicFolder(pathFile: string) {
  * @param {string} path El camino al directorio que quieres escanear.
  * @param {boolean} recursive true/false - si se debe escanear subcarpetas o no
  * @param {boolean} endelement Si es verdadero, la función devolverá el último elemento de la ruta.
- * 
+ * @param {number} level el numero  de niveles de recursividad que se puede leer,
  * @return {string[]} Un array de todos los archivos en el directorio.
  */
-export async function scanFolders(pathFile: string, recursive = true, endelement = false): Promise<string[]> {
+export async function scanFolders(pathFile: string, recursive: boolean = true, endelement: boolean = false, level:number = 1): Promise<string[]> {
   let scan: string[] = [];
   try {
     const folders = await readMyDir(pathFile);
@@ -150,10 +150,11 @@ export async function scanFolders(pathFile: string, recursive = true, endelement
         const rutaArchivo = join(pathFile, value);
         const stats = await statSync(rutaArchivo);
         const folder = endelement ? basename(rutaArchivo) : rutaArchivo;
-        if (recursive && stats.isDirectory()) {
+        if (recursive && stats.isDirectory() && level < 1) {
           try {
-            const nestedFolders = await scanFolders(folder, recursive, endelement);
+            const nestedFolders = await scanFolders(folder, recursive, endelement, level);
             scan.push(...nestedFolders);
+            level--;
           } catch (error) {
             console.error(error);
           }
