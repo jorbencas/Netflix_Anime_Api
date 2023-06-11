@@ -19,6 +19,9 @@ const connectPostgress = () => {
 
 process.on("uncaughtException", (error) => {
   console.error(error);
+    console.log('====================================');
+  console.log("HOLA MUNDO ESTA ES EL SERVIDOR");
+  console.log('====================================');
   postgress.end();
 });
 
