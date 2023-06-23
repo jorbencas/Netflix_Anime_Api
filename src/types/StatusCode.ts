@@ -16,5 +16,8 @@ export type ResponseCustomeData = {
         message: string;
     };
 }
-
+export type MediaListFolders = {
+    saga:string,
+    serie:string
+}
 export type myQueryResult = QueryResult;

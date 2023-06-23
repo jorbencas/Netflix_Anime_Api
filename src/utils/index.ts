@@ -69,6 +69,8 @@ export async function readMyFile(PATH_TO_FILES: PathLike): Promise<any | null> {
     const isValid = await isAccessible(PATH_TO_FILES);
     if (isValid) {
       const file = await readFile(PATH_TO_FILES, "utf-8");
+    
+    
       const pathString = String(PATH_TO_FILES).toLowerCase();
       content = pathString.includes(".json") ? JSON.parse(file) : file;
     }
@@ -141,7 +143,7 @@ async function doMagicFolder(pathFile: string) {
  * @param {number} level el numero  de niveles de recursividad que se puede leer,
  * @return {string[]} Un array de todos los archivos en el directorio.
  */
-export async function scanFolders(pathFile: string, recursive: boolean = true, endelement: boolean = false, level:number = 1): Promise<string[]> {
+export async function scanFolders(pathFile: string, recursive: string[] = [], endelement: boolean = false, level:number = 0, maxLevel: number = 0 ): Promise<string[]> {
   let scan: string[] = [];
   try {
     const folders = await readMyDir(pathFile);
@@ -150,15 +152,10 @@ export async function scanFolders(pathFile: string, recursive: boolean = true, e
         const rutaArchivo = join(pathFile, value);
         const stats = await statSync(rutaArchivo);
         const folder = endelement ? basename(rutaArchivo) : rutaArchivo;
-        if (recursive && stats.isDirectory() && level < 1) {
-          try {
-            const nestedFolders = await scanFolders(folder, recursive, endelement, level);
-            scan.push(...nestedFolders);
-            level--;
-          } catch (error) {
-            console.error(error);
-          }
-        } else {
+        if (stats.isDirectory() && maxLevel < level) {
+          const nestedFiles = await scanFolders(folder, recursive, endelement, level, maxLevel + 1);
+          scan.push(...nestedFiles);
+        } else if (!recursive.every(e => folder.includes(e))) {
           scan.push(folder);
         }
       }
@@ -231,5 +228,5 @@ export async function saveFile(pathFile: string, fileContents: string | any) {
     } catch (error) {
       console.error(error);
     }
-  }
+ 1 }
 }

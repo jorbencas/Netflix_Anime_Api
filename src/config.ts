@@ -39,3 +39,14 @@ export const KIND_VALIDS = Object.freeze({
     new_post:'new_post',
     chat:'chat'
 });
+
+
+export const EXCLUDE_FOLDERS_ANIME = [
+    'banner',
+    'portada',
+    'openings',
+    'endings',
+    'episodes',
+    'personages',
+    '.backup'
+];
