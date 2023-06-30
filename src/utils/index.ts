@@ -7,7 +7,7 @@ import statusTexts from "../static/statusCodes";
 import normal from "../templates/normal/email";
 import { ResponseCustomeData, StatusCode, dataResponseCustome } from "../types/StatusCode";
 import { makerMail } from "./sendMail";
-import { isAudio, isVideo } from "./validators";
+import { isAudio, isDirectory, isVideo } from "./validators";
 import { PathLike, ReadStream, createReadStream, existsSync, statSync, writeFileSync } from "node:fs";
 
 export const responseCustome = (
@@ -150,9 +150,9 @@ export async function scanFolders(pathFile: string, recursive: string[] = [], en
     if (folders.length > 0) {
       for (const value of folders) {
         const rutaArchivo = join(pathFile, value);
-        const stats = await statSync(rutaArchivo);
+        const is = await isDirectory(rutaArchivo);
         const folder = endelement ? basename(rutaArchivo) : rutaArchivo;
-        if (stats.isDirectory() && maxLevel < level) {
+        if (is && maxLevel < level) {
           const nestedFiles = await scanFolders(folder, recursive, endelement, level, maxLevel + 1);
           scan.push(...nestedFiles);
         } else if (!recursive.every(e => folder.includes(e))) {

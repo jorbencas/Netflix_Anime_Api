@@ -2,6 +2,7 @@ import { contentPath, responseCustome, scanFolders } from "../utils/index";
 import { Request, Response, NextFunction } from "express";
 import { MediaListFolders } from "../types/StatusCode";
 import { EXCLUDE_FOLDERS_ANIME } from "../config";
+import { isImage } from '../utils/validators';
 const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) => {
   const PATH_TO_FILES = await contentPath();
   const rutasDirectorios: string[] = await scanFolders(PATH_TO_FILES.toString(),["nuevos"], false, 1);
@@ -17,7 +18,7 @@ const defaultSiglas = async (_req: Request, res: Response, _next: NextFunction) 
       let directorio = partesRuta[partesRuta.length - 1];
       let predirectorio = partesRuta[partesRuta.length - 2];
       let carpetaSaga:MediaListFolders = { saga: '', serie: '' };    
-      if (!carpetasIgnoradas.has(directorio) && !directorio.match('/*.jpg/')) {
+      if (!carpetasIgnoradas.has(directorio) && !isImage(directorio) ) {
         carpetaSaga.serie = directorio;
         carpetaSaga.saga = predirectorio;
         filteredSiglas.push(carpetaSaga);

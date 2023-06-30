@@ -1,4 +1,14 @@
 import { Request } from "express";
+import { statSync } from "fs";
+export const isDirectory = async (path:string) => {
+  const stats = await statSync(path);
+  return stats.isDirectory();
+}
+
+export const isFile = async (path:string) => {
+  const stats = await statSync(path);
+  return stats.isFile();
+}
 
 export const isDocument = (path: string) => {
   return path.toLowerCase().match("^.*\.(pdf)$");
