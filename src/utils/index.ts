@@ -8,7 +8,7 @@ import normal from "../templates/normal/email";
 import { ResponseCustomeData, StatusCode, dataResponseCustome } from "../types/StatusCode";
 import { makerMail } from "./sendMail";
 import { isAudio, isDirectory, isVideo } from "./validators";
-import { PathLike, ReadStream, createReadStream, existsSync, statSync, writeFileSync } from "node:fs";
+import { PathLike, ReadStream, createReadStream, existsSync,  writeFileSync } from "node:fs";
 
 export const responseCustome = (
   message: string = "",

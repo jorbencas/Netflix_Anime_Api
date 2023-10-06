@@ -9,6 +9,7 @@ const EMAIL_PASSWD = String(process.env.EMAIL_PASSWD);
 export const EMAIL_TO = String(process.env.EMAIL_TO);
 export const MONGODB_URI = String(process.env.MONGODB_URI);
 export const API_TOKEN = String(process.env.API_TOKEN);
+export const API_TELEGRAM = String(process.env.TELEGRAM_TOKEN);
 export const POSTGRES_HOST = String(process.env.POSTGRES_HOST);
 export const POSTGRES_USER = String(process.env.POSTGRES_USER);
 export const POSTGRES_PASSWORD = String(process.env.POSTGRES_PASSWORD);
