@@ -27,8 +27,10 @@ export default class Media_opening
           content = anime+"/"+type+ "/"+name+"."+extension;
         }
       }catch(e) {
+
         console.log(e);
       };
+      console.log(content);
       return content;
     }
     /**

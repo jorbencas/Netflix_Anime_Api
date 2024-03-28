@@ -10,6 +10,7 @@ const router = Router();
 router.get("/:type/:id?", async (req: Request, res: Response) => {
   try {
     let pathFile: string = "CY/openings/02.webm";
+    console.log("Hola openings");
     if(typeof req.params.id !== "undefined"){
       let {id, type} = req.params;
       switch (type) {
