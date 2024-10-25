@@ -32,18 +32,18 @@ const hash = generateHash(randomText);
 console.log('Hash SHA-512:', hash);
 
 // Clave secreta para firmar el token (debería ser generada de forma segura)
-const secretKey = config; // Cambiar a una clave segura en un entorno de producción
+export const SECRET_KEY = "Este es una api que tiene la función principal de gestionar "; // Cambiar a una clave segura en un entorno de producción
 
 // Tiempo de expiración del token (28 días)
 const expirationDate = moment().add(28, 'days').toDate();
 const expiresIn = expirationDate.toISOString();
 
 // Generar un token JWT que expire en 28 días
-const token = generateToken({ hash }, secretKey, expiresIn);
-console.log('Token JWT:', token);
+const tk = generateToken({ hash }, SECRET_KEY, expiresIn);
+console.log('Token JWT:', tk);
 
 // Verificar y decodificar el token JWT
-const decodedToken = verifyToken(token, secretKey);
+const decodedToken = verifyToken(tk, SECRET_KEY);
 if (decodedToken) {
     console.log('Token decodificado:', decodedToken);
     console.log('El hash del token es válido:', decodedToken.hash === hash);
