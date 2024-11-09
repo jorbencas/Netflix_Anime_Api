@@ -1,0 +1,28 @@
+alias connect_web_net_pedidos_cont_odoo='docker network connect developpedidos_ordenes_net odoo_clean_web'
+alias connect_web_net_odoo_cont_pedidos='docker network connect develop_odoo_default developpedidos_web_1'
+alias connect_db_net_pedidos_odoo='docker network connect developpedidos_ordenes_net odoo_clean_db'
+alias connect_db_net_odoo_pedidos='docker network connect develop_odoo_default developpedidos_ordenes_1'
+
+Ontinet@2021!!
+
+docker exec -it odoo_clean_db /bin/bash 
+
+psql Ont1n3t1 odoo
+
+
+
+instalar xmlrc 
+https://stackoverflow.com/questions/58750877/e-package-php-xmlrpc-has-no-installation-candidate
+instalar pgsql 
+https://github.com/docker-library/php/issues/221
+
+
+UPDATE res_users SET oauth_access_token = null WHERE login = 'vmarrahi@ontinet.com';
+
+UPDATE res_users SET oauth_uid = null WHERE login = 'vmarrahi@ontinet.com';
+
+UPDATE res_users SET oauth_provider_id = null WHERE login = 'vmarrahi@ontinet.com';
+
+SELECT oauth_provider_id, oauth_uid, oauth_access_token FROM res_users WHERE login = 'vmarrahi@ontinet.com';
+
+SELECT id FROM res_users WHERE oauth_access_token ='u95634'

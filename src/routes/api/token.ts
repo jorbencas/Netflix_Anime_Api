@@ -24,6 +24,7 @@ function verifyToken(token: string, secretKey: string): any {
     }
 }
 
+*
 // Generar un texto aleatorio
 const randomText = 'Texto aleatorio para generar el hash y el token';
 
